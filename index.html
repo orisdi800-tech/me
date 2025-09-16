@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الملف الشخصي | المترجم والمدرس المحترف</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #e91e63; /* وردي جذاب */
+            --secondary-color: #9c27b0; /* أرجواني */
+            --accent-color: #ff9800; /* برتقالي */
+            --light-bg: #fff5f7; /* خلفية وردية فاتحة */
+            --text-color: #4a4a4a;
+            --light-text: #fff;
+            --gradient-1: linear-gradient(135deg, #e91e63, #ff80ab);
+            --gradient-2: linear-gradient(135deg, #9c27b0, #ce93d8);
+            --gradient-3: linear-gradient(135deg, #ff9800, #ffb74d);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', 'Tajawal', sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* قلوب متحركة في الخلفية */
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            color: rgba(233, 30, 99, 0.2);
+            animation: float 6s linear infinite;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            20% {
+                opacity: 0.5;
+            }
+            80% {
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--light-text);
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://www.raed.net/img?id=1328074') center/cover;
+            opacity: 0.15;
+            z-index: 1;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .profile-section {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            margin: 60px 0;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .profile-image {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid var(--light-text);
+            box-shadow: 0 10px 30px rgba(233, 30, 99, 0.4);
+            transition: all 0.5s ease;
+        }
+        
+        .profile-image:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(233, 30, 99, 0.6);
+        }
+        
+        .profile-details h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.2);
+            font-weight: 800;
+            animation: pulse 2s infinite alternate;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.02); }
+        }
+        
+        .profile-details p {
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            max-width: 600px;
+            color: rgba(255,255,255,0.9);
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .social-icon {
+            background-color: var(--light-text);
+            color: var(--primary-color);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            transition: all 0.4s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .social-icon:hover {
+            background-color: var(--accent-color);
+            color: var(--light-text);
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        nav {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 5px 20px rgba(161, 98, 232, 0.3);
+        }
+        
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            list-style: none;
+        }
+        
+        .nav-links li a {
+            color: var(--light-text);
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            padding: 10px 20px;
+            border-radius: 30px;
+            transition: all 0.4s ease;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+            border: 2px solid transparent;
+        }
+        
+        .nav-links li a:hover {
+            background-color: rgba(255,255,255,0.2);
+            border-color: rgba(255,255,255,0.3);
+            transform: translateY(-3px);
+        }
+        
+        section {
+            padding: 80px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--secondary-color);
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            border-radius: 5px;
+            box-shadow: 0 3px 10px rgba(161, 98, 232, 0.3);
+        }
+        
+        .skills-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .skill-box {
+            background-color: #fff;
+            border-radius: 20px;
+            padding: 35px;
+            text-align: center;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        
+        .skill-box:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(233, 30, 99, 0.2);
+        }
+        
+        .skill-icon {
+            font-size: 3.5rem;
+            margin-bottom: 25px;
+            transition: all 0.5s ease;
+        }
+        
+        .skill-box:nth-child(1) .skill-icon {
+            color: #e91e63;
+            text-shadow: 0 5px 15px rgba(233, 30, 99, 0.3);
+        }
+        
+        .skill-box:nth-child(2) .skill-icon {
+            color: #9c27b0;
+            text-shadow: 0 5px 15px rgba(156, 39, 176, 0.3);
+        }
+        
+        .skill-box:nth-child(3) .skill-icon {
+            color: #ff9800;
+            text-shadow: 0 5px 15px rgba(255, 152, 0, 0.3);
+        }
+        
+        .skill-box:hover .skill-icon {
+            transform: scale(1.2);
+        }
+        
+        .skill-title {
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            color: var(--secondary-color);
+            font-weight: 700;
+        }
+        
+        .skill-description {
+            font-size: 1.05rem;
+            color: #666;
+            line-height: 1.8;
+        }
+        
+        .experience-timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .experience-timeline::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color), var(--accent-color));
+            top: 0;
+            bottom: 0;
+            right: 50%;
+            margin-right: -2px;
+            border-radius: 4px;
+        }
+        
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            width: 50%;
+        }
+        
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            right: -12px;
+            background-color: var(--light-text);
+            border: 4px solid;
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .timeline-item:nth-child(1)::after {
+            border-color: var(--primary-color);
+        }
+        
+        .timeline-item:nth-child(2)::after {
+            border-color: var(--secondary-color);
+        }
+        
+        .timeline-item:nth-child(3)::after {
+            border-color: var(--accent-color);
+        }
+        
+        .timeline-item:hover::after {
+            transform: scale(1.3);
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+        }
+        
+        .left {
+            left: 0;
+        }
+        
+        .right {
+            left: 50%;
+        }
+        
+        .right::after {
+            left: -12px;
+        }
+        
+        .timeline-content {
+            padding: 25px;
+            background-color: #fff;
+            position: relative;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .timeline-item:nth-child(1) .timeline-content {
+            border-top: 4px solid var(--primary-color);
+        }
+        
+        .timeline-item:nth-child(2) .timeline-content {
+            border-top: 4px solid var(--secondary-color);
+        }
+        
+        .timeline-item:nth-child(3) .timeline-content {
+            border-top: 4px solid var(--accent-color);
+        }
+        
+        .timeline-content:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(233, 30, 99, 0.2);
+        }
+        
+        .timeline-date {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .timeline-content h3 {
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+            color: var(--secondary-color);
+        }
+        
+        .timeline-content p {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: #555;
+        }
+        
+        .interests-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .interest-card {
+            background-color: #fff;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            transition: all 0.5s ease;
+            position: relative;
+        }
+        
+        .interest-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 25px 50px rgba(233, 30, 99, 0.2);
+        }
+        
+        .interest-img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            transition: all 0.8s ease;
+        }
+        
+        .interest-card:hover .interest-img {
+            transform: scale(1.1);
+        }
+        
+        .interest-details {
+            padding: 30px;
+        }
+        
+        .interest-title {
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+            color: var(--secondary-color);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .interest-title i {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+        }
+        
+        .interest-details p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #666;
+        }
+        
+        .website-section {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--light-text);
+            text-align: center;
+            padding: 100px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .website-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://www.raed.net/img?id=1328104') center/cover;
+            opacity: 0.1;
+            z-index: 1;
+        }
+        
+        .website-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .website-title {
+            font-size: 2.5rem;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.2);
+            animation: pulse 2s infinite;
+        }
+        
+        .website-description {
+            font-size: 1.3rem;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            line-height: 1.8;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+        
+        .visit-btn {
+            display: inline-block;
+            background-color: var(--light-text);
+            color: var(--primary-color);
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.5s ease;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            border: 3px solid rgba(255,255,255,0.5);
+        }
+        
+        .visit-btn:hover {
+            background-color: transparent;
+            color: var(--light-text);
+            transform: scale(1.1);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            border-color: rgba(255,255,255,0.8);
+        }
+        
+        .connect-section {
+            text-align: center;
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            color: var(--light-text);
+            padding: 100px 0;
+        }
+        
+        .tellonym-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            background-color: var(--light-text);
+            color: var(--primary-color);
+            padding: 18px 50px;
+            border-radius: 50px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+            margin-top: 40px;
+            transition: all 0.5s ease;
+            animation: pulse 2s infinite;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: 3px solid rgba(255,255,255,0.5);
+        }
+        
+        .tellonym-btn:hover {
+            background-color: transparent;
+            color: var(--light-text);
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            border-color: rgba(255,255,255,0.8);
+            animation: none;
+        }
+        
+        footer {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            color: var(--light-text);
+            text-align: center;
+            padding: 30px;
+            margin-top: 0;
+        }
+        
+        footer p {
+            font-size: 1.1rem;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .profile-section {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .profile-details h1 {
+                font-size: 2.2rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .profile-details h1 {
+                font-size: 1.8rem;
+            }
+            
+            .profile-details p {
+                font-size: 1.1rem;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .website-title {
+                font-size: 2.2rem;
+            }
+            
+            .website-description {
+                font-size: 1.1rem;
+            }
+            
+            .tellonym-btn {
+                font-size: 1.2rem;
+                padding: 15px 30px;
+            }
+            
+            .experience-timeline::after {
+                left: 31px;
+                right: auto;
+                margin-right: 0;
+            }
+            
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+            
+            .timeline-item::after {
+                left: 20px;
+                right: auto;
+            }
+            
+            .right {
+                left: 0;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .profile-image {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .profile-details h1 {
+                font-size: 1.6rem;
+            }
+            
+            .section-title {
+                font-size: 1.6rem;
+            }
+            
+            .skill-box, .timeline-content, .interest-card {
+                padding: 25px;
+            }
+            
+            .website-title {
+                font-size: 1.8rem;
+            }
+            
+            .visit-btn, .tellonym-btn {
+                font-size: 1rem;
+                padding: 12px 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Hearts -->
+    <div class="floating-hearts" id="hearts-container"></div>
+    
+    <header>
+        <div class="header-bg"></div>
+        <div class="container">
+            <div class="header-content">
+                <h1 style="font-size: 2.5rem; text-shadow: 2px 2px 5px rgba(0,0,0,0.3);">حيدر</h1>
+                <div class="social-icons">
+                    <a href="https://tellonym.me/user.26153436" class="social-icon" title="Tellonym">
+                        <i class="fas fa-comment-dots"></i>
+                    </a>
+                    <a href="#" class="social-icon" title="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="social-icon" title="Twitter">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="profile-section">
+                <img src="https://www.raed.net/img?id=1328078" alt="الصورة الشخصية" class="profile-image" id="profile-image">
+                <div class="profile-details">
+                    <h1>مدرس اللغة الإنجليزية والمترجم المحترف</h1>
+                    <p>خريج قسم تربية اللغة الإنجليزية، مترجم محترف مع خبرة في العتبة الكاظمية المقدسة، ومطور ويب ومصمم مواقع إلكترونية. شغفي الحقيقي يكمن في تطوير المحتوى الرقمي والرياضة.</p>
+                    <a href="https://tellonym.me/user.26153436" target="_blank" class="tellonym-btn">
+                        <i class="fas fa-comment-dots"></i> ارسل لي رسالة على  Tellonym
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <nav>
+        <div class="container">
+            <ul class="nav-links">
+                <li><a href="#skills"><i class="fas fa-star"></i> المهارات</a></li>
+                <li><a href="#experience"><i class="fas fa-briefcase"></i> الخبرات</a></li>
+                <li><a href="#interests"><i class="fas fa-heart"></i> الاهتمامات</a></li>
+                <li><a href="#website"><i class="fas fa-globe"></i> الموقع الإلكتروني</a></li>
+                <li><a href="#connect"><i class="fas fa-envelope"></i> تواصل معي</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <section id="skills">
+        <div class="container">
+            <h2 class="section-title">مهاراتي</h2>
+            <div class="skills-container">
+                <div class="skill-box">
+                    <div class="skill-icon">
+                        <i class="fas fa-language"></i>
+                    </div>
+                    <h3 class="skill-title">اللغة الإنجليزية</h3>
+                    <div class="skill-description">
+                        <p>أتقن اللغة الإنجليزية بنسبة 78%، مع خبرة في الترجمة وتدريس اللغة للمستويات المختلفة. لدي قدرة على التحدث بطلاقة وكتابة المحتوى الأكاديمي والمهني.</p>
+                    </div>
+                </div>
+                
+                <div class="skill-box">
+                    <div class="skill-icon">
+                        <i class="fas fa-laptop-code"></i>
+                    </div>
+                    <h3 class="skill-title">تطوير الويب</h3>
+                    <div class="skill-description">
+                        <p>شغوف بالكمبيوتر والتكنولوجيا منذ الطفولة، مع خبرة في تطوير المواقع الإلكترونية وإدارة المحتوى. أعمل على إنشاء مواقع تفاعلية وجذابة باستخدام أحدث التقنيات.</p>
+                    </div>
+                </div>
+                
+                <div class="skill-box">
+                    <div class="skill-icon">
+                        <i class="fas fa-bullhorn"></i>
+                    </div>
+                    <h3 class="skill-title">الإعلام والترجمة</h3>
+                    <div class="skill-description">
+                        <p>خبرة في الترجمة الإعلامية ونشر الأخبار، مع القدرة على صياغة المحتوى بشكل احترافي. أعمل على ترجمة المقالات والتقارير الإخبارية بدقة واحترافية.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="experience">
+        <div class="container">
+            <h2 class="section-title">خبراتي المهنية</h2>
+            <div class="experience-timeline">
+                <div class="timeline-item right">
+                    <div class="timeline-content">
+                        <div class="timeline-date">الحاضر</div>
+                        <h3>مدرس للغة الإنجليزية</h3>
+                        <p>أعمل حالياً كمدرس للغة الإنجليزية بوظيفة حكومية، أقوم بتدريس مختلف المستويات وتطوير مهارات الطلاب في اللغة. أسعى دائماً لخلق بيئة تعليمية تفاعلية وممتعة.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item left">
+                    <div class="timeline-content">
+                        <div class="timeline-date">سابقاً</div>
+                        <h3>مترجم في العتبة الكاظمية المقدسة</h3>
+                        <p>عملت كمترجم في العتبة الكاظمية المقدسة، حيث قمت بترجمة الأخبار والمحتوى الخاص بالعتبة إلى اللغة الإنجليزية. ساهمت في تعزيز التواصل مع الزوار الناطقين بالإنجليزية.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item right">
+                    <div class="timeline-content">
+                        <div class="timeline-date">سابقاً</div>
+                        <h3>شعبة الإعلام - العتبة الكاظمية المقدسة</h3>
+                        <p>عملت في شعبة الإعلام بالعتبة الكاظمية، حيث اكتسبت خبرة في إعداد ونشر المحتوى الإعلامي والتواصل مع الجمهور. ساهمت في تطوير استراتيجيات التواصل الرقمي.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="interests">
+        <div class="container">
+            <h2 class="section-title">اهتماماتي</h2>
+            <div class="interests-grid">
+                <div class="interest-card">
+                    <img src="https://www.raed.net/img?id=1328089" alt="الرياضة" class="interest-img">
+                    <div class="interest-details">
+                        <h3 class="interest-title"><i class="fas fa-running"></i> الرياضة</h3>
+                        <p>أحب ممارسة الرياضة بشكل منتظم، خاصة رياضة الجري ونط الحبل، مما يساعدني على الحفاظ على لياقتي البدنية والذهنية. الرياضة جزء أساسي من روتيني اليومي.</p>
+                    </div>
+                </div>
+                
+                <div class="interest-card">
+                    <img src="https://www.raed.net/img?id=1328091" alt="التكنولوجيا" class="interest-img">
+                    <div class="interest-details">
+                        <h3 class="interest-title"><i class="fas fa-laptop"></i> التكنولوجيا</h3>
+                        <p>شغفي بالكمبيوتر والتكنولوجيا بدأ منذ كنت في سن السادسة، وأستمر في متابعة أحدث التطورات التقنية والابتكارات. أحب تجربة الأدوات والتطبيقات الجديدة.</p>
+                    </div>
+                </div>
+                
+                <div class="interest-card">
+                    <img src="https://www.raed.net/img?id=1328094" alt="الكتابة والترجمة" class="interest-img">
+                    <div class="interest-details">
+                        <h3 class="interest-title"><i class="fas fa-pen-fancy"></i> الكتابة والترجمة</h3>
+                        <p>أستمتع بالكتابة ونشر المحتوى في مجالات متنوعة مثل الصحة والفلسفة والجمال والتكنولوجيا عبر موقعي الإلكتروني. الكتابة وسيلتي للتعبير عن الأفكار والإبداع.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="website" class="website-section">
+        <div class="website-bg"></div>
+        <div class="container website-content">
+            <h2 class="website-title">موقعي الإلكتروني</h2>
+            <p class="website-description">قمت بإنشاء وتطوير موقع Nass4.com الذي أنشر فيه الأخبار الرائجة وأحدث الابتكارات والمواضيع الصحية والفلسفية وما يخص الجمال والهواتف. يهدف الموقع إلى تقديم محتوى مفيد وجذاب للقراء.</p>
+            <a href="https://nass4.com" target="_blank" class="visit-btn"><i class="fas fa-external-link-alt"></i> زيارة الموقع</a>
+        </div>
+    </section>
+    
+    <section id="connect" class="connect-section">
+        <div class="container">
+            <h2 class="section-title" style="color: white;">تواصل معي</h2>
+            <p style="font-size: 1.2rem; max-width: 800px; margin: 0 auto;">أنا دائماً متحمس للتعرف على أشخاص جدد ومشاركة الأفكار والتجارب. لا تتردد في التواصل معي عبر منصة Tellonym أو عبر وسائل التواصل الاجتماعي.</p>
+            <a href="https://tellonym.me/user.26153436" target="_blank" class="tellonym-btn">
+                <i class="fas fa-comment-dots"></i> أرسل لي رسالة على Tellonym
+            </a>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="container">
+            <p>جميع الحقوق محفوظة &copy; 2025 | تصميم وتطوير الاستاذ حيدر</p>
+        </div>
+    </footer>
+    
+    <script>
+   
+        
+        // تأثيرات التمرير والحركة
+        document.addEventListener('DOMContentLoaded', function() {
+            createHearts();
+            
+            // التمرير السلس للروابط
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 70,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // تأثيرات الصورة الشخصية
+            const profileImage = document.getElementById('profile-image');
+            if (profileImage) {
+                profileImage.addEventListener('mouseover', function() {
+                    this.style.boxShadow = '0 15px 40px rgba(233, 30, 99, 0.6)';
+                });
+                
+                profileImage.addEventListener('mouseout', function() {
+                    this.style.boxShadow = '0 10px 30px rgba(233, 30, 99, 0.4)';
+                });
+            }
+            
+            // إبراز العنصر النشط في القائمة
+            function highlightNav() {
+                const sections = document.querySelectorAll('section');
+                const navLinks = document.querySelectorAll('.nav-links a');
+                
+                let currentSection = '';
+                
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop - 100;
+                    const sectionHeight = section.clientHeight;
+                    if (pageYOffset >= sectionTop && pageYOffset < sectionTop + sectionHeight) {
+                        currentSection = section.getAttribute('id');
+                    }
+                });
+                
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${currentSection}`) {
+                        link.style.backgroundColor = 'rgba(255,255,255,0.2)';
+                        link.style.borderColor = 'rgba(255,255,255,0.5)';
+                    } else {
+                        link.style.backgroundColor = 'transparent';
+                        link.style.borderColor = 'transparent';
+                    }
+                });
+            }
+            
+            window.addEventListener('scroll', highlightNav);
+            
+            // تأثيرات الظهور عند التمرير
+            function animateOnScroll() {
+                const elements = document.querySelectorAll('.skill-box, .timeline-item, .interest-card');
+                
+                elements.forEach(element => {
+                    const elementPosition = element.getBoundingClientRect().top;
+                    const screenPosition = window.innerHeight / 1.3;
+                    
+                    if (elementPosition < screenPosition) {
+                        element.style.opacity = '1';
+                        element.style.transform = 'translateY(0)';
+                    }
+                });
+            }
+            
+            // تعيين الأنماط الأولية للعناصر المتحركة
+            const animationElements = document.querySelectorAll('.skill-box, .timeline-item, .interest-card');
+            animationElements.forEach(element => {
+                element.style.opacity = '0';
+                element.style.transform = 'translateY(30px)';
+                element.style.transition = 'all 0.5s ease';
+            });
+            
+            window.addEventListener('scroll', animateOnScroll);
+            animateOnScroll(); // تشغيل عند التحميل الأولي
+        });
+    </script>
+</body>
+</html>

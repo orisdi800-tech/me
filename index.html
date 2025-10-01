@@ -3,950 +3,1181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الملف الشخصي | المترجم والمدرس المحترف</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>حيدر - مدرس و مطور رقمي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css">
+    <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
     <style>
-        :root {
-            --primary-color: #e91e63; /* وردي جذاب */
-            --secondary-color: #9c27b0; /* أرجواني */
-            --accent-color: #ff9800; /* برتقالي */
-            --light-bg: #fff5f7; /* خلفية وردية فاتحة */
-            --text-color: #4a4a4a;
-            --light-text: #fff;
-            --gradient-1: linear-gradient(135deg, #e91e63, #ff80ab);
-            --gradient-2: linear-gradient(135deg, #9c27b0, #ce93d8);
-            --gradient-3: linear-gradient(135deg, #ff9800, #ffb74d);
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Tajawal', sans-serif; background: #0a0e27; color: white; overflow-x: hidden; }
+        
+        .gradient-bg { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            z-index: -1; 
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #1e293b 100%); 
+        }
+        .gradient-bg::before { 
+            content: ''; 
+            position: absolute; 
+            width: 100%; 
+            height: 100%; 
+            background: radial-gradient(circle at 30% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 50%), 
+                        radial-gradient(circle at 70% 80%, rgba(168, 85, 247, 0.12) 0%, transparent 50%),
+                        radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.08) 0%, transparent 60%); 
+            animation: subtleMove 25s ease infinite; 
+        }
+        @keyframes subtleMove { 
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.8; } 
+            50% { transform: translate(-3%, 3%) scale(1.05); opacity: 1; }
         }
         
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Cairo', 'Tajawal', sans-serif;
+        /* Fixed Sidebar Navigation */
+        .sidebar {
+            position: fixed;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+            background: rgba(30, 27, 75, 0.7);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 30px;
+            padding: 20px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
         }
         
-        body {
-            background-color: var(--light-bg);
-            color: var(--text-color);
-            line-height: 1.6;
-            overflow-x: hidden;
+        .nav-dot {
+            position: relative;
+            width: 16px;
+            height: 16px;
+            background: rgba(99, 102, 241, 0.3);
+            border: 2px solid rgba(99, 102, 241, 0.5);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
         
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
+        .nav-dot:hover {
+            background: rgba(99, 102, 241, 0.8);
+            border-color: #6366f1;
+            transform: scale(1.5);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.6);
         }
         
-        /* قلوب متحركة في الخلفية */
-        .floating-hearts {
+        .nav-dot.active {
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            border-color: #6366f1;
+            transform: scale(1.4);
+            box-shadow: 0 0 25px rgba(99, 102, 241, 0.8);
+        }
+        
+        .nav-dot::before {
+            content: attr(data-label);
+            position: absolute;
+            left: 35px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(30, 27, 75, 0.95);
+            backdrop-filter: blur(20px);
+            color: white;
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .nav-dot:hover::before {
+            opacity: 1;
+            visibility: visible;
+            left: 40px;
+        }
+        
+        @media (max-width: 1024px) {
+            .sidebar { display: none; }
+        }
+        
+        /* Mobile Side Menu */
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            z-index: 1002;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            border: 1px solid rgba(99, 102, 241, 0.4);
+            border-radius: 15px;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-menu-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 40px rgba(99, 102, 241, 0.6);
+        }
+        
+        @media (max-width: 1024px) {
+            .mobile-menu-toggle { display: flex; }
+        }
+        
+        .mobile-sidebar {
+            position: fixed;
+            right: -300px;
+            top: 0;
+            height: 100vh;
+            width: 280px;
+            background: linear-gradient(180deg, rgba(30, 27, 75, 0.98), rgba(15, 23, 42, 0.98));
+            backdrop-filter: blur(40px);
+            border-left: 1px solid rgba(99, 102, 241, 0.3);
+            z-index: 1001;
+            padding: 100px 25px 40px;
+            transition: right 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: -10px 0 50px rgba(0, 0, 0, 0.5);
+        }
+        
+        .mobile-sidebar.active {
+            right: 0;
+        }
+        
+        .mobile-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 20px;
+            background: rgba(99, 102, 241, 0.08);
+            border: 1px solid rgba(99, 102, 241, 0.15);
+            border-radius: 20px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-nav-item:hover {
+            background: rgba(99, 102, 241, 0.2);
+            border-color: rgba(99, 102, 241, 0.4);
+            transform: translateX(-5px);
+        }
+        
+        .mobile-nav-icon {
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(168, 85, 247, 0.3));
+            border-radius: 14px;
+            flex-shrink: 0;
+        }
+        
+        .mobile-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none;
-            z-index: -1;
-            overflow: hidden;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
         }
         
-        .heart {
-            position: absolute;
-            font-size: 20px;
-            color: rgba(233, 30, 99, 0.2);
-            animation: float 6s linear infinite;
+        .mobile-overlay.active {
+            opacity: 1;
+            visibility: visible;
         }
         
-        @keyframes float {
-            0% {
-                transform: translateY(100vh) rotate(0deg);
-                opacity: 0;
-            }
-            20% {
-                opacity: 0.5;
-            }
-            80% {
-                opacity: 0.5;
-            }
-            100% {
-                transform: translateY(-100px) rotate(360deg);
-                opacity: 0;
-            }
+        .hero { 
+            min-height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            padding: 100px 20px 60px; 
         }
-        
-        header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: var(--light-text);
-            padding: 0;
-            position: relative;
-            overflow: hidden;
+        .hero-container { 
+            max-width: 1100px; 
+            margin: 0 auto; 
+            width: 100%; 
         }
-        
-        .header-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('https://www.raed.net/img?id=1328074') center/cover;
-            opacity: 0.15;
-            z-index: 1;
-        }
-        
-        .header-content {
-            display: flex;
-            justify-content: space-between;
+        .hero-content { 
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 50px;
             align-items: center;
-            padding: 20px 0;
-            position: relative;
-            z-index: 2;
         }
         
-        .profile-section {
+        @media (min-width: 768px) {
+            .hero-content {
+                grid-template-columns: 280px 1fr;
+                gap: 60px;
+            }
+        }
+        
+        .hero-left {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 30px;
-            margin: 60px 0;
+            gap: 25px;
+        }
+        
+        .profile-image-wrapper {
             position: relative;
-            z-index: 2;
+            width: 240px;
+            height: 240px;
         }
         
         .profile-image {
-            width: 250px;
-            height: 250px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 5px solid var(--light-text);
-            box-shadow: 0 10px 30px rgba(233, 30, 99, 0.4);
-            transition: all 0.5s ease;
-        }
-        
-        .profile-image:hover {
-            transform: scale(1.05);
-            box-shadow: 0 15px 40px rgba(233, 30, 99, 0.6);
-        }
-        
-        .profile-details h1 {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.2);
-            font-weight: 800;
-            animation: pulse 2s infinite alternate;
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.02); }
-        }
-        
-        .profile-details p {
-            font-size: 1.2rem;
-            margin-bottom: 25px;
-            max-width: 600px;
-            color: rgba(255,255,255,0.9);
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-        }
-        
-        .social-icons {
-            display: flex;
-            gap: 15px;
-            margin-top: 25px;
-        }
-        
-        .social-icon {
-            background-color: var(--light-text);
-            color: var(--primary-color);
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3rem;
-            transition: all 0.4s ease;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        
-        .social-icon:hover {
-            background-color: var(--accent-color);
-            color: var(--light-text);
-            transform: translateY(-5px) scale(1.1);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
-        
-        nav {
-            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
-            padding: 15px 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 5px 20px rgba(161, 98, 232, 0.3);
-        }
-        
-        .nav-links {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            list-style: none;
-        }
-        
-        .nav-links li a {
-            color: var(--light-text);
-            text-decoration: none;
-            font-size: 1.1rem;
-            font-weight: 600;
-            padding: 10px 20px;
-            border-radius: 30px;
-            transition: all 0.4s ease;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-            border: 2px solid transparent;
-        }
-        
-        .nav-links li a:hover {
-            background-color: rgba(255,255,255,0.2);
-            border-color: rgba(255,255,255,0.3);
-            transform: translateY(-3px);
-        }
-        
-        section {
-            padding: 80px 0;
-        }
-        
-        .section-title {
-            text-align: center;
-            margin-bottom: 50px;
-            position: relative;
-            font-size: 2.5rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--secondary-color);
-            text-shadow: 2px 2px 5px rgba(0,0,0,0.1);
-        }
-        
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 120px;
-            height: 5px;
-            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-            border-radius: 5px;
-            box-shadow: 0 3px 10px rgba(161, 98, 232, 0.3);
-        }
-        
-        .skills-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
-        
-        .skill-box {
-            background-color: #fff;
-            border-radius: 20px;
-            padding: 35px;
-            text-align: center;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-            transition: all 0.5s ease;
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
-            border: 1px solid rgba(255,255,255,0.3);
-        }
-        
-        .skill-box:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(233, 30, 99, 0.2);
-        }
-        
-        .skill-icon {
-            font-size: 3.5rem;
-            margin-bottom: 25px;
-            transition: all 0.5s ease;
-        }
-        
-        .skill-box:nth-child(1) .skill-icon {
-            color: #e91e63;
-            text-shadow: 0 5px 15px rgba(233, 30, 99, 0.3);
-        }
-        
-        .skill-box:nth-child(2) .skill-icon {
-            color: #9c27b0;
-            text-shadow: 0 5px 15px rgba(156, 39, 176, 0.3);
-        }
-        
-        .skill-box:nth-child(3) .skill-icon {
-            color: #ff9800;
-            text-shadow: 0 5px 15px rgba(255, 152, 0, 0.3);
-        }
-        
-        .skill-box:hover .skill-icon {
-            transform: scale(1.2);
-        }
-        
-        .skill-title {
-            font-size: 1.6rem;
-            margin-bottom: 20px;
-            color: var(--secondary-color);
-            font-weight: 700;
-        }
-        
-        .skill-description {
-            font-size: 1.05rem;
-            color: #666;
-            line-height: 1.8;
-        }
-        
-        .experience-timeline {
-            position: relative;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .experience-timeline::after {
-            content: '';
-            position: absolute;
-            width: 4px;
-            background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color), var(--accent-color));
-            top: 0;
-            bottom: 0;
-            right: 50%;
-            margin-right: -2px;
-            border-radius: 4px;
-        }
-        
-        .timeline-item {
-            padding: 10px 40px;
-            position: relative;
-            width: 50%;
-        }
-        
-        .timeline-item::after {
-            content: '';
-            position: absolute;
-            width: 24px;
-            height: 24px;
-            right: -12px;
-            background-color: var(--light-text);
-            border: 4px solid;
-            top: 15px;
-            border-radius: 50%;
-            z-index: 1;
-            box-shadow: 0 0 10px rgba(0,0,0,0.2);
-            transition: all 0.3s ease;
-        }
-        
-        .timeline-item:nth-child(1)::after {
-            border-color: var(--primary-color);
-        }
-        
-        .timeline-item:nth-child(2)::after {
-            border-color: var(--secondary-color);
-        }
-        
-        .timeline-item:nth-child(3)::after {
-            border-color: var(--accent-color);
-        }
-        
-        .timeline-item:hover::after {
-            transform: scale(1.3);
-            box-shadow: 0 0 15px rgba(0,0,0,0.3);
-        }
-        
-        .left {
-            left: 0;
-        }
-        
-        .right {
-            left: 50%;
-        }
-        
-        .right::after {
-            left: -12px;
-        }
-        
-        .timeline-content {
-            padding: 25px;
-            background-color: #fff;
-            position: relative;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-        }
-        
-        .timeline-item:nth-child(1) .timeline-content {
-            border-top: 4px solid var(--primary-color);
-        }
-        
-        .timeline-item:nth-child(2) .timeline-content {
-            border-top: 4px solid var(--secondary-color);
-        }
-        
-        .timeline-item:nth-child(3) .timeline-content {
-            border-top: 4px solid var(--accent-color);
-        }
-        
-        .timeline-content:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(233, 30, 99, 0.2);
-        }
-        
-        .timeline-date {
-            font-weight: bold;
-            color: var(--primary-color);
-            margin-bottom: 10px;
-            font-size: 1.1rem;
-        }
-        
-        .timeline-content h3 {
-            font-size: 1.4rem;
-            margin-bottom: 12px;
-            color: var(--secondary-color);
-        }
-        
-        .timeline-content p {
-            font-size: 1.05rem;
-            line-height: 1.7;
-            color: #555;
-        }
-        
-        .interests-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
-        
-        .interest-card {
-            background-color: #fff;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-            transition: all 0.5s ease;
-            position: relative;
-        }
-        
-        .interest-card:hover {
-            transform: translateY(-15px);
-            box-shadow: 0 25px 50px rgba(233, 30, 99, 0.2);
-        }
-        
-        .interest-img {
-            width: 100%;
-            height: 250px;
-            object-fit: cover;
-            transition: all 0.8s ease;
-        }
-        
-        .interest-card:hover .interest-img {
-            transform: scale(1.1);
-        }
-        
-        .interest-details {
-            padding: 30px;
-        }
-        
-        .interest-title {
-            font-size: 1.6rem;
-            margin-bottom: 15px;
-            color: var(--secondary-color);
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .interest-title i {
-            color: var(--primary-color);
-            font-size: 1.8rem;
-        }
-        
-        .interest-details p {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            color: #666;
-        }
-        
-        .website-section {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: var(--light-text);
-            text-align: center;
-            padding: 100px 0;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .website-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
-            background: url('https://www.raed.net/img?id=1328104') center/cover;
-            opacity: 0.1;
+            border-radius: 24px;
+            overflow: hidden;
+            border: 3px solid rgba(99, 102, 241, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            position: relative;
+            background: linear-gradient(135deg, #1e1b4b, #6366f1);
+        }
+        
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .profile-image::after {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
+            border-radius: 24px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .profile-image-wrapper:hover .profile-image::after {
+            opacity: 1;
+        }
+        
+        .hero-badge { 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 8px; 
+            padding: 10px 20px; 
+            background: rgba(30, 27, 75, 0.8); 
+            border: 1px solid rgba(99, 102, 241, 0.3); 
+            border-radius: 50px; 
+            font-size: 13px; 
+            font-weight: 600; 
+            color: #818cf8; 
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        .status-dot { 
+            width: 7px; 
+            height: 7px; 
+            background: #10b981; 
+            border-radius: 50%; 
+            animation: pulse 2s infinite; 
+            box-shadow: 0 0 10px #10b981;
+        }
+        @keyframes pulse { 
+            0%, 100% { opacity: 1; transform: scale(1); } 
+            50% { opacity: 0.7; transform: scale(1.2); } 
+        }
+        
+        .hero-right {
+            text-align: right;
+        }
+        
+        .hero-greeting {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .hero-title { 
+            font-size: clamp(2.5rem, 5vw, 3.5rem); 
+            font-weight: 800; 
+            line-height: 1.2; 
+            margin-bottom: 15px; 
+            font-family: 'Cairo', sans-serif; 
+            color: white;
+        }
+        
+        .hero-subtitle {
+            font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+            font-weight: 600;
+            color: #818cf8;
+            margin-bottom: 25px;
+            font-family: 'Cairo', sans-serif;
+        }
+        
+        .hero-quote {
+            font-size: 17px;
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.7);
+            padding: 20px 25px;
+            background: rgba(99, 102, 241, 0.08);
+            border-right: 4px solid #6366f1;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .hero-desc { 
+            font-size: 16px; 
+            line-height: 1.9; 
+            color: rgba(255, 255, 255, 0.75); 
+            margin-bottom: 35px; 
+            text-align: justify;
+        }
+        
+        .achievements {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 35px;
+        }
+        
+        .achievement-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 18px;
+            background: rgba(30, 41, 59, 0.4);
+            border: 1px solid rgba(71, 85, 105, 0.3);
+            border-radius: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .achievement-item:hover {
+            background: rgba(30, 41, 59, 0.6);
+            border-color: rgba(99, 102, 241, 0.4);
+            transform: translateX(-5px);
+        }
+        
+        .achievement-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .achievement-content h4 {
+            font-size: 16px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 5px;
+            font-family: 'Cairo', sans-serif;
+        }
+        
+        .achievement-content p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.5;
+        }
+        
+        .hero-cta { 
+            display: flex; 
+            gap: 15px; 
+            flex-wrap: wrap; 
+        }
+        .btn { 
+            padding: 18px 40px; 
+            border-radius: 50px; 
+            font-weight: 700; 
+            font-size: 16px; 
+            text-decoration: none; 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 10px; 
+            transition: all 0.3s ease; 
+            border: none; 
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .btn > * {
+            position: relative;
             z-index: 1;
         }
         
-        .website-content {
-            position: relative;
-            z-index: 2;
+        .btn-primary { 
+            background: linear-gradient(135deg, #6366f1, #a855f7); 
+            color: white; 
+            box-shadow: 0 10px 40px rgba(99, 102, 241, 0.5);
+        }
+        .btn-primary:hover { 
+            transform: translateY(-3px); 
+            box-shadow: 0 15px 50px rgba(99, 102, 241, 0.7);
+        }
+        .btn-secondary { 
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2)); 
+            color: #10b981; 
+            border: 2px solid #10b981;
+            box-shadow: 0 10px 40px rgba(16, 185, 129, 0.3);
+        }
+        .btn-secondary:hover { 
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(5, 150, 105, 0.3)); 
+            border-color: #10b981;
+            transform: translateY(-3px);
+            box-shadow: 0 15px 50px rgba(16, 185, 129, 0.5);
         }
         
-        .website-title {
-            font-size: 2.5rem;
-            margin-bottom: 25px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.2);
-            animation: pulse 2s infinite;
+        /* Services Section - Modern Clean Design */
+        .services { 
+            padding: 100px 20px; 
+            background: rgba(15, 23, 42, 0.3);
+        }
+        .services-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .section-header { 
+            text-align: center; 
+            margin-bottom: 60px; 
+        }
+        .section-title { 
+            font-size: clamp(2rem, 4vw, 3rem); 
+            font-weight: 800; 
+            font-family: 'Cairo', sans-serif; 
+            margin-bottom: 15px; 
+            color: white;
+        }
+        .section-subtitle { 
+            font-size: 16px; 
+            color: rgba(255, 255, 255, 0.6);
+            max-width: 550px;
+            margin: 0 auto;
+            line-height: 1.6;
         }
         
-        .website-description {
-            font-size: 1.3rem;
-            max-width: 800px;
-            margin: 0 auto 40px;
-            line-height: 1.8;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        .services-grid { 
+            display: grid; 
+            grid-template-columns: 1fr; 
+            gap: 30px; 
+        }
+        @media (min-width: 768px) { 
+            .services-grid { 
+                grid-template-columns: repeat(2, 1fr); 
+            } 
         }
         
-        .visit-btn {
-            display: inline-block;
-            background-color: var(--light-text);
-            color: var(--primary-color);
-            padding: 15px 40px;
-            border-radius: 50px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            text-decoration: none;
-            transition: all 0.5s ease;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-            border: 3px solid rgba(255,255,255,0.5);
+        .service-card { 
+            background: rgba(30, 41, 59, 0.4); 
+            border: 1px solid rgba(71, 85, 105, 0.3); 
+            border-radius: 20px; 
+            overflow: hidden; 
+            transition: all 0.3s ease;
         }
         
-        .visit-btn:hover {
-            background-color: transparent;
-            color: var(--light-text);
-            transform: scale(1.1);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
-            border-color: rgba(255,255,255,0.8);
+        .service-card:hover { 
+            transform: translateY(-8px); 
+            border-color: rgba(99, 102, 241, 0.5); 
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); 
+            background: rgba(30, 41, 59, 0.6);
         }
         
-        .connect-section {
-            text-align: center;
-            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
-            color: var(--light-text);
-            padding: 100px 0;
+        .service-video { 
+            position: relative; 
+            width: 100%; 
+            padding-top: 56.25%; 
+            background: #1e293b;
+            cursor: pointer; 
+            overflow: hidden; 
+        }
+        .service-video img { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            transition: transform 0.5s ease; 
+        }
+        .service-card:hover .service-video img { 
+            transform: scale(1.05); 
+        }
+        .video-overlay { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background: rgba(0, 0, 0, 0.3); 
+            transition: all 0.3s ease; 
+        }
+        .service-card:hover .video-overlay { 
+            background: rgba(0, 0, 0, 0.5); 
+        }
+        .play-btn { 
+            width: 70px; 
+            height: 70px; 
+            background: white; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: #3b82f6; 
+            transition: all 0.3s ease; 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); 
+        }
+        .service-card:hover .play-btn { 
+            transform: scale(1.1); 
+            background: #6366f1; 
+            color: white; 
         }
         
-        .tellonym-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
+        .service-content { 
+            padding: 30px 25px; 
+        }
+        .service-header { 
+            display: flex; 
+            align-items: center; 
             gap: 15px;
-            background-color: var(--light-text);
-            color: var(--primary-color);
-            padding: 18px 50px;
-            border-radius: 50px;
-            font-size: 1.5rem;
-            font-weight: bold;
-            text-decoration: none;
-            margin-top: 40px;
-            transition: all 0.5s ease;
-            animation: pulse 2s infinite;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            border: 3px solid rgba(255,255,255,0.5);
+            margin-bottom: 15px;
+        }
+        .service-icon { 
+            width: 50px; 
+            height: 50px; 
+            border-radius: 12px; 
+            background: linear-gradient(135deg, #6366f1, #a855f7); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            flex-shrink: 0;
         }
         
-        .tellonym-btn:hover {
-            background-color: transparent;
-            color: var(--light-text);
-            transform: scale(1.1);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-            border-color: rgba(255,255,255,0.8);
-            animation: none;
+        .service-title { 
+            font-size: 22px; 
+            font-weight: 700; 
+            font-family: 'Cairo', sans-serif; 
+            color: white;
+            flex: 1; 
+        }
+        .service-desc { 
+            color: rgba(255, 255, 255, 0.7); 
+            line-height: 1.7; 
+            margin-bottom: 20px; 
+            font-size: 15px; 
+        }
+        .service-features { 
+            list-style: none; 
+            margin-bottom: 25px; 
+            display: grid; 
+            gap: 10px; 
+        }
+        .service-features li { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            color: rgba(255, 255, 255, 0.8); 
+            font-size: 14px;
         }
         
-        footer {
-            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
-            color: var(--light-text);
-            text-align: center;
-            padding: 30px;
-            margin-top: 0;
+        .feature-icon { 
+            width: 24px; 
+            height: 24px; 
+            border-radius: 6px; 
+            background: rgba(16, 185, 129, 0.15); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: #10b981; 
+            flex-shrink: 0;
         }
         
-        footer p {
-            font-size: 1.1rem;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        .service-actions { 
+            display: flex;
+            justify-content: center;
+        }
+        .service-btn { 
+            padding: 16px 32px; 
+            border-radius: 14px; 
+            font-weight: 700; 
+            font-size: 15px; 
+            text-align: center; 
+            text-decoration: none; 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 10px; 
+            transition: all 0.3s ease; 
+            border: none; 
+            cursor: pointer;
+            width: 100%;
+            max-width: 280px;
         }
         
-        /* Responsive Design */
-        @media (max-width: 992px) {
-            .profile-section {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .profile-details h1 {
-                font-size: 2.2rem;
-            }
-            
-            .section-title {
-                font-size: 2rem;
-            }
+        .btn-order { 
+            background: linear-gradient(135deg, #10b981, #059669); 
+            color: white;
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+        }
+        .btn-order:hover { 
+            transform: translateY(-3px); 
+            box-shadow: 0 12px 35px rgba(16, 185, 129, 0.5);
+            background: linear-gradient(135deg, #059669, #047857);
+        }
+        .btn-watch { 
+            background: rgba(59, 130, 246, 0.1); 
+            color: #60a5fa; 
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        .btn-watch:hover { 
+            background: rgba(59, 130, 246, 0.2); 
+            border-color: rgba(59, 130, 246, 0.5);
+            transform: translateY(-2px);
+        }12px; 
+        }
+        .service-btn { 
+            padding: 14px 18px; 
+            border-radius: 12px; 
+            font-weight: 600; 
+            font-size: 14px; 
+            text-align: center; 
+            text-decoration: none; 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 8px; 
+            transition: all 0.3s ease; 
+            border: none; 
+            cursor: pointer;
         }
         
-        @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                gap: 20px;
-            }
-            
-            .profile-details h1 {
-                font-size: 1.8rem;
-            }
-            
-            .profile-details p {
-                font-size: 1.1rem;
-            }
-            
-            .nav-links {
-                flex-wrap: wrap;
-                gap: 15px;
-            }
-            
-            .section-title {
-                font-size: 1.8rem;
-            }
-            
-            .website-title {
-                font-size: 2.2rem;
-            }
-            
-            .website-description {
-                font-size: 1.1rem;
-            }
-            
-            .tellonym-btn {
-                font-size: 1.2rem;
-                padding: 15px 30px;
-            }
-            
-            .experience-timeline::after {
-                left: 31px;
-                right: auto;
-                margin-right: 0;
-            }
-            
-            .timeline-item {
+        .btn-order { 
+            background: linear-gradient(135deg, #f59e0b, #ef4444); 
+            color: white; 
+        }
+        .btn-order:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
+        }
+        .btn-watch { 
+            background: rgba(59, 130, 246, 0.1); 
+            color: #60a5fa; 
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        .btn-watch:hover { 
+            background: rgba(59, 130, 246, 0.2); 
+            border-color: rgba(59, 130, 246, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .video-modal { 
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(0, 0, 0, 0.95); 
+            backdrop-filter: blur(10px); 
+            z-index: 10000; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 20px; 
+        }
+        .video-modal.active { 
+            display: flex; 
+        }
+        .video-wrapper { 
+            position: relative; 
+            max-width: 1200px; 
+            width: 100%; 
+            background: #000; 
+            border-radius: 20px; 
+            overflow: hidden; 
+            box-shadow: 0 25px 100px rgba(0, 0, 0, 0.9); 
+        }
+        .close-btn { 
+            position: absolute; 
+            top: -60px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            width: 50px; 
+            height: 50px; 
+            background: rgba(239, 68, 68, 0.3); 
+            backdrop-filter: blur(10px); 
+            border: 2px solid rgba(239, 68, 68, 0.5); 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            cursor: pointer; 
+            color: white; 
+            transition: all 0.3s ease; 
+            z-index: 10001; 
+        }
+        .close-btn:hover { 
+            background: rgba(239, 68, 68, 0.5); 
+            transform: translateX(-50%) rotate(90deg);
+            border-color: #ef4444;
+        }
+        
+        .plyr { width: 100%; }
+        .plyr--video { background: #000; }
+        .plyr__control--overlaid { background: linear-gradient(135deg, #6366f1, #a855f7); }
+        .plyr__controls { background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.9)); }
+        .plyr--full-ui input[type=range] { color: #6366f1; }
+        
+        @media (max-width: 640px) {
+            .service-actions {
                 width: 100%;
-                padding-left: 70px;
-                padding-right: 25px;
             }
             
-            .timeline-item::after {
-                left: 20px;
-                right: auto;
-            }
-            
-            .right {
-                left: 0;
-            }
-        }
-        
-        @media (max-width: 576px) {
-            .profile-image {
-                width: 200px;
-                height: 200px;
-            }
-            
-            .profile-details h1 {
-                font-size: 1.6rem;
-            }
-            
-            .section-title {
-                font-size: 1.6rem;
-            }
-            
-            .skill-box, .timeline-content, .interest-card {
-                padding: 25px;
-            }
-            
-            .website-title {
-                font-size: 1.8rem;
-            }
-            
-            .visit-btn, .tellonym-btn {
-                font-size: 1rem;
-                padding: 12px 25px;
+            .service-btn {
+                max-width: 100%;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Floating Hearts -->
-    <div class="floating-hearts" id="hearts-container"></div>
+    <div class="gradient-bg"></div>
     
-    <header>
-        <div class="header-bg"></div>
-        <div class="container">
-            <div class="header-content">
-                <h1 style="font-size: 2.5rem; text-shadow: 2px 2px 5px rgba(0,0,0,0.3);">حيدر</h1>
-                <div class="social-icons">
-                    <a href="https://tellonym.me/user.49395811" class="social-icon" title="Tellonym">
-                        <i class="fas fa-comment-dots"></i>
-                    </a>
-                    <a href="#" class="social-icon" title="Instagram">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a href="#" class="social-icon" title="Twitter">
-                        <i class="fab fa-twitter"></i>
-                    </a>
+    <!-- Desktop Sidebar Navigation -->
+    <div class="sidebar">
+        <div class="nav-dot active" data-label="عني" data-target="#home"></div>
+        <div class="nav-dot" data-label="الخدمات" data-target="#services"></div>
+    </div>
+    
+    <!-- Mobile Navigation -->
+    <button class="mobile-menu-toggle" id="mobileMenuToggle">
+        <i data-lucide="menu" style="width: 24px; height: 24px;"></i>
+    </button>
+    
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+    
+    <div class="mobile-sidebar" id="mobileSidebar">
+        <a href="#home" class="mobile-nav-item">
+            <div class="mobile-nav-icon">
+                <i data-lucide="user" style="width: 20px; height: 20px;"></i>
+            </div>
+            <span>عني</span>
+        </a>
+        <a href="#services" class="mobile-nav-item">
+            <div class="mobile-nav-icon">
+                <i data-lucide="briefcase" style="width: 20px; height: 20px;"></i>
+            </div>
+            <span>الخدمات</span>
+        </a>
+    </div>
+    
+    <section id="home" class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="hero-left">
+                    <div class="profile-image-wrapper">
+                        <div class="profile-image">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="حيدر">
+                        </div>
+                    </div>
+                    <div class="hero-badge">
+                        <div class="status-dot"></div>
+                        متاح للعمل
+                    </div>
                 </div>
+                
+                <div class="hero-right">
+                    <p class="hero-greeting">مرحباً بك، أنا</p>
+                    <h1 class="hero-title">حيدر</h1>
+                    <p class="hero-subtitle">مدرس لغة إنجليزية • مطور تطبيقات</p>
+                    
+                    <div class="hero-quote">
+                        "أفعالي تتكلم عني بشكل أفضل"
+                    </div>
+                    
+                    <p class="hero-desc">
+                        حاصل على درجة البكالوريوس في اللغة الإنجليزية، مع خبرة عملية في القطاع الحكومي وحالياً أعمل كمدرس في وزارة التربية. أجمع بين شغفي بالتعليم والتكنولوجيا لتقديم حلول رقمية مبتكرة تساعد في نشر المعرفة وتطوير المهارات.
+                    </p>
+                    
+                    <div class="achievements">
+                        <div class="achievement-item">
+                            <div class="achievement-icon">
+                                <i data-lucide="graduation-cap" style="width: 22px; height: 22px;"></i>
+                            </div>
+                            <div class="achievement-content">
+                                <h4>بكالوريوس في اللغة الإنجليزية</h4>
+                                <p>تخصص أكاديمي في اللغة والأدب الإنجليزي</p>
+                            </div>
+                        </div>
+                        
+                        <div class="achievement-item">
+                            <div class="achievement-icon">
+                                <i data-lucide="briefcase" style="width: 22px; height: 22px;"></i>
+                            </div>
+                            <div class="achievement-content">
+                                <h4>وزارة التربية</h4>
+                                <p>مدرس لغة إنجليزية بخبرة 3 سنوات في التعليم</p>
+                            </div>
+                        </div>
+                        
+                        <div class="achievement-item">
+                            <div class="achievement-icon">
+                                <i data-lucide="smartphone" style="width: 22px; height: 22px;"></i>
+                            </div>
+                            <div class="achievement-content">
+                                <h4>تطوير تطبيق أندرويد خاص</h4>
+                                <p>إنجاز مشروع تطبيق متكامل من التصميم للنشر</p>
+                            </div>
+                        </div>
+                        
+                        <div class="achievement-item">
+                            <div class="achievement-icon">
+                                <i data-lucide="building" style="width: 22px; height: 22px;"></i>
+                            </div>
+                            <div class="achievement-content">
+                                <h4>خبرة في القطاع الحكومي</h4>
+                                <p>عملت سابقاً في إحدى المؤسسات الحكومية</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="hero-cta">
+                        <a href="#services" class="btn btn-primary">
+                            <i data-lucide="rocket" style="width: 20px; height: 20px;"></i>
+                            استكشف خدماتي
+                        </a>
+                        <a href="https://wa.me/YOUR_NUMBER" class="btn btn-secondary">
+                            <i data-lucide="message-circle" style="width: 20px; height: 20px;"></i>
+                            تواصل معي
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="services" class="services">
+        <div class="services-container">
+            <div class="section-header">
+                <h2 class="section-title">خدماتي الاحترافية</h2>
+                <p class="section-subtitle">حلول رقمية متكاملة مصممة خصيصاً لتلبية احتياجاتك</p>
             </div>
             
-            <div class="profile-section">
-                <img src="https://www.raed.net/img?id=1328078" alt="الصورة الشخصية" class="profile-image" id="profile-image">
-                <div class="profile-details">
-                    <h1>مدرس اللغة الإنجليزية والمترجم المحترف</h1>
-                    <p>خريج قسم تربية اللغة الإنجليزية، مترجم محترف مع خبرة في العتبة الكاظمية المقدسة، ومطور ويب ومصمم مواقع إلكترونية. شغفي الحقيقي يكمن في تطوير المحتوى الرقمي والرياضة.</p>
-                    <a href="https://tellonym.me/user.49395811" target="_blank" class="tellonym-btn">
-                        <i class="fas fa-comment-dots"></i> ارسل لي رسالة على  Tellonym
-                    </a>
-                </div>
-            </div>
-        </div>
-    </header>
-    
-    <nav>
-        <div class="container">
-            <ul class="nav-links">
-                <li><a href="#skills"><i class="fas fa-star"></i> المهارات</a></li>
-                <li><a href="#experience"><i class="fas fa-briefcase"></i> الخبرات</a></li>
-                <li><a href="#interests"><i class="fas fa-heart"></i> الاهتمامات</a></li>
-                <li><a href="#website"><i class="fas fa-globe"></i> الموقع الإلكتروني</a></li>
-                <li><a href="#connect"><i class="fas fa-envelope"></i> تواصل معي</a></li>
-            </ul>
-        </div>
-    </nav>
-    
-    <section id="skills">
-        <div class="container">
-            <h2 class="section-title">مهاراتي</h2>
-            <div class="skills-container">
-                <div class="skill-box">
-                    <div class="skill-icon">
-                        <i class="fas fa-language"></i>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-video" onclick="openVideo('android')">
+                        <img src="https://images.unsplash.com/photo-1555774698-0b77e0d5fac6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="تطبيق أندرويد">
+                        <div class="video-overlay">
+                            <div class="play-btn">
+                                <i data-lucide="play" style="width: 28px; height: 28px; margin-right: 3px;"></i>
+                            </div>
+                        </div>
                     </div>
-                    <h3 class="skill-title">اللغة الإنجليزية</h3>
-                    <div class="skill-description">
-                        <p>أتقن اللغة الإنجليزية بنسبة 78%، مع خبرة في الترجمة وتدريس اللغة للمستويات المختلفة. لدي قدرة على التحدث بطلاقة وكتابة المحتوى الأكاديمي والمهني.</p>
-                    </div>
-                </div>
-                
-                <div class="skill-box">
-                    <div class="skill-icon">
-                        <i class="fas fa-laptop-code"></i>
-                    </div>
-                    <h3 class="skill-title">تطوير الويب</h3>
-                    <div class="skill-description">
-                        <p>شغوف بالكمبيوتر والتكنولوجيا منذ الطفولة، مع خبرة في تطوير المواقع الإلكترونية وإدارة المحتوى. أعمل على إنشاء مواقع تفاعلية وجذابة باستخدام أحدث التقنيات.</p>
-                    </div>
-                </div>
-                
-                <div class="skill-box">
-                    <div class="skill-icon">
-                        <i class="fas fa-bullhorn"></i>
-                    </div>
-                    <h3 class="skill-title">الإعلام والترجمة</h3>
-                    <div class="skill-description">
-                        <p>خبرة في الترجمة الإعلامية ونشر الأخبار، مع القدرة على صياغة المحتوى بشكل احترافي. أعمل على ترجمة المقالات والتقارير الإخبارية بدقة واحترافية.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <section id="experience">
-        <div class="container">
-            <h2 class="section-title">خبراتي المهنية</h2>
-            <div class="experience-timeline">
-                <div class="timeline-item right">
-                    <div class="timeline-content">
-                        <div class="timeline-date">الحاضر</div>
-                        <h3>مدرس للغة الإنجليزية</h3>
-                        <p>أعمل حالياً كمدرس للغة الإنجليزية بوظيفة حكومية، أقوم بتدريس مختلف المستويات وتطوير مهارات الطلاب في اللغة. أسعى دائماً لخلق بيئة تعليمية تفاعلية وممتعة.</p>
+                    
+                    <div class="service-content">
+                        <div class="service-header">
+                            <div class="service-icon">
+                                <i data-lucide="smartphone" style="width: 26px; height: 26px;"></i>
+                            </div>
+                            <h3 class="service-title">تطوير تطبيقات أندرويد</h3>
+                        </div>
+                        
+                        <p class="service-desc">تطبيقات احترافية بتصميم عصري وأداء سريع، مصممة خصيصاً لتلبية احتياجاتك وتحقيق أهدافك الرقمية.</p>
+                        
+                        <ul class="service-features">
+                            <li>
+                                <div class="feature-icon">
+                                    <i data-lucide="check" style="width: 12px; height: 12px;"></i>
+                                </div>
+                                تصميم واجهة مستخدم حديثة
+                            </li>
+                            <li>
+                                <div class="feature-icon">
+                                    <i data-lucide="check" style="width: 12px; height: 12px;"></i>
+                                </div>
+                                أداء سريع وسلس
+                            </li>
+                            <li>
+                                <div class="feature-icon">
+                                    <i data-lucide="check" style="width: 12px; height: 12px;"></i>
+                                </div>
+                                متوافق مع جميع الإصدارات
+                            </li>
+                            <li>
+                                <div class="feature-icon">
+                                    <i data-lucide="check" style="width: 12px; height: 12px;"></i>
+                                </div>
+                                دعم فني شامل
+                            </li>
+                        </ul>
+                        
+                        <div class="service-actions">
+                            <button class="service-btn btn-order" onclick="orderService('android')">
+                                <i data-lucide="shopping-cart" style="width: 18px; height: 18px;"></i>
+                                اطلب الخدمة
+                            </button>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="timeline-item left">
-                    <div class="timeline-content">
-                        <div class="timeline-date">سابقاً</div>
-                        <h3>مترجم في العتبة الكاظمية المقدسة</h3>
-                        <p>عملت كمترجم في العتبة الكاظمية المقدسة، حيث قمت بترجمة الأخبار والمحتوى الخاص بالعتبة إلى اللغة الإنجليزية. ساهمت في تعزيز التواصل مع الزوار الناطقين بالإنجليزية.</p>
+                <div class="service-card">
+                    <div class="service-video" onclick="openVideo('website')">
+                        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="موقع إلكتروني">
+                        <div class="video-overlay">
+                            <div class="play-btn">
+                                <i data-lucide="play" style="width: 28px; height: 28px; margin-right: 3px;"></i>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="timeline-item right">
-                    <div class="timeline-content">
-                        <div class="timeline-date">سابقاً</div>
-                        <h3>شعبة الإعلام - العتبة الكاظمية المقدسة</h3>
-                        <p>عملت في شعبة الإعلام بالعتبة الكاظمية، حيث اكتسبت خبرة في إعداد ونشر المحتوى الإعلامي والتواصل مع الجمهور. ساهمت في تطوير استراتيجيات التواصل الرقمي.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <section id="interests">
-        <div class="container">
-            <h2 class="section-title">اهتماماتي</h2>
-            <div class="interests-grid">
-                <div class="interest-card">
-                    <img src="https://www.raed.net/img?id=1328089" alt="الرياضة" class="interest-img">
-                    <div class="interest-details">
-                        <h3 class="interest-title"><i class="fas fa-running"></i> الرياضة</h3>
-                        <p>أحب ممارسة الرياضة بشكل منتظم، خاصة رياضة الجري ونط الحبل، مما يساعدني على الحفاظ على لياقتي البدنية والذهنية. الرياضة جزء أساسي من روتيني اليومي.</p>
-                    </div>
-                </div>
-                
-                <div class="interest-card">
-                    <img src="https://www.raed.net/img?id=1328091" alt="التكنولوجيا" class="interest-img">
-                    <div class="interest-details">
-                        <h3 class="interest-title"><i class="fas fa-laptop"></i> التكنولوجيا</h3>
-                        <p>شغفي بالكمبيوتر والتكنولوجيا بدأ منذ كنت في سن السادسة، وأستمر في متابعة أحدث التطورات التقنية والابتكارات. أحب تجربة الأدوات والتطبيقات الجديدة.</p>
-                    </div>
-                </div>
-                
-                <div class="interest-card">
-                    <img src="https://www.raed.net/img?id=1328094" alt="الكتابة والترجمة" class="interest-img">
-                    <div class="interest-details">
-                        <h3 class="interest-title"><i class="fas fa-pen-fancy"></i> الكتابة والترجمة</h3>
-                        <p>أستمتع بالكتابة ونشر المحتوى في مجالات متنوعة مثل الصحة والفلسفة والجمال والتكنولوجيا عبر موقعي الإلكتروني. الكتابة وسيلتي للتعبير عن الأفكار والإبداع.</p>
+                    
+                    <div class="service-content">
+                        <div class="service-header">
+                            <div class="service-icon">
+                                <i data-lucide="globe" style="width: 26px; height: 26px;"></i>
+                            </div>
+                            <h3 class="service-title">تصميم مواقع شخصية</h3>
+                        </div>
+                        
+                        <p class="service-desc">مواقع عصرية ومتجاوبة تعكس هويتك الرقمية بأسلوب احترافي جذاب، مع تجربة مستخدم استثنائية.</p>
+                        
+                        <ul class="service-features">
+                            <li>
+                                <div class="feature-icon">
+                                    <i data-lucide="check" style="width: 12px; height: 12px;"></i>
+                                </div>
+                                تصميم فريد ومخصص
+                            </li>
+                            <li>
+                                <div class="feature-icon">
+                                    <i data-lucide="check" style="width: 12px; height: 12px;"></i>
+                                </div>
+                                متجاوب مع جميع الأجهزة
+                            </li>
+                            <li>
+                                <div class="feature-icon">
+                                    <i data-lucide="check" style="width: 12px; height: 12px;"></i>
+                                </div>
+                                سرعة تحميل فائقة
+                            </li>
+                            <li>
+                                <div class="feature-icon">
+                                    <i data-lucide="check" style="width: 12px; height: 12px;"></i>
+                                </div>
+                                محسّن لمحركات البحث
+                            </li>
+                        </ul>
+                        
+                        <div class="service-actions">
+                            <button class="service-btn btn-order" onclick="orderService('website')">
+                                <i data-lucide="shopping-cart" style="width: 18px; height: 18px;"></i>
+                                اطلب الخدمة
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
     
-    <section id="website" class="website-section">
-        <div class="website-bg"></div>
-        <div class="container website-content">
-            <h2 class="website-title">موقعي الإلكتروني</h2>
-            <p class="website-description">قمت بإنشاء وتطوير موقع Nass4.com الذي أنشر فيه الأخبار الرائجة وأحدث الابتكارات والمواضيع الصحية والفلسفية وما يخص الجمال والهواتف. يهدف الموقع إلى تقديم محتوى مفيد وجذاب للقراء.</p>
-            <a href="https://nass4.com" target="_blank" class="visit-btn"><i class="fas fa-external-link-alt"></i> زيارة الموقع</a>
+    <div class="video-modal" id="videoModal">
+        <div class="video-wrapper">
+            <button class="close-btn" onclick="closeVideo()">
+                <i data-lucide="x" style="width: 24px; height: 24px;"></i>
+            </button>
+            <video id="player" playsinline controls data-poster="">
+                <source src="" type="video/mp4">
+            </video>
         </div>
-    </section>
-    
-    <section id="connect" class="connect-section">
-        <div class="container">
-            <h2 class="section-title" style="color: white;">تواصل معي</h2>
-            <p style="font-size: 1.2rem; max-width: 800px; margin: 0 auto;">أنا دائماً متحمس للتعرف على أشخاص جدد ومشاركة الأفكار والتجارب. لا تتردد في التواصل معي عبر منصة Tellonym أو عبر وسائل التواصل الاجتماعي.</p>
-            <a href="https://tellonym.me/user.49395811" target="_blank" class="tellonym-btn">
-                <i class="fas fa-comment-dots"></i> أرسل لي رسالة على Tellonym
-            </a>
-        </div>
-    </section>
-    
-    <footer>
-        <div class="container">
-            <p>جميع الحقوق محفوظة &copy; 2025 | تصميم وتطوير الاستاذ حيدر</p>
-        </div>
-    </footer>
+    </div>
     
     <script>
-   
+        lucide.createIcons();
         
-        // تأثيرات التمرير والحركة
-        document.addEventListener('DOMContentLoaded', function() {
-            createHearts();
+        const videoLinks = {
+            android: 'https://dso7.raed.net:451/files/Demo-Vid-InstaDoodle.mp4',
+            website: 'YOUR_WEBSITE_VIDEO_URL.mp4'
+        };
+        
+        const orderLinks = {
+            android: 'YOUR_ANDROID_ORDER_URL',
+            website: 'YOUR_WEBSITE_ORDER_URL'
+        };
+        
+        let player = null;
+        
+        function openVideo(type) {
+            const modal = document.getElementById('videoModal');
+            const videoElement = document.getElementById('player');
             
-            // التمرير السلس للروابط
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    
-                    const targetId = this.getAttribute('href');
-                    const targetElement = document.querySelector(targetId);
-                    
-                    if (targetElement) {
-                        window.scrollTo({
-                            top: targetElement.offsetTop - 70,
-                            behavior: 'smooth'
-                        });
-                    }
+            if (videoLinks[type] && !videoLinks[type].includes('YOUR_')) {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                
+                if (player) {
+                    player.destroy();
+                }
+                
+                videoElement.querySelector('source').src = videoLinks[type];
+                videoElement.load();
+                
+                player = new Plyr('#player', {
+                    controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+                    autoplay: true,
+                    hideControls: true,
+                    resetOnEnd: true,
+                    ratio: '16:9'
                 });
+            } else {
+                alert('يرجى إضافة رابط الفيديو في الكود');
+            }
+        }
+        
+        function closeVideo() {
+            const modal = document.getElementById('videoModal');
+            if (player) {
+                player.pause();
+                player.destroy();
+                player = null;
+            }
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        
+        document.getElementById('videoModal').addEventListener('click', function(e) {
+            if (e.target === this) closeVideo();
+        });
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeVideo();
+        });
+        
+        function orderService(type) {
+            if (orderLinks[type] && !orderLinks[type].includes('YOUR_')) {
+                window.open(orderLinks[type], '_blank');
+            } else {
+                alert('يرجى إضافة رابط الطلب في الكود');
+            }
+        }
+        
+        // Mobile Navigation
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const mobileSidebar = document.getElementById('mobileSidebar');
+        const mobileOverlay = document.getElementById('mobileOverlay');
+        
+        mobileMenuToggle.addEventListener('click', () => {
+            mobileSidebar.classList.toggle('active');
+            mobileOverlay.classList.toggle('active');
+            document.body.style.overflow = mobileSidebar.classList.contains('active') ? 'hidden' : 'auto';
+        });
+        
+        mobileOverlay.addEventListener('click', () => {
+            mobileSidebar.classList.remove('active');
+            mobileOverlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+        
+        document.querySelectorAll('.mobile-nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                mobileSidebar.classList.remove('active');
+                mobileOverlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+        });
+        
+        // Desktop Sidebar Navigation
+        const navDots = document.querySelectorAll('.nav-dot');
+        
+        navDots.forEach(dot => {
+            dot.addEventListener('click', function() {
+                const target = this.getAttribute('data-target');
+                const section = document.querySelector(target);
+                
+                if (section) {
+                    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+                
+                navDots.forEach(d => d.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        
+        // Scroll spy for sidebar
+        window.addEventListener('scroll', () => {
+            const sections = ['home', 'services'];
+            let current = '';
+            
+            sections.forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    const sectionTop = section.offsetTop;
+                    if (window.pageYOffset >= sectionTop - 200) {
+                        current = sectionId;
+                    }
+                }
             });
             
-            // تأثيرات الصورة الشخصية
-            const profileImage = document.getElementById('profile-image');
-            if (profileImage) {
-                profileImage.addEventListener('mouseover', function() {
-                    this.style.boxShadow = '0 15px 40px rgba(233, 30, 99, 0.6)';
-                });
-                
-                profileImage.addEventListener('mouseout', function() {
-                    this.style.boxShadow = '0 10px 30px rgba(233, 30, 99, 0.4)';
-                });
-            }
-            
-            // إبراز العنصر النشط في القائمة
-            function highlightNav() {
-                const sections = document.querySelectorAll('section');
-                const navLinks = document.querySelectorAll('.nav-links a');
-                
-                let currentSection = '';
-                
-                sections.forEach(section => {
-                    const sectionTop = section.offsetTop - 100;
-                    const sectionHeight = section.clientHeight;
-                    if (pageYOffset >= sectionTop && pageYOffset < sectionTop + sectionHeight) {
-                        currentSection = section.getAttribute('id');
-                    }
-                });
-                
-                navLinks.forEach(link => {
-                    link.classList.remove('active');
-                    if (link.getAttribute('href') === `#${currentSection}`) {
-                        link.style.backgroundColor = 'rgba(255,255,255,0.2)';
-                        link.style.borderColor = 'rgba(255,255,255,0.5)';
-                    } else {
-                        link.style.backgroundColor = 'transparent';
-                        link.style.borderColor = 'transparent';
-                    }
-                });
-            }
-            
-            window.addEventListener('scroll', highlightNav);
-            
-            // تأثيرات الظهور عند التمرير
-            function animateOnScroll() {
-                const elements = document.querySelectorAll('.skill-box, .timeline-item, .interest-card');
-                
-                elements.forEach(element => {
-                    const elementPosition = element.getBoundingClientRect().top;
-                    const screenPosition = window.innerHeight / 1.3;
-                    
-                    if (elementPosition < screenPosition) {
-                        element.style.opacity = '1';
-                        element.style.transform = 'translateY(0)';
-                    }
-                });
-            }
-            
-            // تعيين الأنماط الأولية للعناصر المتحركة
-            const animationElements = document.querySelectorAll('.skill-box, .timeline-item, .interest-card');
-            animationElements.forEach(element => {
-                element.style.opacity = '0';
-                element.style.transform = 'translateY(30px)';
-                element.style.transition = 'all 0.5s ease';
+            navDots.forEach(dot => {
+                dot.classList.remove('active');
+                if (dot.getAttribute('data-target') === `#${current}`) {
+                    dot.classList.add('active');
+                }
             });
-            
-            window.addEventListener('scroll', animateOnScroll);
-            animateOnScroll(); // تشغيل عند التحميل الأولي
+        });
+        
+        // Smooth scroll for all anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
         });
     </script>
 </body>
-
 </html>

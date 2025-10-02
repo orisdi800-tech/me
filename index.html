@@ -4,1591 +4,619 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>حيدر - مدرس و مطور رقمي</title>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700;800&family=Almarai:wght@300;400;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'tajawal': ['Tajawal', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#f0f4ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                        },
+                        secondary: {
+                            500: '#a855f7',
+                            600: '#9333ea',
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                        'slide-right': 'slideRight 0.6s ease-out',
+                        'scale-in': 'scaleIn 0.5s ease-out',
+                        'gradient': 'gradient 8s ease infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(30px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        slideRight: {
+                            '0%': { opacity: '0', transform: 'translateX(30px)' },
+                            '100%': { opacity: '1', transform: 'translateX(0)' },
+                        },
+                        scaleIn: {
+                            '0%': { opacity: '0', transform: 'scale(0.9)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' },
+                        },
+                        gradient: {
+                            '0%, 100%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                        },
+                    },
+                }
+            }
+        }
+    </script>
+    
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { font-family: 'Tajawal', sans-serif; }
         
-        :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --secondary: #a855f7;
-            --accent: #06b6d4;
-            --success: #10b981;
-            --text-dark: #0f172a;
-            --text-gray: #475569;
-            --text-light: #64748b;
-            --bg-light: #ffffff;
-            --bg-gray: #f8fafc;
-            --border: #e2e8f0;
-            --glass-bg: rgba(255, 255, 255, 0.7);
-            --glass-border: rgba(255, 255, 255, 0.18);
+        .gradient-text {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
-        html { scroll-behavior: smooth; }
-        
-        body { 
-            font-family: 'IBM Plex Sans Arabic', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
-            color: var(--text-dark);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-        
-        /* ========== Enhanced Navbar ========== */
-        .navbar {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1000;
-            width: calc(100% - 48px);
-            max-width: 1200px;
-            background: var(--glass-bg);
+        .glass {
+            background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 16px 32px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+        }
+        
+        .card-hover {
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
-        .navbar.scrolled {
-            top: 10px;
-            padding: 12px 28px;
-            background: rgba(255, 255, 255, 0.95);
-            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.12);
-        }
-        
-        .nav-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .logo {
-            font-size: 28px;
-            font-weight: 800;
-            font-family: 'Almarai', sans-serif;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            transition: transform 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .logo:hover { transform: scale(1.05) rotate(-2deg); }
-        
-        .nav-links {
-            display: flex;
-            gap: 8px;
-            list-style: none;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.5);
-            padding: 8px;
-            border-radius: 14px;
-        }
-        
-        .nav-links a {
-            color: var(--text-gray);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 15px;
-            padding: 10px 20px;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-        
-        .nav-links a:hover,
-        .nav-links a.active {
-            color: var(--primary);
-            background: white;
-            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
-        }
-        
-        .nav-cta {
-            padding: 12px 28px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 14px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
-        }
-        
-        .nav-cta:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(99, 102, 241, 0.45);
-        }
-        
-        .mobile-toggle {
-            display: none;
-            background: white;
-            border: none;
-            color: var(--text-dark);
-            cursor: pointer;
-            padding: 10px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        }
-        
-        /* ========== Hero Section ========== */
-        .hero {
-            padding: 140px 24px 80px;
-            max-width: 1400px;
-            margin: 0 auto;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-        }
-        
-        .hero-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 80px;
-            align-items: center;
-            width: 100%;
-        }
-        
-        @media (min-width: 1024px) {
-            .hero-grid { grid-template-columns: 1.2fr 1fr; }
-        }
-        
-        .hero-content {
-            order: 2;
-            animation: fadeInUp 0.8s ease-out;
-        }
-        
-        @media (min-width: 1024px) {
-            .hero-content { order: 1; }
-        }
-        
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(40px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 24px;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.1));
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(99, 102, 241, 0.2);
-            border-radius: 50px;
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 32px;
-            animation: slideInRight 0.8s ease-out 0.2s both;
-        }
-        
-        @keyframes slideInRight {
-            from { opacity: 0; transform: translateX(30px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        
-        .status-indicator {
-            width: 12px;
-            height: 12px;
-            background: var(--success);
-            border-radius: 50%;
-            animation: pulse 2s ease-in-out infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-            50% { opacity: 0.8; box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
-        }
-        
-        .hero-title {
-            font-size: clamp(48px, 7vw, 80px);
-            font-weight: 800;
-            font-family: 'Almarai', sans-serif;
-            line-height: 1.1;
-            margin-bottom: 24px;
-            background: linear-gradient(135deg, var(--text-dark) 0%, var(--primary) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: fadeInUp 0.8s ease-out 0.3s both;
-        }
-        
-        .hero-subtitle {
-            font-size: clamp(24px, 4vw, 36px);
-            font-weight: 600;
-            color: var(--text-gray);
-            margin-bottom: 28px;
-            animation: fadeInUp 0.8s ease-out 0.4s both;
-        }
-        
-        .hero-description {
-            font-size: 20px;
-            color: var(--text-light);
-            line-height: 1.8;
-            margin-bottom: 40px;
-            max-width: 600px;
-            animation: fadeInUp 0.8s ease-out 0.5s both;
-        }
-        
-        .hero-buttons {
-            display: flex;
-            gap: 16px;
-            flex-wrap: wrap;
-            animation: fadeInUp 0.8s ease-out 0.6s both;
-        }
-        
-        .btn {
-            padding: 18px 36px;
-            border-radius: 16px;
-            font-weight: 600;
-            font-size: 17px;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: none;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-        
-        .btn:hover::before {
-            width: 400px;
-            height: 400px;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.35);
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 36px rgba(99, 102, 241, 0.5);
-        }
-        
-        .btn-secondary {
-            background: white;
-            color: var(--text-dark);
-            border: 2px solid var(--border);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        }
-        
-        .btn-secondary:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-        }
-        
-        /* ========== Enhanced Hero Image ========== */
-        .hero-image {
-            order: 1;
-            position: relative;
-            animation: fadeIn 1s ease-out 0.4s both;
-        }
-        
-        @media (min-width: 1024px) {
-            .hero-image { order: 2; }
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        .image-container {
-            position: relative;
-            width: 100%;
-            max-width: 550px;
-            margin: 0 auto;
-        }
-        
-        .main-image {
-            width: 100%;
-            height: auto;
-            border-radius: 32px;
-            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.2);
-            position: relative;
-            z-index: 2;
-            overflow: hidden;
-            border: 8px solid white;
-        }
-        
-        .main-image img {
-            width: 100%;
-            height: auto;
-            display: block;
-            border-radius: 24px;
-            transition: transform 0.6s ease;
-        }
-        
-        .main-image:hover img {
-            transform: scale(1.08);
-        }
-        
-        .floating-card {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            padding: 20px 26px;
-            border-radius: 20px;
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            animation: float 3s ease-in-out infinite;
-            border: 1px solid rgba(255, 255, 255, 0.8);
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(2deg); }
-        }
-        
-        .card-1 {
-            top: 40px;
-            left: -40px;
-            animation-delay: 0s;
-        }
-        
-        .card-2 {
-            bottom: 60px;
-            right: -40px;
-            animation-delay: 1.5s;
-        }
-        
-        .card-icon {
-            width: 52px;
-            height: 52px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            flex-shrink: 0;
-            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
-        }
-        
-        .card-content h4 {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--text-dark);
-            margin-bottom: 4px;
-        }
-        
-        .card-content p {
-            font-size: 14px;
-            color: var(--text-light);
-        }
-        
-        .shape-blob {
-            position: absolute;
-            width: 500px;
-            height: 500px;
-            border-radius: 50%;
-            opacity: 0.1;
-            filter: blur(100px);
-            z-index: 1;
-            animation: blobMove 10s ease-in-out infinite;
-        }
-        
-        @keyframes blobMove {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(40px, -40px) scale(1.1); }
-            66% { transform: translate(-40px, 40px) scale(0.9); }
-        }
-        
-        .blob-1 {
-            top: -150px;
-            right: -150px;
-            background: var(--primary);
-        }
-        
-        .blob-2 {
-            bottom: -150px;
-            left: -150px;
-            background: var(--secondary);
-            animation-delay: -5s;
-        }
-        
-        /* ========== Enhanced Stats ========== */
-        .stats {
-            background: white;
-            padding: 80px 40px;
-            margin: 0 24px 100px;
-            border-radius: 32px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
-            border: 1px solid var(--border);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .stats::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
-        }
-        
-        .stats-grid {
-            max-width: 1280px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 60px;
-            text-align: center;
-        }
-        
-        .stat-item {
-            padding: 32px;
-            border-radius: 20px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.02), rgba(168, 85, 247, 0.02));
-        }
-        
-        .stat-item:hover {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(168, 85, 247, 0.08));
+        .card-hover:hover {
             transform: translateY(-8px);
-            box-shadow: 0 12px 40px rgba(99, 102, 241, 0.15);
         }
         
-        .stat-number {
-            font-size: 60px;
-            font-weight: 800;
-            font-family: 'Almarai', sans-serif;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 12px;
-            display: block;
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7); }
+            50% { box-shadow: 0 0 0 8px rgba(99, 102, 241, 0); }
         }
         
-        .stat-label {
-            font-size: 17px;
-            color: var(--text-gray);
-            font-weight: 600;
+        .pulse-glow {
+            animation: pulse-glow 2s ease-in-out infinite;
         }
         
-        /* ========== Enhanced Services ========== */
-        .services {
-            padding: 120px 24px;
-            max-width: 1400px;
-            margin: 0 auto;
+        .bg-gradient-animated {
+            background: linear-gradient(270deg, #6366f1, #a855f7, #06b6d4);
+            background-size: 600% 600%;
+            animation: gradient 8s ease infinite;
         }
         
-        .section-header {
-            text-align: center;
-            margin-bottom: 80px;
-        }
-        
-        .section-badge {
-            display: inline-block;
-            padding: 12px 28px;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.1));
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(99, 102, 241, 0.2);
-            border-radius: 50px;
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 24px;
-        }
-        
-        .section-title {
-            font-size: clamp(38px, 6vw, 60px);
-            font-weight: 800;
-            font-family: 'Almarai', sans-serif;
-            margin-bottom: 24px;
-            color: var(--text-dark);
-        }
-        
-        .section-description {
-            font-size: 20px;
-            color: var(--text-light);
-            max-width: 700px;
-            margin: 0 auto;
-            line-height: 1.8;
-        }
-        
-        .services-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 48px;
-        }
-        
-        @media (min-width: 768px) {
-            .services-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-        
-        .service-card {
-            background: white;
-            border-radius: 32px;
-            overflow: hidden;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid var(--border);
-            position: relative;
-        }
-        
-        .service-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-        
-        .service-card:hover {
-            transform: translateY(-12px);
-            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.15);
-        }
-        
-        .service-card:hover::before {
-            opacity: 1;
-        }
-        
-        .service-image {
-            position: relative;
-            width: 100%;
-            padding-top: 56.25%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            overflow: hidden;
-            cursor: pointer;
-        }
-        
-        .service-image img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .service-card:hover .service-image img {
-            transform: scale(1.2);
-        }
-        
-        .play-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(2px);
-            transition: all 0.4s ease;
-        }
-        
-        .service-card:hover .play-overlay {
-            background: rgba(0, 0, 0, 0.5);
-        }
-        
-        .play-button {
-            width: 80px;
-            height: 80px;
-            background: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
-        }
-        
-        .service-card:hover .play-button {
-            transform: scale(1.2);
-            background: var(--primary);
-        }
-        
-        .service-card:hover .play-button i {
-            color: white;
-        }
-        
-        .play-button i {
-            color: var(--primary);
-            margin-right: 3px;
-        }
-        
-        .service-content {
-            padding: 40px;
-        }
-        
-        .service-header {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-        
-        .service-icon {
-            width: 68px;
-            height: 68px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            flex-shrink: 0;
-            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
-        }
-        
-        .service-title {
-            font-size: 28px;
-            font-weight: 700;
-            font-family: 'Almarai', sans-serif;
-            color: var(--text-dark);
-        }
-        
-        .service-description {
-            font-size: 17px;
-            color: var(--text-gray);
-            line-height: 1.8;
-            margin-bottom: 32px;
-        }
-        
-        .service-features {
-            list-style: none;
-            margin-bottom: 36px;
-            display: grid;
-            gap: 16px;
-        }
-        
-        .service-features li {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            font-size: 16px;
-            color: var(--text-gray);
-            padding: 8px 0;
-            transition: all 0.3s ease;
-        }
-        
-        .service-features li:hover {
-            color: var(--primary);
-            transform: translateX(-4px);
-        }
-        
-        .check-icon {
-            width: 26px;
-            height: 26px;
-            background: rgba(16, 185, 129, 0.12);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--success);
-            flex-shrink: 0;
-        }
-        
-        .service-footer {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding-top: 32px;
-            border-top: 2px solid var(--border);
-        }
-        
-        .service-btn {
-            padding: 16px 36px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            border-radius: 14px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 16px;
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35);
-        }
-        
-        .service-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.5);
-        }
-        
-        /* ========== Enhanced Video Modal ========== */
         .video-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.97);
-            z-index: 10000;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
             backdrop-filter: blur(10px);
         }
         
-        .video-modal.active {
-            display: flex;
-            animation: fadeIn 0.3s ease;
+        html {
+            scroll-behavior: smooth;
         }
         
-        .modal-close {
-            position: fixed;
-            top: 32px;
-            right: 32px;
-            width: 56px;
-            height: 56px;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: white;
-            transition: all 0.3s ease;
-            z-index: 10001;
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
         }
         
-        .modal-close:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: rotate(90deg) scale(1.15);
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
         }
         
-        .video-container {
-            position: relative;
-            max-width: 1400px;
-            width: 100%;
-            background: #000;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
-        }
-        
-        .video-player {
-            position: relative;
-            width: 100%;
-            background: #000;
-            aspect-ratio: 16/9;
-        }
-        
-        .video-player video {
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
-        
-        .video-controls {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.8) 50%, transparent 100%);
-            padding: 70px 28px 28px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .video-player:hover .video-controls,
-        .video-player.paused .video-controls {
-            opacity: 1;
-        }
-        
-        .progress-container {
-            width: 100%;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.25);
-            border-radius: 4px;
-            cursor: pointer;
-            margin-bottom: 24px;
-            transition: height 0.2s;
-        }
-        
-        .progress-container:hover {
-            height: 8px;
-        }
-        
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            border-radius: 4px;
-            position: relative;
-            transition: width 0.1s linear;
-        }
-        
-        .progress-bar::after {
-            content: '';
-            position: absolute;
-            right: -8px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 16px;
-            height: 16px;
-            background: white;
-            border-radius: 50%;
-            opacity: 0;
-            transition: opacity 0.2s;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
-        }
-        
-        .progress-container:hover .progress-bar::after {
-            opacity: 1;
-        }
-        
-        .controls-row {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-        
-        .control-button {
-            background: none;
-            border: none;
-            color: white;
-            cursor: pointer;
-            padding: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #6366f1, #a855f7);
             border-radius: 10px;
         }
         
-        .control-button:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: scale(1.15);
-        }
-        
-        .time-info {
-            color: white;
-            font-size: 15px;
-            font-weight: 600;
-            white-space: nowrap;
-        }
-        
-        .controls-spacer {
-            flex: 1;
-        }
-        
-        .volume-group {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-        
-        .volume-track {
-            width: 0;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 3px;
-            position: relative;
-            cursor: pointer;
-            transition: width 0.3s;
-            overflow: hidden;
-        }
-        
-        .volume-group:hover .volume-track {
-            width: 90px;
-        }
-        
-        .volume-progress {
-            height: 100%;
-            background: white;
-            border-radius: 3px;
-            transition: width 0.1s;
-        }
-        
-        .center-play-button {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100px;
-            height: 100px;
-            background: rgba(99, 102, 241, 0.95);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            opacity: 0;
-            pointer-events: none;
-            color: white;
-            box-shadow: 0 12px 48px rgba(99, 102, 241, 0.6);
-        }
-        
-        .video-player.paused .center-play-button {
-            opacity: 1;
-            pointer-events: all;
-        }
-        
-        .center-play-button:hover {
-            transform: translate(-50%, -50%) scale(1.2);
-            background: rgba(79, 70, 229, 1);
-        }
-        
-        .loading-indicator {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 60px;
-            height: 60px;
-            border: 4px solid rgba(255, 255, 255, 0.2);
-            border-top-color: white;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            display: none;
-        }
-        
-        .video-player.loading .loading-indicator {
-            display: block;
-        }
-        
-        @keyframes spin {
-            to { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-        
-        /* ========== Enhanced Footer ========== */
-        .footer {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            color: white;
-            padding: 80px 32px 48px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .footer::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-        }
-        
-        .footer-content {
-            max-width: 1280px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .footer-logo {
-            font-size: 36px;
-            font-weight: 800;
-            font-family: 'Almarai', sans-serif;
-            background: linear-gradient(135deg, white, var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 20px;
-        }
-        
-        .footer-text {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 18px;
-            margin-bottom: 40px;
-            line-height: 1.7;
-        }
-        
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-        
-        .social-link {
-            width: 56px;
-            height: 56px;
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .social-link:hover {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            transform: translateY(-6px);
-            box-shadow: 0 12px 36px rgba(99, 102, 241, 0.5);
-        }
-        
-        .footer-bottom {
-            padding-top: 40px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 15px;
-        }
-        
-        /* ========== Mobile Menu Enhancement ========== */
-        @media (max-width: 768px) {
-            .navbar {
-                width: calc(100% - 24px);
-                top: 12px;
-                padding: 14px 20px;
-            }
-            
-            .nav-links {
-                position: fixed;
-                top: 0;
-                right: -100%;
-                width: 90%;
-                max-width: 360px;
-                height: 100vh;
-                background: white;
-                flex-direction: column;
-                padding: 120px 36px 36px;
-                gap: 0;
-                box-shadow: -15px 0 50px rgba(0, 0, 0, 0.2);
-                transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-                overflow-y: auto;
-                align-items: stretch;
-            }
-            
-            .nav-links.active {
-                right: 0;
-            }
-            
-            .nav-links li {
-                margin-bottom: 12px;
-            }
-            
-            .nav-links a {
-                display: flex;
-                align-items: center;
-                padding: 18px 24px;
-                border-radius: 14px;
-                font-size: 17px;
-                font-weight: 600;
-                gap: 14px;
-                background: transparent;
-            }
-            
-            .nav-links a::before {
-                content: '';
-                width: 8px;
-                height: 8px;
-                background: var(--primary);
-                border-radius: 50%;
-                opacity: 0;
-                transform: scale(0);
-                transition: all 0.3s ease;
-            }
-            
-            .nav-links a:hover {
-                background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.1));
-                transform: translateX(-6px);
-            }
-            
-            .nav-links a:hover::before {
-                opacity: 1;
-                transform: scale(1);
-            }
-            
-            .mobile-toggle {
-                display: block;
-            }
-            
-            .nav-cta {
-                display: none;
-            }
-            
-            .nav-links::after {
-                content: 'تواصل معي';
-                display: block;
-                margin-top: 28px;
-                padding: 18px 28px;
-                background: linear-gradient(135deg, var(--primary), var(--secondary));
-                color: white;
-                text-align: center;
-                border-radius: 14px;
-                font-weight: 600;
-                box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35);
-                cursor: pointer;
-                font-size: 16px;
-            }
-        }
-        
-        .mobile-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(5px);
-            z-index: 999;
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-        
-        .mobile-overlay.active {
-            display: block;
-            opacity: 1;
-        }
-        
-        /* ========== Responsive Refinements ========== */
-        @media (max-width: 640px) {
-            .hero {
-                padding: 120px 20px 60px;
-            }
-            
-            .stats {
-                padding: 60px 28px;
-                margin: 0 16px 80px;
-            }
-            
-            .stats-grid {
-                gap: 40px;
-            }
-            
-            .services {
-                padding: 100px 20px;
-            }
-            
-            .service-content {
-                padding: 32px;
-            }
-            
-            .floating-card {
-                padding: 16px 20px;
-            }
-            
-            .card-1 {
-                left: -24px;
-                top: 30px;
-            }
-            
-            .card-2 {
-                right: -24px;
-                bottom: 40px;
-            }
-            
-            .volume-group {
-                display: none;
-            }
-            
-            .video-controls {
-                padding: 60px 20px 20px;
-            }
-        }
-        
-        /* ========== Scroll-to-Top Button ========== */
-        .scroll-top {
-            position: fixed;
-            bottom: 32px;
-            left: 32px;
-            width: 56px;
-            height: 56px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            cursor: pointer;
-            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.3s ease;
-            z-index: 999;
-        }
-        
-        .scroll-top.visible {
-            opacity: 1;
-            pointer-events: all;
-        }
-        
-        .scroll-top:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 12px 36px rgba(99, 102, 241, 0.6);
-        }
-        
-        /* ========== Animations ========== */
-        @keyframes gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        
-        .animate-gradient {
-            background-size: 200% 200%;
-            animation: gradient 6s ease infinite;
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #4f46e5, #9333ea);
         }
     </style>
 </head>
-<body>
-    <!-- Mobile Overlay -->
-    <div class="mobile-overlay" id="mobileOverlay"></div>
-    
-    <!-- Enhanced Navbar -->
-    <nav class="navbar" id="navbar">
-        <div class="nav-container">
-            <div class="logo">حيدر</div>
-            
-            <ul class="nav-links" id="navLinks">
-                <li><a href="#home" class="active">الرئيسية</a></li>
-                <li><a href="#services">الخدمات</a></li>
-                <li><a href="#about">عني</a></li>
-            </ul>
-            
-            <a href="#contact" class="nav-cta">
-                <i data-lucide="send" style="width: 18px; height: 18px;"></i>
-                تواصل معي
-            </a>
-            
-            <button class="mobile-toggle" id="mobileToggle">
-                <i data-lucide="menu" style="width: 28px; height: 28px;"></i>
-            </button>
+<body class="bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 text-slate-900 overflow-x-hidden">
+
+    <!-- Floating Navbar -->
+    <nav id="navbar" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-7xl transition-all duration-500">
+        <div class="glass rounded-2xl px-6 py-4 shadow-xl border border-white/20">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <a href="#home" class="text-3xl font-black gradient-text hover:scale-110 transition-transform duration-300">
+                    حيدر
+                </a>
+                
+                <!-- Desktop Menu -->
+                <ul class="hidden md:flex items-center gap-2 bg-white/50 rounded-xl p-2">
+                    <li><a href="#home" class="nav-link px-6 py-2.5 rounded-lg font-bold text-slate-700 hover:bg-white hover:text-primary-600 hover:shadow-md transition-all duration-300">الرئيسية</a></li>
+                    <li><a href="#services" class="nav-link px-6 py-2.5 rounded-lg font-bold text-slate-700 hover:bg-white hover:text-primary-600 hover:shadow-md transition-all duration-300">الخدمات</a></li>
+                    <li><a href="#portfolio" class="nav-link px-6 py-2.5 rounded-lg font-bold text-slate-700 hover:bg-white hover:text-primary-600 hover:shadow-md transition-all duration-300">الأعمال</a></li>
+                    <li><a href="#contact" class="nav-link px-6 py-2.5 rounded-lg font-bold text-slate-700 hover:bg-white hover:text-primary-600 hover:shadow-md transition-all duration-300">تواصل</a></li>
+                </ul>
+                
+                <!-- CTA Button -->
+                <a href="#contact" class="hidden md:flex items-center gap-2 bg-gradient-to-r from-primary-600 to-secondary-500 text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
+                    <i data-lucide="send" class="w-5 h-5"></i>
+                    <span>ابدأ مشروعك</span>
+                </a>
+                
+                <!-- Mobile Toggle -->
+                <button id="mobileToggle" class="md:hidden p-2 rounded-lg hover:bg-white/50 transition-colors">
+                    <i data-lucide="menu" class="w-7 h-7"></i>
+                </button>
+            </div>
         </div>
     </nav>
     
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="fixed inset-0 z-40 md:hidden translate-x-full transition-transform duration-500">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" id="mobileOverlay"></div>
+        <div class="absolute right-0 top-0 h-full w-80 bg-white shadow-2xl p-8 overflow-y-auto">
+            <div class="flex flex-col gap-6 mt-20">
+                <a href="#home" class="mobile-link flex items-center gap-4 p-4 rounded-xl hover:bg-gradient-to-r hover:from-primary-50 hover:to-purple-50 transition-all group">
+                    <div class="w-2 h-2 rounded-full bg-primary-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <span class="text-lg font-bold text-slate-700 group-hover:text-primary-600">الرئيسية</span>
+                </a>
+                <a href="#services" class="mobile-link flex items-center gap-4 p-4 rounded-xl hover:bg-gradient-to-r hover:from-primary-50 hover:to-purple-50 transition-all group">
+                    <div class="w-2 h-2 rounded-full bg-primary-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <span class="text-lg font-bold text-slate-700 group-hover:text-primary-600">الخدمات</span>
+                </a>
+                <a href="#portfolio" class="mobile-link flex items-center gap-4 p-4 rounded-xl hover:bg-gradient-to-r hover:from-primary-50 hover:to-purple-50 transition-all group">
+                    <div class="w-2 h-2 rounded-full bg-primary-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <span class="text-lg font-bold text-slate-700 group-hover:text-primary-600">الأعمال</span>
+                </a>
+                <a href="#contact" class="mobile-link flex items-center gap-4 p-4 rounded-xl hover:bg-gradient-to-r hover:from-primary-50 hover:to-purple-50 transition-all group">
+                    <div class="w-2 h-2 rounded-full bg-primary-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <span class="text-lg font-bold text-slate-700 group-hover:text-primary-600">تواصل</span>
+                </a>
+                <a href="#contact" class="mt-6 flex items-center justify-center gap-2 bg-gradient-to-r from-primary-600 to-secondary-500 text-white px-6 py-4 rounded-xl font-bold shadow-lg">
+                    <i data-lucide="send" class="w-5 h-5"></i>
+                    <span>ابدأ مشروعك</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
     <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="hero-grid">
-            <div class="hero-content">
-                <div class="hero-badge">
-                    <span class="status-indicator"></span>
-                    متاح للعمل
-                </div>
-                
-                <h1 class="hero-title">مرحباً، أنا حيدر</h1>
-                <p class="hero-subtitle">مدرس لغة إنجليزية • مطور تطبيقات</p>
-                
-                <p class="hero-description">
-                    أحول الأفكار إلى تطبيقات ومواقع رقمية احترافية. بخبرة أكاديمية وعملية، أقدم حلولاً تقنية مبتكرة تجمع بين التصميم الجذاب والأداء المتميز.
-                </p>
-                
-                <div class="hero-buttons">
-                    <a href="#services" class="btn btn-primary">
-                        <i data-lucide="rocket" style="width: 22px; height: 22px;"></i>
-                        استكشف خدماتي
-                    </a>
-                    <a href="#contact" class="btn btn-secondary">
-                        <i data-lucide="message-circle" style="width: 22px; height: 22px;"></i>
-                        تواصل معي
-                    </a>
-                </div>
-            </div>
-            
-            <div class="hero-image">
-                <div class="image-container">
-                    <div class="shape-blob blob-1"></div>
-                    <div class="shape-blob blob-2"></div>
-                    
-                    <div class="main-image">
-                        <img src="https://www.raed.net/img?id=1437514" alt="حيدر">
-                    </div>
-                    
-                    <div class="floating-card card-1">
-                        <div class="card-icon">
-                            <i data-lucide="graduation-cap" style="width: 24px; height: 24px;"></i>
-                        </div>
-                        <div class="card-content">
-                            <h4>بكالوريوس</h4>
-                            <p>لغة إنجليزية</p>
-                        </div>
-                    </div>
-                    
-                    <div class="floating-card card-2">
-                        <div class="card-icon">
-                            <i data-lucide="code-2" style="width: 24px; height: 24px;"></i>
-                        </div>
-                        <div class="card-content">
-                            <h4>مطور</h4>
-                            <p>تطبيقات أندرويد</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- Stats -->
-    <div class="stats">
-        <div class="stats-grid">
-            <div class="stat-item">
-                <div class="stat-number">3+</div>
-                <div class="stat-label">سنوات خبرة في التعليم</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">50+</div>
-                <div class="stat-label">مشروع منجز</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">100%</div>
-                <div class="stat-label">رضا العملاء</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">24/7</div>
-                <div class="stat-label">دعم فني</div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Services Section -->
-    <section id="services" class="services">
-        <div class="section-header">
-            <span class="section-badge">ماذا أقدم</span>
-            <h2 class="section-title">خدماتي الاحترافية</h2>
-            <p class="section-description">حلول رقمية متكاملة مصممة بعناية لتحقيق أهدافك</p>
-        </div>
+    <section id="home" class="min-h-screen flex items-center pt-32 pb-20 px-4 relative overflow-hidden">
+        <!-- Animated Background Elements -->
+        <div class="absolute top-20 right-20 w-72 h-72 bg-primary-400/20 rounded-full blur-3xl animate-float"></div>
+        <div class="absolute bottom-20 left-20 w-96 h-96 bg-purple-400/20 rounded-full blur-3xl animate-float" style="animation-delay: 2s;"></div>
         
-        <div class="services-grid">
-            <!-- Android Service -->
-            <div class="service-card">
-                <div class="service-image" onclick="openVideo('android')">
-                    <img src="https://images.unsplash.com/photo-1555774698-0b77e0d5fac6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="تطوير تطبيقات أندرويد">
-                    <div class="play-overlay">
-                        <div class="play-button">
-                            <i data-lucide="play" style="width: 32px; height: 32px;"></i>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="service-content">
-                    <div class="service-header">
-                        <div class="service-icon">
-                            <i data-lucide="smartphone" style="width: 32px; height: 32px;"></i>
-                        </div>
-                        <h3 class="service-title">تطبيقات أندرويد</h3>
-                    </div>
-                    
-                    <p class="service-description">
-                        تطوير تطبيقات أندرويد احترافية بتصميم عصري وأداء متميز، مع تجربة مستخدم سلسة وسهلة.
-                    </p>
-                    
-                    <ul class="service-features">
-                        <li>
-                            <span class="check-icon">
-                                <i data-lucide="check" style="width: 16px; height: 16px;"></i>
-                            </span>
-                            واجهة مستخدم حديثة وجذابة
-                        </li>
-                        <li>
-                            <span class="check-icon">
-                                <i data-lucide="check" style="width: 16px; height: 16px;"></i>
-                            </span>
-                            أداء سريع واستجابة فورية
-                        </li>
-                        <li>
-                            <span class="check-icon">
-                                <i data-lucide="check" style="width: 16px; height: 16px;"></i>
-                            </span>
-                            متوافق مع كل إصدارات أندرويد
-                        </li>
-                        <li>
-                            <span class="check-icon">
-                                <i data-lucide="check" style="width: 16px; height: 16px;"></i>
-                            </span>
-                            دعم فني ومتابعة شاملة
-                        </li>
-                    </ul>
-                    
-                    <div class="service-footer">
-                        <a href="#" class="service-btn" onclick="orderService('android'); return false;">
-                            <i data-lucide="shopping-cart" style="width: 20px; height: 20px;"></i>
-                            اطلب الخدمة
-                        </a>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Website Service -->
-            <div class="service-card">
-                <div class="service-image" onclick="openVideo('website')">
-                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="تصميم مواقع إلكترونية">
-                    <div class="play-overlay">
-                        <div class="play-button">
-                            <i data-lucide="play" style="width: 32px; height: 32px;"></i>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="service-content">
-                    <div class="service-header">
-                        <div class="service-icon">
-                            <i data-lucide="globe" style="width: 32px; height: 32px;"></i>
-                        </div>
-                        <h3 class="service-title">مواقع شخصية</h3>
-                    </div>
-                    
-                    <p class="service-description">
-                        تصميم مواقع إلكترونية عصرية تعكس هويتك الرقمية بأسلوب احترافي مميز.
-                    </p>
-                    
-                    <ul class="service-features">
-                        <li>
-                            <span class="check-icon">
-                                <i data-lucide="check" style="width: 16px; height: 16px;"></i>
-                            </span>
-                            تصميم فريد يناسب علامتك
-                        </li>
-                        <li>
-                            <span class="check-icon">
-                                <i data-lucide="check" style="width: 16px; height: 16px;"></i>
-                            </span>
-                            متجاوب مع جميع الأجهزة
-                        </li>
-                        <li>
-                            <span class="check-icon">
-                                <i data-lucide="check" style="width: 16px; height: 16px;"></i>
-                            </span>
-                            سرعة تحميل استثنائية
-                        </li>
-                        <li>
-                            <span class="check-icon">
-                                <i data-lucide="check" style="width: 16px; height: 16px;"></i>
-                            </span>
-                            محسن لمحركات البحث SEO
-                        </li>
-                    </ul>
-                    
-                    <div class="service-footer">
-                        <a href="#" class="service-btn" onclick="orderService('website'); return false;">
-                            <i data-lucide="shopping-cart" style="width: 20px; height: 20px;"></i>
-                            اطلب الخدمة
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- Footer -->
-    <footer class="footer" id="contact">
-        <div class="footer-content">
-            <div class="footer-logo">حيدر</div>
-            <p class="footer-text">مدرس و مطور رقمي متخصص في تطوير التطبيقات والمواقع</p>
-            
-            <div class="social-links">
-                <a href="#" class="social-link">
-                    <i data-lucide="github" style="width: 24px; height: 24px;"></i>
-                </a>
-                <a href="#" class="social-link">
-                    <i data-lucide="linkedin" style="width: 24px; height: 24px;"></i>
-                </a>
-                <a href="#" class="social-link">
-                    <i data-lucide="twitter" style="width: 24px; height: 24px;"></i>
-                </a>
-                <a href="#" class="social-link">
-                    <i data-lucide="mail" style="width: 24px; height: 24px;"></i>
-                </a>
-            </div>
-            
-            <div class="footer-bottom">
-                © 2025 حيدر. جميع الحقوق محفوظة.
-            </div>
-        </div>
-    </footer>
-    
-    <!-- Scroll to Top Button -->
-    <div class="scroll-top" id="scrollTop" onclick="scrollToTop()">
-        <i data-lucide="arrow-up" style="width: 24px; height: 24px;"></i>
-    </div>
-    
-    <!-- Video Modal -->
-    <div class="video-modal" id="videoModal">
-        <button class="modal-close" onclick="closeVideo()">
-            <i data-lucide="x" style="width: 28px; height: 28px;"></i>
-        </button>
-        
-        <div class="video-container">
-            <div class="video-player" id="videoPlayer">
-                <video id="videoElement">
-                    <source src="" type="video/mp4">
-                </video>
-                
-                <div class="loading-indicator"></div>
-                
-                <div class="center-play-button" onclick="togglePlayPause()">
-                    <i data-lucide="play" style="width: 44px; height: 44px;"></i>
-                </div>
-                
-                <div class="video-controls">
-                    <div class="progress-container" id="progressContainer">
-                        <div class="progress-bar" id="progressBar"></div>
-                    </div>
-                    
-                    <div class="controls-row">
-                        <button class="control-button" id="playPauseBtn" onclick="togglePlayPause()">
-                            <i data-lucide="play" style="width: 26px; height: 26px;"></i>
-                        </button>
-                        
-                        <span class="time-info">
-                            <span id="currentTime">0:00</span> / <span id="totalTime">0:00</span>
+        <div class="max-w-7xl mx-auto w-full">
+            <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+                <!-- Content -->
+                <div class="space-y-8 animate-slide-up">
+                    <!-- Badge -->
+                    <div class="inline-flex items-center gap-3 glass px-6 py-3 rounded-full border border-primary-200/50 shadow-lg">
+                        <span class="relative flex h-3 w-3">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
                         </span>
+                        <span class="font-bold text-primary-600">متاح للعمل</span>
+                    </div>
+                    
+                    <!-- Title -->
+                    <div class="space-y-4">
+                        <h1 class="text-5xl lg:text-7xl font-black leading-tight">
+                            مرحباً، أنا 
+                            <span class="gradient-text">حيدر</span>
+                        </h1>
+                        <p class="text-3xl lg:text-4xl font-bold text-slate-700">
+                            مدرس لغة إنجليزية • مطور تطبيقات
+                        </p>
+                    </div>
+                    
+                    <!-- Description -->
+                    <p class="text-xl text-slate-600 leading-relaxed">
+                        أحول الأفكار إلى تطبيقات ومواقع رقمية احترافية. بخبرة أكاديمية وعملية، أقدم حلولاً تقنية مبتكرة تجمع بين التصميم الجذاب والأداء المتميز.
+                    </p>
+                    
+                    <!-- Buttons -->
+                    <div class="flex flex-wrap gap-4">
+                        <a href="#services" class="group flex items-center gap-3 bg-gradient-to-r from-primary-600 to-secondary-500 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
+                            <i data-lucide="rocket" class="w-6 h-6 group-hover:animate-bounce"></i>
+                            <span>استكشف خدماتي</span>
+                        </a>
+                        <a href="#contact" class="flex items-center gap-3 bg-white text-slate-700 px-8 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl hover:-translate-y-1 border-2 border-slate-200 hover:border-primary-500 transition-all duration-300">
+                            <i data-lucide="message-circle" class="w-6 h-6"></i>
+                            <span>تواصل معي</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Image -->
+                <div class="relative animate-slide-right">
+                    <div class="relative z-10">
+                        <div class="relative rounded-3xl overflow-hidden shadow-2xl border-8 border-white">
+                            <img src="https://www.raed.net/img?id=1437514" alt="حيدر" class="w-full h-auto hover:scale-105 transition-transform duration-500">
+                        </div>
                         
-                        <div class="controls-spacer"></div>
-                        
-                        <div class="volume-group">
-                            <button class="control-button" id="volumeBtn" onclick="toggleMute()">
-                                <i data-lucide="volume-2" style="width: 26px; height: 26px;"></i>
-                            </button>
-                            <div class="volume-track" id="volumeTrack">
-                                <div class="volume-progress" id="volumeProgress"></div>
+                        <!-- Floating Cards -->
+                        <div class="absolute -top-6 -right-6 glass p-5 rounded-2xl shadow-xl border border-white/20 animate-float">
+                            <div class="flex items-center gap-4">
+                                <div class="w-14 h-14 bg-gradient-to-br from-primary-600 to-secondary-500 rounded-xl flex items-center justify-center shadow-lg">
+                                    <i data-lucide="graduation-cap" class="w-7 h-7 text-white"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-900">بكالوريوس</h4>
+                                    <p class="text-slate-600 text-sm">لغة إنجليزية</p>
+                                </div>
                             </div>
                         </div>
                         
-                        <button class="control-button" onclick="toggleFullscreen()">
-                            <i data-lucide="maximize" style="width: 26px; height: 26px;"></i>
+                        <div class="absolute -bottom-6 -left-6 glass p-5 rounded-2xl shadow-xl border border-white/20 animate-float" style="animation-delay: 1s;">
+                            <div class="flex items-center gap-4">
+                                <div class="w-14 h-14 bg-gradient-to-br from-purple-600 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
+                                    <i data-lucide="code-2" class="w-7 h-7 text-white"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-900">مطور</h4>
+                                    <p class="text-slate-600 text-sm">تطبيقات أندرويد</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-20 px-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="glass rounded-3xl p-10 lg:p-16 shadow-2xl border border-white/20 relative overflow-hidden">
+                <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary-600 via-secondary-500 to-cyan-500"></div>
+                
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+                    <div class="stat-item text-center group cursor-pointer">
+                        <div class="text-6xl lg:text-7xl font-black gradient-text mb-3 group-hover:scale-110 transition-transform">3+</div>
+                        <div class="text-lg font-bold text-slate-700">سنوات خبرة</div>
+                    </div>
+                    <div class="stat-item text-center group cursor-pointer">
+                        <div class="text-6xl lg:text-7xl font-black gradient-text mb-3 group-hover:scale-110 transition-transform">50+</div>
+                        <div class="text-lg font-bold text-slate-700">مشروع منجز</div>
+                    </div>
+                    <div class="stat-item text-center group cursor-pointer">
+                        <div class="text-6xl lg:text-7xl font-black gradient-text mb-3 group-hover:scale-110 transition-transform">100%</div>
+                        <div class="text-lg font-bold text-slate-700">رضا العملاء</div>
+                    </div>
+                    <div class="stat-item text-center group cursor-pointer">
+                        <div class="text-6xl lg:text-7xl font-black gradient-text mb-3 group-hover:scale-110 transition-transform">24/7</div>
+                        <div class="text-lg font-bold text-slate-700">دعم فني</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-20 px-4">
+        <div class="max-w-7xl mx-auto">
+            <!-- Header -->
+            <div class="text-center mb-16 space-y-4">
+                <div class="inline-block glass px-6 py-3 rounded-full border border-primary-200/50 shadow-lg mb-4">
+                    <span class="font-bold text-primary-600">ماذا أقدم</span>
+                </div>
+                <h2 class="text-5xl lg:text-6xl font-black text-slate-900">خدماتي الاحترافية</h2>
+                <p class="text-xl text-slate-600 max-w-2xl mx-auto">حلول رقمية متكاملة مصممة بعناية لتحقيق أهدافك</p>
+            </div>
+            
+            <!-- Services Grid -->
+            <div class="grid lg:grid-cols-2 gap-8">
+                <!-- Android Service -->
+                <div class="service-card bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl card-hover border border-slate-100">
+                    <div class="relative h-64 bg-gradient-to-br from-primary-600 to-secondary-500 cursor-pointer group" onclick="openVideo('android')">
+                        <img src="https://images.unsplash.com/photo-1555774698-0b77e0d5fac6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="تطوير تطبيقات أندرويد" class="w-full h-full object-cover opacity-80 group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-black/40 group-hover:bg-black/60 transition-colors flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-2xl group-hover:scale-125 transition-transform">
+                                <i data-lucide="play" class="w-10 h-10 text-primary-600 mr-1"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-8">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-16 h-16 bg-gradient-to-br from-primary-600 to-secondary-500 rounded-2xl flex items-center justify-center shadow-lg">
+                                <i data-lucide="smartphone" class="w-8 h-8 text-white"></i>
+                            </div>
+                            <h3 class="text-3xl font-black text-slate-900">تطبيقات أندرويد</h3>
+                        </div>
+                        
+                        <p class="text-lg text-slate-600 mb-6 leading-relaxed">
+                            تطوير تطبيقات أندرويد احترافية بتصميم عصري وأداء متميز، مع تجربة مستخدم سلسة وسهلة.
+                        </p>
+                        
+                        <ul class="space-y-3 mb-8">
+                            <li class="flex items-center gap-3 text-slate-700 hover:text-primary-600 transition-colors group">
+                                <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 group-hover:bg-green-200 transition-colors">
+                                    <i data-lucide="check" class="w-4 h-4 text-green-600"></i>
+                                </div>
+                                <span class="font-medium">واجهة مستخدم حديثة وجذابة</span>
+                            </li>
+                            <li class="flex items-center gap-3 text-slate-700 hover:text-primary-600 transition-colors group">
+                                <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 group-hover:bg-green-200 transition-colors">
+                                    <i data-lucide="check" class="w-4 h-4 text-green-600"></i>
+                                </div>
+                                <span class="font-medium">أداء سريع واستجابة فورية</span>
+                            </li>
+                            <li class="flex items-center gap-3 text-slate-700 hover:text-primary-600 transition-colors group">
+                                <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 group-hover:bg-green-200 transition-colors">
+                                    <i data-lucide="check" class="w-4 h-4 text-green-600"></i>
+                                </div>
+                                <span class="font-medium">متوافق مع كل إصدارات أندرويد</span>
+                            </li>
+                            <li class="flex items-center gap-3 text-slate-700 hover:text-primary-600 transition-colors group">
+                                <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 group-hover:bg-green-200 transition-colors">
+                                    <i data-lucide="check" class="w-4 h-4 text-green-600"></i>
+                                </div>
+                                <span class="font-medium">دعم فني ومتابعة شاملة</span>
+                            </li>
+                        </ul>
+                        
+                        <button onclick="orderService('android')" class="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-primary-600 to-secondary-500 text-white px-6 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                            <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                            <span>اطلب الخدمة</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Website Service -->
+                <div class="service-card bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl card-hover border border-slate-100">
+                    <div class="relative h-64 bg-gradient-to-br from-cyan-600 to-blue-500 cursor-pointer group" onclick="openVideo('website')">
+                        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="تصميم مواقع إلكترونية" class="w-full h-full object-cover opacity-80 group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-black/40 group-hover:bg-black/60 transition-colors flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-2xl group-hover:scale-125 transition-transform">
+                                <i data-lucide="play" class="w-10 h-10 text-cyan-600 mr-1"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-8">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-16 h-16 bg-gradient-to-br from-cyan-600 to-blue-500 rounded-2xl flex items-center justify-center shadow-lg">
+                                <i data-lucide="globe" class="w-8 h-8 text-white"></i>
+                            </div>
+                            <h3 class="text-3xl font-black text-slate-900">مواقع شخصية</h3>
+                        </div>
+                        
+                        <p class="text-lg text-slate-600 mb-6 leading-relaxed">
+                            تصميم مواقع إلكترونية عصرية تعكس هويتك الرقمية بأسلوب احترافي مميز.
+                        </p>
+                        
+                        <ul class="space-y-3 mb-8">
+                            <li class="flex items-center gap-3 text-slate-700 hover:text-cyan-600 transition-colors group">
+                                <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 group-hover:bg-green-200 transition-colors">
+                                    <i data-lucide="check" class="w-4 h-4 text-green-600"></i>
+                                </div>
+                                <span class="font-medium">تصميم فريد يناسب علامتك</span>
+                            </li>
+                            <li class="flex items-center gap-3 text-slate-700 hover:text-cyan-600 transition-colors group">
+                                <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 group-hover:bg-green-200 transition-colors">
+                                    <i data-lucide="check" class="w-4 h-4 text-green-600"></i>
+                                </div>
+                                <span class="font-medium">متجاوب مع جميع الأجهزة</span>
+                            </li>
+                            <li class="flex items-center gap-3 text-slate-700 hover:text-cyan-600 transition-colors group">
+                                <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 group-hover:bg-green-200 transition-colors">
+                                    <i data-lucide="check" class="w-4 h-4 text-green-600"></i>
+                                </div>
+                                <span class="font-medium">سرعة تحميل استثنائية</span>
+                            </li>
+                            <li class="flex items-center gap-3 text-slate-700 hover:text-cyan-600 transition-colors group">
+                                <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 group-hover:bg-green-200 transition-colors">
+                                    <i data-lucide="check" class="w-4 h-4 text-green-600"></i>
+                                </div>
+                                <span class="font-medium">محسن لمحركات البحث SEO</span>
+                            </li>
+                        </ul>
+                        
+                        <button onclick="orderService('website')" class="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-cyan-600 to-blue-500 text-white px-6 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                            <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                            <span>اطلب الخدمة</span>
                         </button>
                     </div>
                 </div>
             </div>
         </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="py-20 px-4 bg-gradient-to-br from-slate-100 to-slate-50">
+        <div class="max-w-7xl mx-auto">
+            <!-- Header -->
+            <div class="text-center mb-16 space-y-4">
+                <div class="inline-block glass px-6 py-3 rounded-full border border-primary-200/50 shadow-lg mb-4">
+                    <span class="font-bold text-primary-600">أعمالي</span>
+                </div>
+                <h2 class="text-5xl lg:text-6xl font-black text-slate-900">مشاريع نفخر بها</h2>
+                <p class="text-xl text-slate-600 max-w-2xl mx-auto">نماذج من المشاريع التي أنجزتها بنجاح</p>
+            </div>
+            
+            <!-- Portfolio Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Project 1 -->
+                <div class="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl card-hover">
+                    <div class="relative h-56 bg-gradient-to-br from-primary-500 to-purple-600 overflow-hidden">
+                        <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center">
+                            <div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all transform scale-75 group-hover:scale-100">
+                                <i data-lucide="external-link" class="w-7 h-7 text-primary-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="px-3 py-1 bg-primary-100 text-primary-700 rounded-full text-sm font-bold">تطبيق</span>
+                        </div>
+                        <h3 class="text-xl font-black text-slate-900 mb-2">تطبيق InstaDoodle</h3>
+                        <p class="text-slate-600">تطبيق رسم احترافي مع أدوات متقدمة</p>
+                    </div>
+                </div>
+                
+                <!-- Project 2 -->
+                <div class="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl card-hover">
+                    <div class="relative h-56 bg-gradient-to-br from-cyan-500 to-blue-600 overflow-hidden">
+                        <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center">
+                            <div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all transform scale-75 group-hover:scale-100">
+                                <i data-lucide="external-link" class="w-7 h-7 text-cyan-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="px-3 py-1 bg-cyan-100 text-cyan-700 rounded-full text-sm font-bold">موقع</span>
+                        </div>
+                        <h3 class="text-xl font-black text-slate-900 mb-2">موقع شركة تقنية</h3>
+                        <p class="text-slate-600">موقع عرض خدمات بتصميم عصري</p>
+                    </div>
+                </div>
+                
+                <!-- Project 3 -->
+                <div class="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl card-hover">
+                    <div class="relative h-56 bg-gradient-to-br from-pink-500 to-rose-600 overflow-hidden">
+                        <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center">
+                            <div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all transform scale-75 group-hover:scale-100">
+                                <i data-lucide="external-link" class="w-7 h-7 text-pink-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="px-3 py-1 bg-pink-100 text-pink-700 rounded-full text-sm font-bold">تطبيق</span>
+                        </div>
+                        <h3 class="text-xl font-black text-slate-900 mb-2">تطبيق تعليمي</h3>
+                        <p class="text-slate-600">منصة تعليم اللغة الإنجليزية</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 px-4">
+        <div class="max-w-4xl mx-auto">
+            <div class="bg-gradient-to-br from-primary-600 to-secondary-600 rounded-3xl p-10 lg:p-16 shadow-2xl text-white text-center relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+                <div class="absolute bottom-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
+                
+                <div class="relative z-10 space-y-8">
+                    <div class="inline-block bg-white/20 px-6 py-3 rounded-full backdrop-blur-sm mb-4">
+                        <span class="font-bold">لنبدأ العمل معاً</span>
+                    </div>
+                    
+                    <h2 class="text-4xl lg:text-6xl font-black">هل لديك مشروع؟</h2>
+                    <p class="text-xl lg:text-2xl text-white/90 max-w-2xl mx-auto">دعنا نحول فكرتك إلى واقع رقمي مبهر</p>
+                    
+                    <div class="flex flex-wrap justify-center gap-4 pt-6">
+                        <a href="mailto:your@email.com" class="flex items-center gap-3 bg-white text-primary-600 px-8 py-4 rounded-xl font-bold text-lg shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
+                            <i data-lucide="mail" class="w-6 h-6"></i>
+                            <span>راسلني عبر البريد</span>
+                        </a>
+                        <a href="https://wa.me/yourphone" class="flex items-center gap-3 bg-green-500 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
+                            <i data-lucide="message-circle" class="w-6 h-6"></i>
+                            <span>واتساب</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-br from-slate-900 to-slate-800 text-white py-16 px-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+                <!-- Brand -->
+                <div class="space-y-4">
+                    <h3 class="text-4xl font-black gradient-text">حيدر</h3>
+                    <p class="text-slate-400 leading-relaxed">مدرس و مطور رقمي متخصص في تطوير التطبيقات والمواقع الإلكترونية</p>
+                </div>
+                
+                <!-- Quick Links -->
+                <div class="space-y-4">
+                    <h4 class="text-xl font-bold">روابط سريعة</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#home" class="text-slate-400 hover:text-white transition-colors">الرئيسية</a></li>
+                        <li><a href="#services" class="text-slate-400 hover:text-white transition-colors">الخدمات</a></li>
+                        <li><a href="#portfolio" class="text-slate-400 hover:text-white transition-colors">الأعمال</a></li>
+                        <li><a href="#contact" class="text-slate-400 hover:text-white transition-colors">تواصل</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Services -->
+                <div class="space-y-4">
+                    <h4 class="text-xl font-bold">خدماتي</h4>
+                    <ul class="space-y-3">
+                        <li class="text-slate-400">تطبيقات أندرويد</li>
+                        <li class="text-slate-400">مواقع إلكترونية</li>
+                        <li class="text-slate-400">تدريس اللغة الإنجليزية</li>
+                        <li class="text-slate-400">استشارات تقنية</li>
+                    </ul>
+                </div>
+                
+                <!-- Social -->
+                <div class="space-y-4">
+                    <h4 class="text-xl font-bold">تواصل معي</h4>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-12 h-12 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center transition-all hover:-translate-y-1">
+                            <i data-lucide="github" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center transition-all hover:-translate-y-1">
+                            <i data-lucide="linkedin" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center transition-all hover:-translate-y-1">
+                            <i data-lucide="twitter" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center transition-all hover:-translate-y-1">
+                            <i data-lucide="mail" class="w-5 h-5"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="pt-8 border-t border-white/10 text-center text-slate-400">
+                <p>© 2025 حيدر. جميع الحقوق محفوظة.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top -->
+    <button id="scrollTop" class="fixed bottom-8 left-8 w-14 h-14 bg-gradient-to-r from-primary-600 to-secondary-500 text-white rounded-full shadow-xl flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 hover:-translate-y-1 z-40">
+        <i data-lucide="arrow-up" class="w-6 h-6"></i>
+    </button>
+
+    <!-- Video Modal -->
+    <div id="videoModal" class="video-modal fixed inset-0 bg-black/95 z-[100] hidden items-center justify-center p-4">
+        <button onclick="closeVideo()" class="absolute top-6 right-6 w-14 h-14 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center transition-all hover:rotate-90 z-[101]">
+            <i data-lucide="x" class="w-7 h-7 text-white"></i>
+        </button>
+        
+        <div class="max-w-6xl w-full bg-black rounded-2xl overflow-hidden shadow-2xl">
+            <div id="videoPlayer" class="relative">
+                <video id="videoElement" class="w-full" controls>
+                    <source src="" type="video/mp4">
+                </video>
+            </div>
+        </div>
     </div>
-    
+
     <script>
         lucide.createIcons();
         
+        // Configuration
         const videoLinks = {
             android: 'https://dso7.raed.net:451/files/Demo-Vid-InstaDoodle.mp4',
             website: 'YOUR_WEBSITE_VIDEO_URL.mp4'
@@ -1599,288 +627,74 @@
             website: 'YOUR_WEBSITE_ORDER_URL'
         };
         
-        // Mobile Menu
+        // Mobile Menu Toggle
         const mobileToggle = document.getElementById('mobileToggle');
-        const navLinks = document.getElementById('navLinks');
+        const mobileMenu = document.getElementById('mobileMenu');
         const mobileOverlay = document.getElementById('mobileOverlay');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
         
         function toggleMobileMenu() {
-            const isActive = navLinks.classList.contains('active');
-            navLinks.classList.toggle('active');
-            mobileOverlay.classList.toggle('active');
-            document.body.style.overflow = isActive ? 'auto' : 'hidden';
-            mobileToggle.querySelector('i').setAttribute('data-lucide', isActive ? 'menu' : 'x');
-            lucide.createIcons();
+            mobileMenu.classList.toggle('translate-x-full');
+            document.body.style.overflow = mobileMenu.classList.contains('translate-x-full') ? 'auto' : 'hidden';
         }
         
         mobileToggle.addEventListener('click', toggleMobileMenu);
         mobileOverlay.addEventListener('click', toggleMobileMenu);
+        mobileLinks.forEach(link => link.addEventListener('click', toggleMobileMenu));
         
-        document.querySelectorAll('.nav-links a').forEach(link => {
-            link.addEventListener('click', () => {
-                if (window.innerWidth <= 768) {
-                    toggleMobileMenu();
-                }
-                
-                document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
-                link.classList.add('active');
-            });
-        });
+        // Navbar Scroll Effect
+        const navbar = document.getElementById('navbar');
+        let lastScroll = 0;
         
-        // Navbar scroll effect
         window.addEventListener('scroll', () => {
-            const navbar = document.getElementById('navbar');
-            const scrollTop = document.getElementById('scrollTop');
+            const currentScroll = window.pageYOffset;
             
-            if (window.pageYOffset > 50) {
-                navbar.classList.add('scrolled');
+            if (currentScroll > 100) {
+                navbar.classList.add('scale-95');
             } else {
-                navbar.classList.remove('scrolled');
+                navbar.classList.remove('scale-95');
             }
             
-            if (window.pageYOffset > 300) {
-                scrollTop.classList.add('visible');
+            lastScroll = currentScroll;
+        });
+        
+        // Active Nav Link
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.nav-link');
+        
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (window.pageYOffset >= (sectionTop - 200)) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('bg-white', 'text-primary-600', 'shadow-md');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('bg-white', 'text-primary-600', 'shadow-md');
+                }
+            });
+        });
+        
+        // Scroll to Top Button
+        const scrollTopBtn = document.getElementById('scrollTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 500) {
+                scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none');
             } else {
-                scrollTop.classList.remove('visible');
+                scrollTopBtn.classList.add('opacity-0', 'pointer-events-none');
             }
         });
         
-        // Scroll to top
-        function scrollToTop() {
+        scrollTopBtn.addEventListener('click', () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-        
-        // Video Player
-        let video, videoPlayer;
-        let isDragging = false;
-        
-        function openVideo(type) {
-            const modal = document.getElementById('videoModal');
-            video = document.getElementById('videoElement');
-            videoPlayer = document.getElementById('videoPlayer');
-            
-            if (videoLinks[type] && !videoLinks[type].includes('YOUR_')) {
-                modal.classList.add('active');
-                document.body.style.overflow = 'hidden';
-                videoPlayer.classList.add('loading', 'paused');
-                video.querySelector('source').src = videoLinks[type];
-                video.load();
-                initPlayer();
-            } else {
-                alert('يرجى إضافة رابط الفيديو في الكود');
-            }
-        }
-        
-        function initPlayer() {
-            video.addEventListener('loadeddata', () => {
-                videoPlayer.classList.remove('loading');
-                updateDuration();
-                updateVolume();
-            });
-            
-            video.addEventListener('timeupdate', updateProgress);
-            video.addEventListener('play', () => {
-                videoPlayer.classList.remove('paused');
-                updatePlayButton(true);
-            });
-            video.addEventListener('pause', () => {
-                videoPlayer.classList.add('paused');
-                updatePlayButton(false);
-            });
-            video.addEventListener('ended', () => {
-                videoPlayer.classList.add('paused');
-                updatePlayButton(false);
-            });
-            
-            const progressContainer = document.getElementById('progressContainer');
-            progressContainer.addEventListener('click', seekVideo);
-            progressContainer.addEventListener('mousedown', startDrag);
-            progressContainer.addEventListener('touchstart', startDrag);
-            
-            document.addEventListener('mousemove', drag);
-            document.addEventListener('touchmove', drag);
-            document.addEventListener('mouseup', stopDrag);
-            document.addEventListener('touchend', stopDrag);
-            
-            const volumeTrack = document.getElementById('volumeTrack');
-            volumeTrack.addEventListener('click', setVolume);
-            
-            document.addEventListener('keydown', handleKeyboard);
-        }
-        
-        function togglePlayPause() {
-            if (video.paused) {
-                video.play();
-            } else {
-                video.pause();
-            }
-        }
-        
-        function updatePlayButton(isPlaying) {
-            const btn = document.getElementById('playPauseBtn');
-            const icon = btn.querySelector('i');
-            icon.setAttribute('data-lucide', isPlaying ? 'pause' : 'play');
-            lucide.createIcons();
-        }
-        
-        function updateProgress() {
-            const percent = (video.currentTime / video.duration) * 100;
-            document.getElementById('progressBar').style.width = percent + '%';
-            document.getElementById('currentTime').textContent = formatTime(video.currentTime);
-        }
-        
-        function updateDuration() {
-            document.getElementById('totalTime').textContent = formatTime(video.duration);
-        }
-        
-        function formatTime(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = Math.floor(seconds % 60);
-            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-        }
-        
-        function seekVideo(e) {
-            const container = document.getElementById('progressContainer');
-            const rect = container.getBoundingClientRect();
-            const pos = (e.clientX - rect.left) / rect.width;
-            video.currentTime = pos * video.duration;
-        }
-        
-        function startDrag(e) {
-            isDragging = true;
-            updateProgressDrag(e);
-        }
-        
-        function drag(e) {
-            if (isDragging) {
-                updateProgressDrag(e);
-            }
-        }
-        
-        function stopDrag() {
-            isDragging = false;
-        }
-        
-        function updateProgressDrag(e) {
-            const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
-            const container = document.getElementById('progressContainer');
-            const rect = container.getBoundingClientRect();
-            let pos = (clientX - rect.left) / rect.width;
-            pos = Math.max(0, Math.min(1, pos));
-            video.currentTime = pos * video.duration;
-        }
-        
-        function toggleMute() {
-            video.muted = !video.muted;
-            updateVolumeButton();
-            updateVolume();
-        }
-        
-        function updateVolumeButton() {
-            const btn = document.getElementById('volumeBtn');
-            const icon = btn.querySelector('i');
-            
-            if (video.muted || video.volume === 0) {
-                icon.setAttribute('data-lucide', 'volume-x');
-            } else if (video.volume < 0.5) {
-                icon.setAttribute('data-lucide', 'volume-1');
-            } else {
-                icon.setAttribute('data-lucide', 'volume-2');
-            }
-            lucide.createIcons();
-        }
-        
-        function setVolume(e) {
-            const track = document.getElementById('volumeTrack');
-            const rect = track.getBoundingClientRect();
-            const pos = (e.clientX - rect.left) / rect.width;
-            video.volume = Math.max(0, Math.min(1, pos));
-            video.muted = false;
-            updateVolume();
-            updateVolumeButton();
-        }
-        
-        function updateVolume() {
-            const progress = document.getElementById('volumeProgress');
-            progress.style.width = (video.muted ? 0 : video.volume * 100) + '%';
-        }
-        
-        function toggleFullscreen() {
-            const container = document.querySelector('.video-container');
-            if (!document.fullscreenElement) {
-                container.requestFullscreen().catch(err => {
-                    console.log('Fullscreen error:', err);
-                });
-            } else {
-                document.exitFullscreen();
-            }
-        }
-        
-        function handleKeyboard(e) {
-            if (!document.getElementById('videoModal').classList.contains('active')) return;
-            
-            switch(e.key) {
-                case ' ':
-                case 'k':
-                    e.preventDefault();
-                    togglePlayPause();
-                    break;
-                case 'ArrowLeft':
-                    video.currentTime = Math.max(0, video.currentTime - 5);
-                    break;
-                case 'ArrowRight':
-                    video.currentTime = Math.min(video.duration, video.currentTime + 5);
-                    break;
-                case 'ArrowUp':
-                    e.preventDefault();
-                    video.volume = Math.min(1, video.volume + 0.1);
-                    video.muted = false;
-                    updateVolume();
-                    updateVolumeButton();
-                    break;
-                case 'ArrowDown':
-                    e.preventDefault();
-                    video.volume = Math.max(0, video.volume - 0.1);
-                    updateVolume();
-                    updateVolumeButton();
-                    break;
-                case 'm':
-                    toggleMute();
-                    break;
-                case 'f':
-                    toggleFullscreen();
-                    break;
-                case 'Escape':
-                    closeVideo();
-                    break;
-            }
-        }
-        
-        function closeVideo() {
-            const modal = document.getElementById('videoModal');
-            if (video) {
-                video.pause();
-                video.currentTime = 0;
-                video.src = '';
-            }
-            modal.classList.remove('active');
-            document.body.style.overflow = 'auto';
-            document.removeEventListener('keydown', handleKeyboard);
-        }
-        
-        document.getElementById('videoModal').addEventListener('click', function(e) {
-            if (e.target === this) closeVideo();
         });
         
-        function orderService(type) {
-            if (orderLinks[type] && !orderLinks[type].includes('YOUR_')) {
-                window.open(orderLinks[type], '_blank');
-            } else {
-                alert('يرجى إضافة رابط الطلب في الكود');
-            }
-        }
-        
-        // Smooth scroll
+        // Smooth Scroll
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -1891,92 +705,108 @@
             });
         });
         
-        // Intersection Observer for scroll animations
+        // Video Modal
+        function openVideo(type) {
+            const modal = document.getElementById('videoModal');
+            const video = document.getElementById('videoElement');
+            
+            if (videoLinks[type] && !videoLinks[type].includes('YOUR_')) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                document.body.style.overflow = 'hidden';
+                
+                video.querySelector('source').src = videoLinks[type];
+                video.load();
+                video.play();
+            } else {
+                alert('يرجى إضافة رابط الفيديو في الكود');
+            }
+        }
+        
+        function closeVideo() {
+            const modal = document.getElementById('videoModal');
+            const video = document.getElementById('videoElement');
+            
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = 'auto';
+            
+            video.pause();
+            video.currentTime = 0;
+        }
+        
+        // Close modal on overlay click
+        document.getElementById('videoModal').addEventListener('click', function(e) {
+            if (e.target === this) closeVideo();
+        });
+        
+        // Order Service
+        function orderService(type) {
+            if (orderLinks[type] && !orderLinks[type].includes('YOUR_')) {
+                window.open(orderLinks[type], '_blank');
+            } else {
+                alert('يرجى إضافة رابط الطلب في الكود');
+            }
+        }
+        
+        // Intersection Observer for Animations
         const observerOptions = {
-            threshold: 0.15,
-            rootMargin: '0px 0px -80px 0px'
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
         };
         
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
+                    entry.target.classList.add('animate-slide-up');
                 }
             });
         }, observerOptions);
         
-        // Animate service cards
-        document.querySelectorAll('.service-card').forEach((card, index) => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(40px)';
-            card.style.transition = `all 0.7s cubic-bezier(0.4, 0, 0.2, 1) ${index * 0.15}s`;
-            observer.observe(card);
+        document.querySelectorAll('.service-card, .stat-item').forEach(el => {
+            observer.observe(el);
         });
         
-        // Animate stats
-        document.querySelectorAll('.stat-item').forEach((item, index) => {
-            item.style.opacity = '0';
-            item.style.transform = 'translateY(30px)';
-            item.style.transition = `all 0.6s cubic-bezier(0.4, 0, 0.2, 1) ${index * 0.1}s`;
-            observer.observe(item);
-        });
-        
-        // Active nav link on scroll
-        const sections = document.querySelectorAll('section[id]');
-        window.addEventListener('scroll', () => {
-            let current = '';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.clientHeight;
-                if (window.pageYOffset >= (sectionTop - 200)) {
-                    current = section.getAttribute('id');
-                }
-            });
+        // Counter Animation
+        function animateCounter(element) {
+            const target = parseInt(element.textContent);
+            const duration = 2000;
+            const step = target / (duration / 16);
+            let current = 0;
             
-            document.querySelectorAll('.nav-links a').forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href') === `#${current}`) {
-                    link.classList.add('active');
-                }
-            });
-        });
-        
-        // Counter animation for stats
-        function animateCounter(element, target, duration = 2000) {
-            let start = 0;
-            const increment = target / (duration / 16);
             const timer = setInterval(() => {
-                start += increment;
-                if (start >= target) {
-                    element.textContent = target + (element.textContent.includes('+') ? '+' : element.textContent.includes('%') ? '%' : '');
+                current += step;
+                if (current >= target) {
+                    element.textContent = target + element.textContent.replace(/[0-9]/g, '');
                     clearInterval(timer);
                 } else {
-                    element.textContent = Math.floor(start) + (element.textContent.includes('+') ? '+' : element.textContent.includes('%') ? '%' : '');
+                    element.textContent = Math.floor(current) + element.textContent.replace(/[0-9]/g, '');
                 }
             }, 16);
         }
         
-        // Trigger counter animation when stats section is visible
         const statsObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    const numbers = entry.target.querySelectorAll('.stat-number');
-                    numbers.forEach(num => {
-                        const text = num.textContent;
-                        const value = parseInt(text.replace(/\D/g, ''));
-                        num.textContent = '0';
-                        animateCounter(num, value);
-                    });
+                    const counters = entry.target.querySelectorAll('.stat-item > div:first-child');
+                    counters.forEach(counter => animateCounter(counter));
                     statsObserver.unobserve(entry.target);
                 }
             });
         }, { threshold: 0.5 });
         
-        const statsSection = document.querySelector('.stats');
-        if (statsSection) {
-            statsObserver.observe(statsSection);
-        }
+        const statsSection = document.querySelector('.stat-item')?.parentElement?.parentElement;
+        if (statsSection) statsObserver.observe(statsSection);
+        
+        // Keyboard Navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !document.getElementById('videoModal').classList.contains('hidden')) {
+                closeVideo();
+            }
+        });
+        
+        // Re-initialize Lucide icons after dynamic content
+        setTimeout(() => lucide.createIcons(), 100);
     </script>
 </body>
 </html>

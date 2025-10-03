@@ -32,8 +32,7 @@
                         'float': 'float 6s ease-in-out infinite',
                         'slide-up': 'slideUp 0.6s ease-out',
                         'slide-right': 'slideRight 0.6s ease-out',
-                        'scale-in': 'scaleIn 0.5s ease-out',
-                        'gradient': 'gradient 8s ease infinite',
+                        'pulse-scale': 'pulseScale 2s ease-in-out infinite',
                     },
                     keyframes: {
                         float: {
@@ -48,13 +47,9 @@
                             '0%': { opacity: '0', transform: 'translateX(30px)' },
                             '100%': { opacity: '1', transform: 'translateX(0)' },
                         },
-                        scaleIn: {
-                            '0%': { opacity: '0', transform: 'scale(0.9)' },
-                            '100%': { opacity: '1', transform: 'scale(1)' },
-                        },
-                        gradient: {
-                            '0%, 100%': { backgroundPosition: '0% 50%' },
-                            '50%': { backgroundPosition: '100% 50%' },
+                        pulseScale: {
+                            '0%, 100%': { transform: 'scale(1)' },
+                            '50%': { transform: 'scale(1.05)' },
                         },
                     },
                 }
@@ -78,38 +73,10 @@
             -webkit-backdrop-filter: blur(20px);
         }
         
-        .card-hover {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .card-hover:hover {
-            transform: translateY(-8px);
-        }
-        
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7); }
-            50% { box-shadow: 0 0 0 8px rgba(99, 102, 241, 0); }
-        }
-        
-        .pulse-glow {
-            animation: pulse-glow 2s ease-in-out infinite;
-        }
-        
-        .bg-gradient-animated {
-            background: linear-gradient(270deg, #6366f1, #a855f7, #06b6d4);
-            background-size: 600% 600%;
-            animation: gradient 8s ease infinite;
-        }
-        
-        .video-modal {
-            backdrop-filter: blur(10px);
-        }
-        
         html {
             scroll-behavior: smooth;
         }
         
-        /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 10px;
         }
@@ -123,8 +90,16 @@
             border-radius: 10px;
         }
         
-        ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(135deg, #4f46e5, #9333ea);
+        /* Mobile Menu Items Animation */
+        .mobile-menu-item {
+            transform: translateX(50px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-menu-item.show {
+            transform: translateX(0);
+            opacity: 1;
         }
     </style>
 </head>
@@ -134,73 +109,98 @@
     <nav id="navbar" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-7xl transition-all duration-500">
         <div class="glass rounded-2xl px-6 py-4 shadow-xl border border-white/20">
             <div class="flex items-center justify-between">
-                <!-- Logo -->
                 <a href="#home" class="text-3xl font-black gradient-text hover:scale-110 transition-transform duration-300">
                     حيدر
                 </a>
                 
-                <!-- Desktop Menu -->
                 <ul class="hidden md:flex items-center gap-2 bg-white/50 rounded-xl p-2">
                     <li><a href="#home" class="nav-link px-6 py-2.5 rounded-lg font-bold text-slate-700 hover:bg-white hover:text-primary-600 hover:shadow-md transition-all duration-300">الرئيسية</a></li>
                     <li><a href="#services" class="nav-link px-6 py-2.5 rounded-lg font-bold text-slate-700 hover:bg-white hover:text-primary-600 hover:shadow-md transition-all duration-300">الخدمات</a></li>
-                    <li><a href="#portfolio" class="nav-link px-6 py-2.5 rounded-lg font-bold text-slate-700 hover:bg-white hover:text-primary-600 hover:shadow-md transition-all duration-300">الأعمال</a></li>
                     <li><a href="#contact" class="nav-link px-6 py-2.5 rounded-lg font-bold text-slate-700 hover:bg-white hover:text-primary-600 hover:shadow-md transition-all duration-300">تواصل</a></li>
                 </ul>
                 
-                <!-- CTA Button -->
                 <a href="#contact" class="hidden md:flex items-center gap-2 bg-gradient-to-r from-primary-600 to-secondary-500 text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
                     <i data-lucide="send" class="w-5 h-5"></i>
                     <span>ابدأ مشروعك</span>
                 </a>
                 
-                <!-- Mobile Toggle -->
-                <button id="mobileToggle" class="md:hidden p-2 rounded-lg hover:bg-white/50 transition-colors">
-                    <i data-lucide="menu" class="w-7 h-7"></i>
+                <!-- Enhanced Mobile Toggle Button with Callout -->
+                <button id="mobileToggle" class="md:hidden relative group">
+                    <div class="relative w-12 h-12 bg-gradient-to-br from-primary-600 to-secondary-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all group-hover:scale-110">
+                        <div class="space-y-1.5">
+                            <span class="block w-6 h-0.5 bg-white rounded-full transition-all group-hover:w-7"></span>
+                            <span class="block w-6 h-0.5 bg-white rounded-full transition-all"></span>
+                            <span class="block w-6 h-0.5 bg-white rounded-full transition-all group-hover:w-7"></span>
+                        </div>
+                    </div>
+                    
+                    <!-- Professional Callout Bubble -->
+                    <div id="menuCallout" class="absolute -bottom-16 left-1/2 -translate-x-1/2 bg-gradient-to-r from-primary-600 to-secondary-600 text-white px-4 py-2 rounded-lg shadow-xl whitespace-nowrap opacity-0 pointer-events-none transition-all duration-300 animate-pulse">
+                        <span class="text-sm font-bold flex items-center gap-2">
+                            <i data-lucide="hand-metal" class="w-4 h-4"></i>
+                            اضغط هنا
+                        </span>
+                        <!-- Arrow pointing up -->
+                        <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-b-8 border-l-transparent border-r-transparent border-b-primary-600"></div>
+                    </div>
                 </button>
             </div>
         </div>
     </nav>
     
-    <!-- Mobile Menu -->
+    <!-- Enhanced Mobile Menu -->
     <div id="mobileMenu" class="fixed inset-0 z-40 md:hidden translate-x-full transition-transform duration-500">
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" id="mobileOverlay"></div>
-        <div class="absolute right-0 top-0 h-full w-80 bg-white shadow-2xl p-8 overflow-y-auto">
-            <div class="flex flex-col gap-6 mt-20">
-                <a href="#home" class="mobile-link flex items-center gap-4 p-4 rounded-xl hover:bg-gradient-to-r hover:from-primary-50 hover:to-purple-50 transition-all group">
-                    <div class="w-2 h-2 rounded-full bg-primary-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <span class="text-lg font-bold text-slate-700 group-hover:text-primary-600">الرئيسية</span>
-                </a>
-                <a href="#services" class="mobile-link flex items-center gap-4 p-4 rounded-xl hover:bg-gradient-to-r hover:from-primary-50 hover:to-purple-50 transition-all group">
-                    <div class="w-2 h-2 rounded-full bg-primary-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <span class="text-lg font-bold text-slate-700 group-hover:text-primary-600">الخدمات</span>
-                </a>
-                <a href="#portfolio" class="mobile-link flex items-center gap-4 p-4 rounded-xl hover:bg-gradient-to-r hover:from-primary-50 hover:to-purple-50 transition-all group">
-                    <div class="w-2 h-2 rounded-full bg-primary-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <span class="text-lg font-bold text-slate-700 group-hover:text-primary-600">الأعمال</span>
-                </a>
-                <a href="#contact" class="mobile-link flex items-center gap-4 p-4 rounded-xl hover:bg-gradient-to-r hover:from-primary-50 hover:to-purple-50 transition-all group">
-                    <div class="w-2 h-2 rounded-full bg-primary-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <span class="text-lg font-bold text-slate-700 group-hover:text-primary-600">تواصل</span>
-                </a>
-                <a href="#contact" class="mt-6 flex items-center justify-center gap-2 bg-gradient-to-r from-primary-600 to-secondary-500 text-white px-6 py-4 rounded-xl font-bold shadow-lg">
-                    <i data-lucide="send" class="w-5 h-5"></i>
-                    <span>ابدأ مشروعك</span>
-                </a>
+        <div class="absolute inset-0 bg-gradient-to-br from-primary-900/95 to-secondary-900/95 backdrop-blur-sm" id="mobileOverlay"></div>
+        <div class="absolute right-0 top-0 h-full w-80 max-w-[85vw] bg-white shadow-2xl overflow-y-auto">
+            <div class="p-8">
+                <div class="flex items-center justify-between mb-12">
+                    <h3 class="text-2xl font-black gradient-text">القائمة</h3>
+                    <button id="mobileClose" class="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                
+                <div class="space-y-2">
+                    <a href="#home" class="mobile-link mobile-menu-item flex items-center gap-4 p-4 rounded-xl hover:bg-gradient-to-r hover:from-primary-50 hover:to-purple-50 transition-all group">
+                        <div class="w-12 h-12 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                            <i data-lucide="home" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <span class="text-lg font-bold text-slate-700 group-hover:text-primary-600">الرئيسية</span>
+                    </a>
+                    
+                    <a href="#services" class="mobile-link mobile-menu-item flex items-center gap-4 p-4 rounded-xl hover:bg-gradient-to-r hover:from-primary-50 hover:to-purple-50 transition-all group">
+                        <div class="w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                            <i data-lucide="briefcase" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <span class="text-lg font-bold text-slate-700 group-hover:text-primary-600">الخدمات</span>
+                    </a>
+                    
+                    <a href="#contact" class="mobile-link mobile-menu-item flex items-center gap-4 p-4 rounded-xl hover:bg-gradient-to-r hover:from-primary-50 hover:to-purple-50 transition-all group">
+                        <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-rose-500 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                            <i data-lucide="mail" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <span class="text-lg font-bold text-slate-700 group-hover:text-primary-600">تواصل</span>
+                    </a>
+                </div>
+                
+                <div class="mt-8 pt-8 border-t border-slate-200">
+                    <a href="#contact" class="mobile-menu-item flex items-center justify-center gap-2 bg-gradient-to-r from-primary-600 to-secondary-500 text-white px-6 py-4 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all">
+                        <i data-lucide="rocket" class="w-5 h-5"></i>
+                        <span>ابدأ مشروعك الآن</span>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Hero Section -->
     <section id="home" class="min-h-screen flex items-center pt-32 pb-20 px-4 relative overflow-hidden">
-        <!-- Animated Background Elements -->
         <div class="absolute top-20 right-20 w-72 h-72 bg-primary-400/20 rounded-full blur-3xl animate-float"></div>
         <div class="absolute bottom-20 left-20 w-96 h-96 bg-purple-400/20 rounded-full blur-3xl animate-float" style="animation-delay: 2s;"></div>
         
         <div class="max-w-7xl mx-auto w-full">
             <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-                <!-- Content -->
                 <div class="space-y-8 animate-slide-up">
-                    <!-- Badge -->
                     <div class="inline-flex items-center gap-3 glass px-6 py-3 rounded-full border border-primary-200/50 shadow-lg">
                         <span class="relative flex h-3 w-3">
                             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
@@ -209,7 +209,6 @@
                         <span class="font-bold text-primary-600">متاح للعمل</span>
                     </div>
                     
-                    <!-- Title -->
                     <div class="space-y-4">
                         <h1 class="text-5xl lg:text-7xl font-black leading-tight">
                             مرحباً، أنا 
@@ -220,12 +219,10 @@
                         </p>
                     </div>
                     
-                    <!-- Description -->
                     <p class="text-xl text-slate-600 leading-relaxed">
                         أحول الأفكار إلى تطبيقات ومواقع رقمية احترافية. بخبرة أكاديمية وعملية، أقدم حلولاً تقنية مبتكرة تجمع بين التصميم الجذاب والأداء المتميز.
                     </p>
                     
-                    <!-- Buttons -->
                     <div class="flex flex-wrap gap-4">
                         <a href="#services" class="group flex items-center gap-3 bg-gradient-to-r from-primary-600 to-secondary-500 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
                             <i data-lucide="rocket" class="w-6 h-6 group-hover:animate-bounce"></i>
@@ -238,14 +235,12 @@
                     </div>
                 </div>
                 
-                <!-- Image -->
                 <div class="relative animate-slide-right">
                     <div class="relative z-10">
                         <div class="relative rounded-3xl overflow-hidden shadow-2xl border-8 border-white">
                             <img src="https://www.raed.net/img?id=1437514" alt="حيدر" class="w-full h-auto hover:scale-105 transition-transform duration-500">
                         </div>
                         
-                        <!-- Floating Cards -->
                         <div class="absolute -top-6 -right-6 glass p-5 rounded-2xl shadow-xl border border-white/20 animate-float">
                             <div class="flex items-center gap-4">
                                 <div class="w-14 h-14 bg-gradient-to-br from-primary-600 to-secondary-500 rounded-xl flex items-center justify-center shadow-lg">
@@ -303,202 +298,165 @@
         </div>
     </section>
 
-    <!-- Services Section -->
-    <section id="services" class="py-20 px-4">
-        <div class="max-w-7xl mx-auto">
-            <!-- Header -->
+    <!-- Modern Services Section -->
+    <section id="services" class="py-20 px-4 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-primary-50/50 via-purple-50/50 to-cyan-50/50"></div>
+        
+        <div class="max-w-7xl mx-auto relative z-10">
             <div class="text-center mb-16 space-y-4">
                 <div class="inline-block glass px-6 py-3 rounded-full border border-primary-200/50 shadow-lg mb-4">
                     <span class="font-bold text-primary-600">ماذا أقدم</span>
                 </div>
-                <h2 class="text-5xl lg:text-6xl font-black text-slate-900">خدماتي الاحترافية</h2>
-                <p class="text-xl text-slate-600 max-w-2xl mx-auto">حلول رقمية متكاملة مصممة بعناية لتحقيق أهدافك</p>
+                <h2 class="text-5xl lg:text-6xl font-black text-slate-900">خدماتي المميزة</h2>
+                <p class="text-xl text-slate-600 max-w-2xl mx-auto">حلول رقمية مبتكرة تجمع بين الإبداع والتكنولوجيا</p>
             </div>
             
-            <!-- Services Grid -->
-            <div class="grid lg:grid-cols-2 gap-8">
+            <div class="grid lg:grid-cols-2 gap-8 lg:gap-12">
                 <!-- Android Service -->
-                <div class="service-card bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl card-hover border border-slate-100">
-                    <div class="relative h-64 bg-gradient-to-br from-primary-600 to-secondary-500 cursor-pointer group" onclick="openVideo('android')">
-                        <img src="https://images.unsplash.com/photo-1555774698-0b77e0d5fac6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="تطوير تطبيقات أندرويد" class="w-full h-full object-cover opacity-80 group-hover:scale-110 transition-transform duration-500">
-                        <div class="absolute inset-0 bg-black/40 group-hover:bg-black/60 transition-colors flex items-center justify-center">
-                            <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-2xl group-hover:scale-125 transition-transform">
-                                <i data-lucide="play" class="w-10 h-10 text-primary-600 mr-1"></i>
-                            </div>
-                        </div>
-                    </div>
+                <div class="group relative bg-gradient-to-br from-white to-primary-50/30 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 border-2 border-primary-100 hover:border-primary-300 hover:-translate-y-2">
+                    <div class="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-primary-400/20 to-secondary-400/20 rounded-bl-full"></div>
                     
-                    <div class="p-8">
-                        <div class="flex items-center gap-4 mb-6">
-                            <div class="w-16 h-16 bg-gradient-to-br from-primary-600 to-secondary-500 rounded-2xl flex items-center justify-center shadow-lg">
-                                <i data-lucide="smartphone" class="w-8 h-8 text-white"></i>
+                    <div class="relative p-8 lg:p-10">
+                        <div class="flex items-start justify-between mb-8">
+                            <div class="flex items-center gap-4">
+                                <div class="w-20 h-20 bg-gradient-to-br from-primary-600 to-secondary-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                                    <i data-lucide="smartphone" class="w-10 h-10 text-white"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-3xl lg:text-4xl font-black text-slate-900 mb-1">تطبيقات أندرويد</h3>
+                                    <p class="text-primary-600 font-bold">Android Development</p>
+                                </div>
                             </div>
-                            <h3 class="text-3xl font-black text-slate-900">تطبيقات أندرويد</h3>
                         </div>
                         
-                        <p class="text-lg text-slate-600 mb-6 leading-relaxed">
-                            تطوير تطبيقات أندرويد احترافية بتصميم عصري وأداء متميز، مع تجربة مستخدم سلسة وسهلة.
+                        <p class="text-lg text-slate-600 mb-8 leading-relaxed">
+                            تطوير تطبيقات أندرويد احترافية بتصميم عصري وأداء متميز، مع تجربة مستخدم سلسة وسهلة تلبي احتياجات مشروعك.
                         </p>
                         
-                        <ul class="space-y-3 mb-8">
-                            <li class="flex items-center gap-3 text-slate-700 hover:text-primary-600 transition-colors group">
-                                <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 group-hover:bg-green-200 transition-colors">
-                                    <i data-lucide="check" class="w-4 h-4 text-green-600"></i>
+                        <!-- Video Preview -->
+                        <div class="relative mb-8 rounded-2xl overflow-hidden shadow-xl cursor-pointer group/video" onclick="openVideo('android')">
+                            <img src="https://images.unsplash.com/photo-1555774698-0b77e0d5fac6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="تطوير تطبيقات أندرويد" class="w-full h-64 object-cover group-hover/video:scale-110 transition-transform duration-500">
+                            
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent group-hover/video:from-black/90 transition-all"></div>
+                            
+                            <div class="absolute inset-0 flex flex-col items-center justify-center gap-4">
+                                <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-2xl group-hover/video:scale-125 group-hover/video:bg-primary-500 transition-all duration-300 animate-pulse-scale">
+                                    <i data-lucide="play" class="w-10 h-10 text-primary-600 group-hover/video:text-white mr-1 transition-colors"></i>
                                 </div>
-                                <span class="font-medium">واجهة مستخدم حديثة وجذابة</span>
-                            </li>
-                            <li class="flex items-center gap-3 text-slate-700 hover:text-primary-600 transition-colors group">
-                                <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 group-hover:bg-green-200 transition-colors">
-                                    <i data-lucide="check" class="w-4 h-4 text-green-600"></i>
+                                <div class="bg-white/95 backdrop-blur-sm px-6 py-3 rounded-full shadow-xl">
+                                    <span class="font-black text-slate-900 flex items-center gap-2">
+                                        <i data-lucide="video" class="w-5 h-5 text-primary-600"></i>
+                                        شاهد عينة من أعمالي
+                                    </span>
                                 </div>
-                                <span class="font-medium">أداء سريع واستجابة فورية</span>
-                            </li>
-                            <li class="flex items-center gap-3 text-slate-700 hover:text-primary-600 transition-colors group">
-                                <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 group-hover:bg-green-200 transition-colors">
-                                    <i data-lucide="check" class="w-4 h-4 text-green-600"></i>
-                                </div>
-                                <span class="font-medium">متوافق مع كل إصدارات أندرويد</span>
-                            </li>
-                            <li class="flex items-center gap-3 text-slate-700 hover:text-primary-600 transition-colors group">
-                                <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 group-hover:bg-green-200 transition-colors">
-                                    <i data-lucide="check" class="w-4 h-4 text-green-600"></i>
-                                </div>
-                                <span class="font-medium">دعم فني ومتابعة شاملة</span>
-                            </li>
-                        </ul>
+                            </div>
+                        </div>
                         
-                        <button onclick="orderService('android')" class="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-primary-600 to-secondary-500 text-white px-6 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                            <i data-lucide="shopping-cart" class="w-5 h-5"></i>
-                            <span>اطلب الخدمة</span>
+                        <div class="grid grid-cols-2 gap-4 mb-8">
+                            <div class="flex items-center gap-3 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i data-lucide="check" class="w-5 h-5 text-green-600"></i>
+                                </div>
+                                <span class="font-bold text-slate-700">تصميم حديث</span>
+                            </div>
+                            <div class="flex items-center gap-3 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i data-lucide="check" class="w-5 h-5 text-green-600"></i>
+                                </div>
+                                <span class="font-bold text-slate-700">أداء سريع</span>
+                            </div>
+                            <div class="flex items-center gap-3 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i data-lucide="check" class="w-5 h-5 text-green-600"></i>
+                                </div>
+                                <span class="font-bold text-slate-700">متوافق تماماً</span>
+                            </div>
+                            <div class="flex items-center gap-3 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i data-lucide="check" class="w-5 h-5 text-green-600"></i>
+                                </div>
+                                <span class="font-bold text-slate-700">دعم شامل</span>
+                            </div>
+                        </div>
+                        
+                        <button onclick="orderService('android')" class="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-primary-600 to-secondary-600 text-white px-8 py-5 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                            <i data-lucide="rocket" class="w-6 h-6"></i>
+                            <span>ابدأ مشروعك الآن</span>
                         </button>
                     </div>
                 </div>
                 
                 <!-- Website Service -->
-                <div class="service-card bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl card-hover border border-slate-100">
-                    <div class="relative h-64 bg-gradient-to-br from-cyan-600 to-blue-500 cursor-pointer group" onclick="openVideo('website')">
-                        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="تصميم مواقع إلكترونية" class="w-full h-full object-cover opacity-80 group-hover:scale-110 transition-transform duration-500">
-                        <div class="absolute inset-0 bg-black/40 group-hover:bg-black/60 transition-colors flex items-center justify-center">
-                            <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-2xl group-hover:scale-125 transition-transform">
-                                <i data-lucide="play" class="w-10 h-10 text-cyan-600 mr-1"></i>
-                            </div>
-                        </div>
-                    </div>
+                <div class="group relative bg-gradient-to-br from-white to-cyan-50/30 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 border-2 border-cyan-100 hover:border-cyan-300 hover:-translate-y-2">
+                    <div class="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-cyan-400/20 to-blue-400/20 rounded-bl-full"></div>
                     
-                    <div class="p-8">
-                        <div class="flex items-center gap-4 mb-6">
-                            <div class="w-16 h-16 bg-gradient-to-br from-cyan-600 to-blue-500 rounded-2xl flex items-center justify-center shadow-lg">
-                                <i data-lucide="globe" class="w-8 h-8 text-white"></i>
+                    <div class="relative p-8 lg:p-10">
+                        <div class="flex items-start justify-between mb-8">
+                            <div class="flex items-center gap-4">
+                                <div class="w-20 h-20 bg-gradient-to-br from-cyan-600 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                                    <i data-lucide="globe" class="w-10 h-10 text-white"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-3xl lg:text-4xl font-black text-slate-900 mb-1">مواقع شخصية</h3>
+                                    <p class="text-cyan-600 font-bold">Web Development</p>
+                                </div>
                             </div>
-                            <h3 class="text-3xl font-black text-slate-900">مواقع شخصية</h3>
                         </div>
                         
-                        <p class="text-lg text-slate-600 mb-6 leading-relaxed">
-                            تصميم مواقع إلكترونية عصرية تعكس هويتك الرقمية بأسلوب احترافي مميز.
+                        <p class="text-lg text-slate-600 mb-8 leading-relaxed">
+                            تصميم مواقع إلكترونية عصرية تعكس هويتك الرقمية بأسلوب احترافي مميز يترك انطباعاً قوياً لدى زوارك.
                         </p>
                         
-                        <ul class="space-y-3 mb-8">
-                            <li class="flex items-center gap-3 text-slate-700 hover:text-cyan-600 transition-colors group">
-                                <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 group-hover:bg-green-200 transition-colors">
-                                    <i data-lucide="check" class="w-4 h-4 text-green-600"></i>
+                        <!-- Video Preview -->
+                        <div class="relative mb-8 rounded-2xl overflow-hidden shadow-xl cursor-pointer group/video" onclick="openVideo('website')">
+                            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="تصميم مواقع إلكترونية" class="w-full h-64 object-cover group-hover/video:scale-110 transition-transform duration-500">
+                            
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent group-hover/video:from-black/90 transition-all"></div>
+                            
+                            <div class="absolute inset-0 flex flex-col items-center justify-center gap-4">
+                                <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-2xl group-hover/video:scale-125 group-hover/video:bg-cyan-500 transition-all duration-300 animate-pulse-scale">
+                                    <i data-lucide="play" class="w-10 h-10 text-cyan-600 group-hover/video:text-white mr-1 transition-colors"></i>
                                 </div>
-                                <span class="font-medium">تصميم فريد يناسب علامتك</span>
-                            </li>
-                            <li class="flex items-center gap-3 text-slate-700 hover:text-cyan-600 transition-colors group">
-                                <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 group-hover:bg-green-200 transition-colors">
-                                    <i data-lucide="check" class="w-4 h-4 text-green-600"></i>
+                                <div class="bg-white/95 backdrop-blur-sm px-6 py-3 rounded-full shadow-xl">
+                                    <span class="font-black text-slate-900 flex items-center gap-2">
+                                        <i data-lucide="video" class="w-5 h-5 text-cyan-600"></i>
+                                        شاهد عينة من أعمالي
+                                    </span>
                                 </div>
-                                <span class="font-medium">متجاوب مع جميع الأجهزة</span>
-                            </li>
-                            <li class="flex items-center gap-3 text-slate-700 hover:text-cyan-600 transition-colors group">
-                                <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 group-hover:bg-green-200 transition-colors">
-                                    <i data-lucide="check" class="w-4 h-4 text-green-600"></i>
-                                </div>
-                                <span class="font-medium">سرعة تحميل استثنائية</span>
-                            </li>
-                            <li class="flex items-center gap-3 text-slate-700 hover:text-cyan-600 transition-colors group">
-                                <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 group-hover:bg-green-200 transition-colors">
-                                    <i data-lucide="check" class="w-4 h-4 text-green-600"></i>
-                                </div>
-                                <span class="font-medium">محسن لمحركات البحث SEO</span>
-                            </li>
-                        </ul>
+                            </div>
+                        </div>
                         
-                        <button onclick="orderService('website')" class="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-cyan-600 to-blue-500 text-white px-6 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                            <i data-lucide="shopping-cart" class="w-5 h-5"></i>
-                            <span>اطلب الخدمة</span>
+                        <div class="grid grid-cols-2 gap-4 mb-8">
+                            <div class="flex items-center gap-3 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i data-lucide="check" class="w-5 h-5 text-green-600"></i>
+                                </div>
+                                <span class="font-bold text-slate-700">تصميم فريد</span>
+                            </div>
+                            <div class="flex items-center gap-3 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i data-lucide="check" class="w-5 h-5 text-green-600"></i>
+                                </div>
+                                <span class="font-bold text-slate-700">متجاوب كلياً</span>
+                            </div>
+                            <div class="flex items-center gap-3 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i data-lucide="check" class="w-5 h-5 text-green-600"></i>
+                                </div>
+                                <span class="font-bold text-slate-700">سرعة خيالية</span>
+                            </div>
+                            <div class="flex items-center gap-3 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i data-lucide="check" class="w-5 h-5 text-green-600"></i>
+                                </div>
+                                <span class="font-bold text-slate-700">محسّن SEO</span>
+                            </div>
+                        </div>
+                        
+                        <button onclick="orderService('website')" class="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-cyan-600 to-blue-600 text-white px-8 py-5 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                            <i data-lucide="rocket" class="w-6 h-6"></i>
+                            <span>ابدأ مشروعك الآن</span>
                         </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Portfolio Section -->
-    <section id="portfolio" class="py-20 px-4 bg-gradient-to-br from-slate-100 to-slate-50">
-        <div class="max-w-7xl mx-auto">
-            <!-- Header -->
-            <div class="text-center mb-16 space-y-4">
-                <div class="inline-block glass px-6 py-3 rounded-full border border-primary-200/50 shadow-lg mb-4">
-                    <span class="font-bold text-primary-600">أعمالي</span>
-                </div>
-                <h2 class="text-5xl lg:text-6xl font-black text-slate-900">مشاريع نفخر بها</h2>
-                <p class="text-xl text-slate-600 max-w-2xl mx-auto">نماذج من المشاريع التي أنجزتها بنجاح</p>
-            </div>
-            
-            <!-- Portfolio Grid -->
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Project 1 -->
-                <div class="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl card-hover">
-                    <div class="relative h-56 bg-gradient-to-br from-primary-500 to-purple-600 overflow-hidden">
-                        <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center">
-                            <div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all transform scale-75 group-hover:scale-100">
-                                <i data-lucide="external-link" class="w-7 h-7 text-primary-600"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center gap-2 mb-3">
-                            <span class="px-3 py-1 bg-primary-100 text-primary-700 rounded-full text-sm font-bold">تطبيق</span>
-                        </div>
-                        <h3 class="text-xl font-black text-slate-900 mb-2">تطبيق InstaDoodle</h3>
-                        <p class="text-slate-600">تطبيق رسم احترافي مع أدوات متقدمة</p>
-                    </div>
-                </div>
-                
-                <!-- Project 2 -->
-                <div class="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl card-hover">
-                    <div class="relative h-56 bg-gradient-to-br from-cyan-500 to-blue-600 overflow-hidden">
-                        <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center">
-                            <div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all transform scale-75 group-hover:scale-100">
-                                <i data-lucide="external-link" class="w-7 h-7 text-cyan-600"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center gap-2 mb-3">
-                            <span class="px-3 py-1 bg-cyan-100 text-cyan-700 rounded-full text-sm font-bold">موقع</span>
-                        </div>
-                        <h3 class="text-xl font-black text-slate-900 mb-2">موقع شركة تقنية</h3>
-                        <p class="text-slate-600">موقع عرض خدمات بتصميم عصري</p>
-                    </div>
-                </div>
-                
-                <!-- Project 3 -->
-                <div class="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl card-hover">
-                    <div class="relative h-56 bg-gradient-to-br from-pink-500 to-rose-600 overflow-hidden">
-                        <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center">
-                            <div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all transform scale-75 group-hover:scale-100">
-                                <i data-lucide="external-link" class="w-7 h-7 text-pink-600"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center gap-2 mb-3">
-                            <span class="px-3 py-1 bg-pink-100 text-pink-700 rounded-full text-sm font-bold">تطبيق</span>
-                        </div>
-                        <h3 class="text-xl font-black text-slate-900 mb-2">تطبيق تعليمي</h3>
-                        <p class="text-slate-600">منصة تعليم اللغة الإنجليزية</p>
                     </div>
                 </div>
             </div>
@@ -514,7 +472,7 @@
                 
                 <div class="relative z-10 space-y-8">
                     <div class="inline-block bg-white/20 px-6 py-3 rounded-full backdrop-blur-sm mb-4">
-                        <span class="font-bold">لنبدأ العمل معاً</span>
+                        <span class="font-bold">تواصل معي</span>
                     </div>
                     
                     <h2 class="text-4xl lg:text-6xl font-black">هل لديك مشروع؟</h2>
@@ -535,59 +493,32 @@
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="bg-gradient-to-br from-slate-900 to-slate-800 text-white py-16 px-4">
+    <!-- Simplified Footer -->
+    <footer class="bg-slate-900 text-white py-12 px-4">
         <div class="max-w-7xl mx-auto">
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
-                <!-- Brand -->
-                <div class="space-y-4">
-                    <h3 class="text-4xl font-black gradient-text">حيدر</h3>
-                    <p class="text-slate-400 leading-relaxed">مدرس و مطور رقمي متخصص في تطوير التطبيقات والمواقع الإلكترونية</p>
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="text-center md:text-right">
+                    <h3 class="text-3xl font-black gradient-text mb-2">حيدر</h3>
+                    <p class="text-slate-400">مدرس و مطور رقمي</p>
                 </div>
                 
-                <!-- Quick Links -->
-                <div class="space-y-4">
-                    <h4 class="text-xl font-bold">روابط سريعة</h4>
-                    <ul class="space-y-3">
-                        <li><a href="#home" class="text-slate-400 hover:text-white transition-colors">الرئيسية</a></li>
-                        <li><a href="#services" class="text-slate-400 hover:text-white transition-colors">الخدمات</a></li>
-                        <li><a href="#portfolio" class="text-slate-400 hover:text-white transition-colors">الأعمال</a></li>
-                        <li><a href="#contact" class="text-slate-400 hover:text-white transition-colors">تواصل</a></li>
-                    </ul>
-                </div>
-                
-                <!-- Services -->
-                <div class="space-y-4">
-                    <h4 class="text-xl font-bold">خدماتي</h4>
-                    <ul class="space-y-3">
-                        <li class="text-slate-400">تطبيقات أندرويد</li>
-                        <li class="text-slate-400">مواقع إلكترونية</li>
-                        <li class="text-slate-400">تدريس اللغة الإنجليزية</li>
-                        <li class="text-slate-400">استشارات تقنية</li>
-                    </ul>
-                </div>
-                
-                <!-- Social -->
-                <div class="space-y-4">
-                    <h4 class="text-xl font-bold">تواصل معي</h4>
-                    <div class="flex gap-4">
-                        <a href="#" class="w-12 h-12 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center transition-all hover:-translate-y-1">
-                            <i data-lucide="github" class="w-5 h-5"></i>
-                        </a>
-                        <a href="#" class="w-12 h-12 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center transition-all hover:-translate-y-1">
-                            <i data-lucide="linkedin" class="w-5 h-5"></i>
-                        </a>
-                        <a href="#" class="w-12 h-12 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center transition-all hover:-translate-y-1">
-                            <i data-lucide="twitter" class="w-5 h-5"></i>
-                        </a>
-                        <a href="#" class="w-12 h-12 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center transition-all hover:-translate-y-1">
-                            <i data-lucide="mail" class="w-5 h-5"></i>
-                        </a>
-                    </div>
+                <div class="flex gap-4">
+                    <a href="#" class="w-12 h-12 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center transition-all hover:-translate-y-1">
+                        <i data-lucide="github" class="w-5 h-5"></i>
+                    </a>
+                    <a href="#" class="w-12 h-12 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center transition-all hover:-translate-y-1">
+                        <i data-lucide="linkedin" class="w-5 h-5"></i>
+                    </a>
+                    <a href="#" class="w-12 h-12 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center transition-all hover:-translate-y-1">
+                        <i data-lucide="twitter" class="w-5 h-5"></i>
+                    </a>
+                    <a href="#" class="w-12 h-12 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center transition-all hover:-translate-y-1">
+                        <i data-lucide="mail" class="w-5 h-5"></i>
+                    </a>
                 </div>
             </div>
             
-            <div class="pt-8 border-t border-white/10 text-center text-slate-400">
+            <div class="mt-8 pt-8 border-t border-white/10 text-center text-slate-400">
                 <p>© 2025 حيدر. جميع الحقوق محفوظة.</p>
             </div>
         </div>
@@ -599,7 +530,7 @@
     </button>
 
     <!-- Video Modal -->
-    <div id="videoModal" class="video-modal fixed inset-0 bg-black/95 z-[100] hidden items-center justify-center p-4">
+    <div id="videoModal" class="fixed inset-0 bg-black/95 z-[100] hidden items-center justify-center p-4 backdrop-blur-sm">
         <button onclick="closeVideo()" class="absolute top-6 right-6 w-14 h-14 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center transition-all hover:rotate-90 z-[101]">
             <i data-lucide="x" class="w-7 h-7 text-white"></i>
         </button>
@@ -616,7 +547,6 @@
     <script>
         lucide.createIcons();
         
-        // Configuration
         const videoLinks = {
             android: 'https://dso7.raed.net:451/files/Demo-Vid-InstaDoodle.mp4',
             website: 'YOUR_WEBSITE_VIDEO_URL.mp4'
@@ -627,35 +557,43 @@
             website: 'YOUR_WEBSITE_ORDER_URL'
         };
         
-        // Mobile Menu Toggle
+        // Enhanced Mobile Menu
         const mobileToggle = document.getElementById('mobileToggle');
+        const mobileClose = document.getElementById('mobileClose');
         const mobileMenu = document.getElementById('mobileMenu');
         const mobileOverlay = document.getElementById('mobileOverlay');
         const mobileLinks = document.querySelectorAll('.mobile-link');
+        const mobileMenuItems = document.querySelectorAll('.mobile-menu-item');
         
         function toggleMobileMenu() {
-            mobileMenu.classList.toggle('translate-x-full');
-            document.body.style.overflow = mobileMenu.classList.contains('translate-x-full') ? 'auto' : 'hidden';
+            const isOpen = !mobileMenu.classList.contains('translate-x-full');
+            
+            if (isOpen) {
+                mobileMenu.classList.add('translate-x-full');
+                document.body.style.overflow = 'auto';
+                mobileMenuItems.forEach(item => item.classList.remove('show'));
+            } else {
+                mobileMenu.classList.remove('translate-x-full');
+                document.body.style.overflow = 'hidden';
+                mobileMenuItems.forEach((item, index) => {
+                    setTimeout(() => item.classList.add('show'), index * 100);
+                });
+            }
         }
         
         mobileToggle.addEventListener('click', toggleMobileMenu);
+        mobileClose.addEventListener('click', toggleMobileMenu);
         mobileOverlay.addEventListener('click', toggleMobileMenu);
         mobileLinks.forEach(link => link.addEventListener('click', toggleMobileMenu));
         
         // Navbar Scroll Effect
         const navbar = document.getElementById('navbar');
-        let lastScroll = 0;
-        
         window.addEventListener('scroll', () => {
-            const currentScroll = window.pageYOffset;
-            
-            if (currentScroll > 100) {
+            if (window.pageYOffset > 100) {
                 navbar.classList.add('scale-95');
             } else {
                 navbar.classList.remove('scale-95');
             }
-            
-            lastScroll = currentScroll;
         });
         
         // Active Nav Link
@@ -718,6 +656,31 @@
                 video.querySelector('source').src = videoLinks[type];
                 video.load();
                 video.play();
+                
+                // Show callout after page loads
+        setTimeout(() => {
+            const callout = document.getElementById('menuCallout');
+            if (callout && window.innerWidth < 768) {
+                callout.style.opacity = '1';
+                callout.style.transform = 'translateX(-50%) translateY(5px)';
+                
+                // Hide after 5 seconds
+                setTimeout(() => {
+                    callout.style.opacity = '0';
+                    callout.style.transform = 'translateX(-50%) translateY(0)';
+                }, 5000);
+            }
+        }, 2000);
+        
+        // Hide callout when menu is opened
+        mobileToggle.addEventListener('click', () => {
+            const callout = document.getElementById('menuCallout');
+            if (callout) {
+                callout.style.opacity = '0';
+            }
+        });
+        
+        setTimeout(() => lucide.createIcons(), 100);
             } else {
                 alert('يرجى إضافة رابط الفيديو في الكود');
             }
@@ -735,7 +698,6 @@
             video.currentTime = 0;
         }
         
-        // Close modal on overlay click
         document.getElementById('videoModal').addEventListener('click', function(e) {
             if (e.target === this) closeVideo();
         });
@@ -749,7 +711,7 @@
             }
         }
         
-        // Intersection Observer for Animations
+        // Intersection Observer
         const observerOptions = {
             threshold: 0.1,
             rootMargin: '0px 0px -100px 0px'
@@ -763,40 +725,9 @@
             });
         }, observerOptions);
         
-        document.querySelectorAll('.service-card, .stat-item').forEach(el => {
+        document.querySelectorAll('.stat-item').forEach(el => {
             observer.observe(el);
         });
-        
-        // Counter Animation
-        function animateCounter(element) {
-            const target = parseInt(element.textContent);
-            const duration = 2000;
-            const step = target / (duration / 16);
-            let current = 0;
-            
-            const timer = setInterval(() => {
-                current += step;
-                if (current >= target) {
-                    element.textContent = target + element.textContent.replace(/[0-9]/g, '');
-                    clearInterval(timer);
-                } else {
-                    element.textContent = Math.floor(current) + element.textContent.replace(/[0-9]/g, '');
-                }
-            }, 16);
-        }
-        
-        const statsObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const counters = entry.target.querySelectorAll('.stat-item > div:first-child');
-                    counters.forEach(counter => animateCounter(counter));
-                    statsObserver.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.5 });
-        
-        const statsSection = document.querySelector('.stat-item')?.parentElement?.parentElement;
-        if (statsSection) statsObserver.observe(statsSection);
         
         // Keyboard Navigation
         document.addEventListener('keydown', (e) => {
@@ -805,7 +736,6 @@
             }
         });
         
-        // Re-initialize Lucide icons after dynamic content
         setTimeout(() => lucide.createIcons(), 100);
     </script>
 </body>

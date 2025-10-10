@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>حيدر - مدرس و مطور رقمي</title>
+    <title>حيدر - Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -77,6 +77,12 @@
             scroll-behavior: smooth;
         }
         
+        @media (min-width: 1024px) {
+            #home {
+                zoom: 0.9;
+            }
+        }
+        
         ::-webkit-scrollbar {
             width: 10px;
         }
@@ -90,7 +96,6 @@
             border-radius: 10px;
         }
         
-        /* Mobile Menu Items Animation */
         .mobile-menu-item {
             transform: translateX(50px);
             opacity: 0;
@@ -101,9 +106,53 @@
             transform: translateX(0);
             opacity: 1;
         }
+        
+        .fancy-description {
+            position: relative;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(168, 85, 247, 0.05));
+            border-radius: 1rem;
+            border-right: 4px solid #6366f1;
+        }
+        
+        .fancy-description::before {
+            content: '"';
+            position: absolute;
+            top: 0;
+            right: 1rem;
+            font-size: 4rem;
+            color: #6366f1;
+            opacity: 0.2;
+            font-family: serif;
+        }
+        
+        /* Blur Overlay */
+        #firstVisitBlur {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        
+        /* Callout Animation */
+        @keyframes blueColorPulse {
+            0%, 100% {
+                background-color: #3b82f6;
+                opacity: 0.7;
+            }
+            50% {
+                background-color: #1e40af;
+                opacity: 1;
+            }
+        }
+        
+        .callout-animate {
+            animation: blueColorPulse 2s ease-in-out infinite;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 text-slate-900 overflow-x-hidden">
+
+    <!-- First Visit Blur Overlay - z-index: 55 -->
+    <div id="firstVisitBlur" class="fixed inset-0 bg-black/70 z-[55] hidden transition-opacity duration-500"></div>
 
     <!-- Floating Navbar -->
     <nav id="navbar" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-7xl transition-all duration-500">
@@ -115,17 +164,17 @@
                 
                 <ul class="hidden md:flex items-center gap-2 bg-white/50 rounded-xl p-2">
                     <li><a href="#home" class="nav-link px-6 py-2.5 rounded-lg font-bold text-slate-700 hover:bg-white hover:text-primary-600 hover:shadow-md transition-all duration-300">الرئيسية</a></li>
-                    <li><a href="#services" class="nav-link px-6 py-2.5 rounded-lg font-bold text-slate-700 hover:bg-white hover:text-primary-600 hover:shadow-md transition-all duration-300">الخدمات</a></li>
-                    <li><a href="#contact" class="nav-link px-6 py-2.5 rounded-lg font-bold text-slate-700 hover:bg-white hover:text-primary-600 hover:shadow-md transition-all duration-300">تواصل</a></li>
                 </ul>
                 
-                <a href="#contact" class="hidden md:flex items-center gap-2 bg-gradient-to-r from-primary-600 to-secondary-500 text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
-                    <i data-lucide="send" class="w-5 h-5"></i>
-                    <span>ابدأ مشروعك</span>
-                </a>
+                <!-- Enhanced Contact Button -->
+                <button onclick="openContactModal()" class="hidden md:flex items-center gap-2 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-white px-8 py-4 rounded-2xl font-black text-lg shadow-2xl hover:shadow-pink-500/50 hover:scale-105 transition-all duration-300 animate-pulse-scale">
+                    <i data-lucide="sparkles" class="w-6 h-6"></i>
+                    <span>تواصل معي</span>
+                    <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                </button>
                 
-                <!-- Enhanced Mobile Toggle Button with Callout -->
-                <button id="mobileToggle" class="md:hidden relative group">
+                <!-- Mobile Menu Toggle Button - z-index: 65 -->
+                <button id="mobileToggle" class="md:hidden relative group z-[65]">
                     <div class="relative w-12 h-12 bg-gradient-to-br from-primary-600 to-secondary-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all group-hover:scale-110">
                         <div class="space-y-1.5">
                             <span class="block w-6 h-0.5 bg-white rounded-full transition-all group-hover:w-7"></span>
@@ -134,22 +183,21 @@
                         </div>
                     </div>
                     
-                    <!-- Professional Callout Bubble -->
-                    <div id="menuCallout" class="absolute -bottom-16 left-1/2 -translate-x-1/2 bg-gradient-to-r from-primary-600 to-secondary-600 text-white px-4 py-2 rounded-lg shadow-xl whitespace-nowrap opacity-0 pointer-events-none transition-all duration-300 animate-pulse">
-                        <span class="text-sm font-bold flex items-center gap-2">
+                    <!-- Callout (اضغط هنا) - z-index: 66 -->
+                    <div id="menuCallout" class="absolute -bottom-16 left-1/2 -translate-x-1/2 px-4 py-2 rounded-lg shadow-xl whitespace-nowrap opacity-0 pointer-events-none transition-opacity duration-300 z-[66]">
+                        <span class="text-sm font-bold flex items-center gap-2 text-white">
                             <i data-lucide="hand-metal" class="w-4 h-4"></i>
                             اضغط هنا
                         </span>
-                        <!-- Arrow pointing up -->
-                        <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-b-8 border-l-transparent border-r-transparent border-b-primary-600"></div>
+                        <div id="calloutArrow" class="absolute -top-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-b-8 border-l-transparent border-r-transparent border-b-blue-500"></div>
                     </div>
                 </button>
             </div>
         </div>
     </nav>
     
-    <!-- Enhanced Mobile Menu -->
-    <div id="mobileMenu" class="fixed inset-0 z-40 md:hidden translate-x-full transition-transform duration-500">
+    <!-- Enhanced Mobile Menu - z-index: 80 -->
+    <div id="mobileMenu" class="fixed inset-0 z-[80] md:hidden translate-x-full transition-transform duration-500">
         <div class="absolute inset-0 bg-gradient-to-br from-primary-900/95 to-secondary-900/95 backdrop-blur-sm" id="mobileOverlay"></div>
         <div class="absolute right-0 top-0 h-full w-80 max-w-[85vw] bg-white shadow-2xl overflow-y-auto">
             <div class="p-8">
@@ -168,45 +216,111 @@
                         <span class="text-lg font-bold text-slate-700 group-hover:text-primary-600">الرئيسية</span>
                     </a>
                     
-                    <a href="#services" class="mobile-link mobile-menu-item flex items-center gap-4 p-4 rounded-xl hover:bg-gradient-to-r hover:from-primary-50 hover:to-purple-50 transition-all group">
-                        <div class="w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                            <i data-lucide="briefcase" class="w-6 h-6 text-white"></i>
+                    <a href="#" data-link="songs" class="mobile-link mobile-menu-item flex items-center gap-4 p-4 rounded-xl hover:bg-gradient-to-r hover:from-primary-50 hover:to-purple-50 transition-all group">
+                        <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-rose-500 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                            <i data-lucide="music" class="w-6 h-6 text-white"></i>
                         </div>
-                        <span class="text-lg font-bold text-slate-700 group-hover:text-primary-600">الخدمات</span>
+                        <span class="text-lg font-bold text-slate-700 group-hover:text-primary-600">أغاني أحبها</span>
                     </a>
                     
-                    <a href="#contact" class="mobile-link mobile-menu-item flex items-center gap-4 p-4 rounded-xl hover:bg-gradient-to-r hover:from-primary-50 hover:to-purple-50 transition-all group">
-                        <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-rose-500 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                            <i data-lucide="mail" class="w-6 h-6 text-white"></i>
+                    <a href="#" data-link="designs" class="mobile-link mobile-menu-item flex items-center gap-4 p-4 rounded-xl hover:bg-gradient-to-r hover:from-primary-50 hover:to-purple-50 transition-all group">
+                        <div class="w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                            <i data-lucide="palette" class="w-6 h-6 text-white"></i>
                         </div>
-                        <span class="text-lg font-bold text-slate-700 group-hover:text-primary-600">تواصل</span>
+                        <span class="text-lg font-bold text-slate-700 group-hover:text-primary-600">تصاميمي</span>
+                    </a>
+                    
+                    <a href="#" data-link="cv" class="mobile-link mobile-menu-item flex items-center gap-4 p-4 rounded-xl hover:bg-gradient-to-r hover:from-primary-50 hover:to-purple-50 transition-all group">
+                        <div class="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                            <i data-lucide="file-text" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <span class="text-lg font-bold text-slate-700 group-hover:text-primary-600">سيرتي الذاتية</span>
                     </a>
                 </div>
                 
                 <div class="mt-8 pt-8 border-t border-slate-200">
-                    <a href="#contact" class="mobile-menu-item flex items-center justify-center gap-2 bg-gradient-to-r from-primary-600 to-secondary-500 text-white px-6 py-4 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all">
-                        <i data-lucide="rocket" class="w-5 h-5"></i>
-                        <span>ابدأ مشروعك الآن</span>
-                    </a>
+                    <button onclick="openContactModal()" class="mobile-menu-item w-full flex items-center justify-center gap-2 bg-gradient-to-r from-primary-600 to-secondary-500 text-white px-6 py-4 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all">
+                        <i data-lucide="sparkles" class="w-5 h-5"></i>
+                        <span>تواصل معي</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Modal -->
+    <div id="contactModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[90] hidden items-center justify-center p-4">
+        <div class="bg-gradient-to-br from-white to-purple-50 rounded-3xl max-w-md w-full p-8 shadow-2xl relative animate-slide-up">
+            <button onclick="closeContactModal()" class="absolute top-4 left-4 w-10 h-10 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center justify-center transition-colors">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            
+            <div id="contactMain" class="space-y-6">
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <i data-lucide="mail" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h3 class="text-3xl font-black gradient-text">تواصل معي</h3>
+                    <p class="text-slate-600 mt-2">اختر طريقة التواصل المفضلة</p>
+                </div>
+                
+                <button onclick="showSocialMedia()" class="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 py-4 rounded-xl font-bold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">
+                    <i data-lucide="share-2" class="w-5 h-5"></i>
+                    <span>التواصل على مواقع التواصل</span>
+                </button>
+                
+                <button onclick="showMessageOptions()" class="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-4 rounded-xl font-bold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">
+                    <i data-lucide="message-circle" class="w-5 h-5"></i>
+                    <span>إرسال رسالة خاصة</span>
+                </button>
+            </div>
+            
+            <div id="messageOptions" class="hidden space-y-6">
+                <button onclick="showContactMain()" class="flex items-center gap-2 text-primary-600 hover:text-primary-700 font-bold mb-4">
+                    <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    <span>رجوع</span>
+                </button>
+                
+                <button onclick="showChatBox()" class="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-indigo-500 to-blue-500 text-white px-6 py-4 rounded-xl font-bold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">
+                    <i data-lucide="message-square" class="w-5 h-5"></i>
+                    <span>إرسال رسالة خاصة هنا</span>
+                </button>
+                
+                <a href="YOUR_TELLONYM_LINK" target="_blank" class="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-pink-500 to-rose-500 text-white px-6 py-4 rounded-xl font-bold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">
+                    <div class="w-6 h-6 bg-white rounded flex items-center justify-center">
+                        <span class="text-xs font-black text-pink-500">T</span>
+                    </div>
+                    <span>أرسل رسالة على Tellonym</span>
+                </a>
+            </div>
+            
+            <div id="chatBox" class="hidden">
+                <button onclick="showMessageOptions()" class="flex items-center gap-2 text-primary-600 hover:text-primary-700 font-bold mb-4">
+                    <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    <span>رجوع</span>
+                </button>
+                
+                <div class="text-center py-8">
+                    <p class="text-slate-600">سيتم برمجة نظام المحادثة قريباً...</p>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Hero Section -->
-    <section id="home" class="min-h-screen flex items-center pt-32 pb-20 px-4 relative overflow-hidden">
+    <section id="home" class="min-h-screen flex items-center pt-32 pb-20 px-4 lg:px-8 relative overflow-hidden">
         <div class="absolute top-20 right-20 w-72 h-72 bg-primary-400/20 rounded-full blur-3xl animate-float"></div>
         <div class="absolute bottom-20 left-20 w-96 h-96 bg-purple-400/20 rounded-full blur-3xl animate-float" style="animation-delay: 2s;"></div>
         
         <div class="max-w-7xl mx-auto w-full">
             <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
                 <div class="space-y-8 animate-slide-up">
-                    <div class="inline-flex items-center gap-3 glass px-6 py-3 rounded-full border border-primary-200/50 shadow-lg">
+                    <div class="inline-flex items-center gap-3 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 px-6 py-3 rounded-full shadow-lg">
                         <span class="relative flex h-3 w-3">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
                         </span>
-                        <span class="font-bold text-primary-600">متاح للعمل</span>
+                        <span class="font-bold text-white">تابعني على إنستغرام 🔥</span>
                     </div>
                     
                     <div class="space-y-4">
@@ -219,23 +333,21 @@
                         </p>
                     </div>
                     
-                    <p class="text-xl text-slate-600 leading-relaxed">
-                        أحول الأفكار إلى تطبيقات ومواقع رقمية احترافية. بخبرة أكاديمية وعملية، أقدم حلولاً تقنية مبتكرة تجمع بين التصميم الجذاب والأداء المتميز.
-                    </p>
+                    <div class="fancy-description">
+                        <p class="text-lg lg:text-xl text-slate-700 leading-relaxed font-medium">
+                            أحول الأفكار إلى تطبيقات ومواقع رقمية احترافية. بخبرة أكاديمية وعملية، أقدم حلولاً تقنية مبتكرة تجمع بين التصميم الجذاب والأداء المتميز.
+                        </p>
+                    </div>
                     
                     <div class="flex flex-wrap gap-4">
-                        <a href="#services" class="group flex items-center gap-3 bg-gradient-to-r from-primary-600 to-secondary-500 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
-                            <i data-lucide="rocket" class="w-6 h-6 group-hover:animate-bounce"></i>
-                            <span>استكشف خدماتي</span>
-                        </a>
-                        <a href="#contact" class="flex items-center gap-3 bg-white text-slate-700 px-8 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl hover:-translate-y-1 border-2 border-slate-200 hover:border-primary-500 transition-all duration-300">
-                            <i data-lucide="message-circle" class="w-6 h-6"></i>
+                        <button onclick="openContactModal()" class="group flex items-center gap-3 bg-gradient-to-r from-primary-600 to-secondary-500 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
+                            <i data-lucide="sparkles" class="w-6 h-6 group-hover:animate-bounce"></i>
                             <span>تواصل معي</span>
-                        </a>
+                        </button>
                     </div>
                 </div>
                 
-                <div class="relative animate-slide-right">
+                <div class="relative animate-slide-right mt-8 lg:mt-0">
                     <div class="relative z-10">
                         <div class="relative rounded-3xl overflow-hidden shadow-2xl border-8 border-white">
                             <img src="https://www.raed.net/img?id=1437514" alt="حيدر" class="w-full h-auto hover:scale-105 transition-transform duration-500">
@@ -270,244 +382,18 @@
         </div>
     </section>
 
-    <!-- Stats Section -->
-    <section class="py-20 px-4">
-        <div class="max-w-7xl mx-auto">
-            <div class="glass rounded-3xl p-10 lg:p-16 shadow-2xl border border-white/20 relative overflow-hidden">
-                <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary-600 via-secondary-500 to-cyan-500"></div>
-                
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
-                    <div class="stat-item text-center group cursor-pointer">
-                        <div class="text-6xl lg:text-7xl font-black gradient-text mb-3 group-hover:scale-110 transition-transform">3+</div>
-                        <div class="text-lg font-bold text-slate-700">سنوات خبرة</div>
-                    </div>
-                    <div class="stat-item text-center group cursor-pointer">
-                        <div class="text-6xl lg:text-7xl font-black gradient-text mb-3 group-hover:scale-110 transition-transform">50+</div>
-                        <div class="text-lg font-bold text-slate-700">مشروع منجز</div>
-                    </div>
-                    <div class="stat-item text-center group cursor-pointer">
-                        <div class="text-6xl lg:text-7xl font-black gradient-text mb-3 group-hover:scale-110 transition-transform">100%</div>
-                        <div class="text-lg font-bold text-slate-700">رضا العملاء</div>
-                    </div>
-                    <div class="stat-item text-center group cursor-pointer">
-                        <div class="text-6xl lg:text-7xl font-black gradient-text mb-3 group-hover:scale-110 transition-transform">24/7</div>
-                        <div class="text-lg font-bold text-slate-700">دعم فني</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Modern Services Section -->
-    <section id="services" class="py-20 px-4 relative overflow-hidden">
-        <div class="absolute inset-0 bg-gradient-to-br from-primary-50/50 via-purple-50/50 to-cyan-50/50"></div>
-        
-        <div class="max-w-7xl mx-auto relative z-10">
-            <div class="text-center mb-16 space-y-4">
-                <div class="inline-block glass px-6 py-3 rounded-full border border-primary-200/50 shadow-lg mb-4">
-                    <span class="font-bold text-primary-600">ماذا أقدم</span>
-                </div>
-                <h2 class="text-5xl lg:text-6xl font-black text-slate-900">خدماتي المميزة</h2>
-                <p class="text-xl text-slate-600 max-w-2xl mx-auto">حلول رقمية مبتكرة تجمع بين الإبداع والتكنولوجيا</p>
-            </div>
-            
-            <div class="grid lg:grid-cols-2 gap-8 lg:gap-12">
-                <!-- Android Service -->
-                <div class="group relative bg-gradient-to-br from-white to-primary-50/30 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 border-2 border-primary-100 hover:border-primary-300 hover:-translate-y-2">
-                    <div class="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-primary-400/20 to-secondary-400/20 rounded-bl-full"></div>
-                    
-                    <div class="relative p-8 lg:p-10">
-                        <div class="flex items-start justify-between mb-8">
-                            <div class="flex items-center gap-4">
-                                <div class="w-20 h-20 bg-gradient-to-br from-primary-600 to-secondary-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
-                                    <i data-lucide="smartphone" class="w-10 h-10 text-white"></i>
-                                </div>
-                                <div>
-                                    <h3 class="text-3xl lg:text-4xl font-black text-slate-900 mb-1">تطبيقات أندرويد</h3>
-                                    <p class="text-primary-600 font-bold">Android Development</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <p class="text-lg text-slate-600 mb-8 leading-relaxed">
-                            تطوير تطبيقات أندرويد احترافية بتصميم عصري وأداء متميز، مع تجربة مستخدم سلسة وسهلة تلبي احتياجات مشروعك.
-                        </p>
-                        
-                        <!-- Video Preview -->
-                        <div class="relative mb-8 rounded-2xl overflow-hidden shadow-xl cursor-pointer group/video" onclick="openVideo('android')">
-                            <img src="https://images.unsplash.com/photo-1555774698-0b77e0d5fac6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="تطوير تطبيقات أندرويد" class="w-full h-64 object-cover group-hover/video:scale-110 transition-transform duration-500">
-                            
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent group-hover/video:from-black/90 transition-all"></div>
-                            
-                            <div class="absolute inset-0 flex flex-col items-center justify-center gap-4">
-                                <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-2xl group-hover/video:scale-125 group-hover/video:bg-primary-500 transition-all duration-300 animate-pulse-scale">
-                                    <i data-lucide="play" class="w-10 h-10 text-primary-600 group-hover/video:text-white mr-1 transition-colors"></i>
-                                </div>
-                                <div class="bg-white/95 backdrop-blur-sm px-6 py-3 rounded-full shadow-xl">
-                                    <span class="font-black text-slate-900 flex items-center gap-2">
-                                        <i data-lucide="video" class="w-5 h-5 text-primary-600"></i>
-                                        شاهد عينة من أعمالي
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="grid grid-cols-2 gap-4 mb-8">
-                            <div class="flex items-center gap-3 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <i data-lucide="check" class="w-5 h-5 text-green-600"></i>
-                                </div>
-                                <span class="font-bold text-slate-700">تصميم حديث</span>
-                            </div>
-                            <div class="flex items-center gap-3 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <i data-lucide="check" class="w-5 h-5 text-green-600"></i>
-                                </div>
-                                <span class="font-bold text-slate-700">أداء سريع</span>
-                            </div>
-                            <div class="flex items-center gap-3 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <i data-lucide="check" class="w-5 h-5 text-green-600"></i>
-                                </div>
-                                <span class="font-bold text-slate-700">متوافق تماماً</span>
-                            </div>
-                            <div class="flex items-center gap-3 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <i data-lucide="check" class="w-5 h-5 text-green-600"></i>
-                                </div>
-                                <span class="font-bold text-slate-700">دعم شامل</span>
-                            </div>
-                        </div>
-                        
-                        <button onclick="orderService('android')" class="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-primary-600 to-secondary-600 text-white px-8 py-5 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                            <i data-lucide="rocket" class="w-6 h-6"></i>
-                            <span>ابدأ مشروعك الآن</span>
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Website Service -->
-                <div class="group relative bg-gradient-to-br from-white to-cyan-50/30 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 border-2 border-cyan-100 hover:border-cyan-300 hover:-translate-y-2">
-                    <div class="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-cyan-400/20 to-blue-400/20 rounded-bl-full"></div>
-                    
-                    <div class="relative p-8 lg:p-10">
-                        <div class="flex items-start justify-between mb-8">
-                            <div class="flex items-center gap-4">
-                                <div class="w-20 h-20 bg-gradient-to-br from-cyan-600 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
-                                    <i data-lucide="globe" class="w-10 h-10 text-white"></i>
-                                </div>
-                                <div>
-                                    <h3 class="text-3xl lg:text-4xl font-black text-slate-900 mb-1">مواقع شخصية</h3>
-                                    <p class="text-cyan-600 font-bold">Web Development</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <p class="text-lg text-slate-600 mb-8 leading-relaxed">
-                            تصميم مواقع إلكترونية عصرية تعكس هويتك الرقمية بأسلوب احترافي مميز يترك انطباعاً قوياً لدى زوارك.
-                        </p>
-                        
-                        <!-- Video Preview -->
-                        <div class="relative mb-8 rounded-2xl overflow-hidden shadow-xl cursor-pointer group/video" onclick="openVideo('website')">
-                            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="تصميم مواقع إلكترونية" class="w-full h-64 object-cover group-hover/video:scale-110 transition-transform duration-500">
-                            
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent group-hover/video:from-black/90 transition-all"></div>
-                            
-                            <div class="absolute inset-0 flex flex-col items-center justify-center gap-4">
-                                <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-2xl group-hover/video:scale-125 group-hover/video:bg-cyan-500 transition-all duration-300 animate-pulse-scale">
-                                    <i data-lucide="play" class="w-10 h-10 text-cyan-600 group-hover/video:text-white mr-1 transition-colors"></i>
-                                </div>
-                                <div class="bg-white/95 backdrop-blur-sm px-6 py-3 rounded-full shadow-xl">
-                                    <span class="font-black text-slate-900 flex items-center gap-2">
-                                        <i data-lucide="video" class="w-5 h-5 text-cyan-600"></i>
-                                        شاهد عينة من أعمالي
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="grid grid-cols-2 gap-4 mb-8">
-                            <div class="flex items-center gap-3 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <i data-lucide="check" class="w-5 h-5 text-green-600"></i>
-                                </div>
-                                <span class="font-bold text-slate-700">تصميم فريد</span>
-                            </div>
-                            <div class="flex items-center gap-3 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <i data-lucide="check" class="w-5 h-5 text-green-600"></i>
-                                </div>
-                                <span class="font-bold text-slate-700">متجاوب كلياً</span>
-                            </div>
-                            <div class="flex items-center gap-3 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <i data-lucide="check" class="w-5 h-5 text-green-600"></i>
-                                </div>
-                                <span class="font-bold text-slate-700">سرعة خيالية</span>
-                            </div>
-                            <div class="flex items-center gap-3 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <i data-lucide="check" class="w-5 h-5 text-green-600"></i>
-                                </div>
-                                <span class="font-bold text-slate-700">محسّن SEO</span>
-                            </div>
-                        </div>
-                        
-                        <button onclick="orderService('website')" class="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-cyan-600 to-blue-600 text-white px-8 py-5 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                            <i data-lucide="rocket" class="w-6 h-6"></i>
-                            <span>ابدأ مشروعك الآن</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="py-20 px-4">
-        <div class="max-w-4xl mx-auto">
-            <div class="bg-gradient-to-br from-primary-600 to-secondary-600 rounded-3xl p-10 lg:p-16 shadow-2xl text-white text-center relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
-                <div class="absolute bottom-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
-                
-                <div class="relative z-10 space-y-8">
-                    <div class="inline-block bg-white/20 px-6 py-3 rounded-full backdrop-blur-sm mb-4">
-                        <span class="font-bold">تواصل معي</span>
-                    </div>
-                    
-                    <h2 class="text-4xl lg:text-6xl font-black">هل لديك مشروع؟</h2>
-                    <p class="text-xl lg:text-2xl text-white/90 max-w-2xl mx-auto">دعنا نحول فكرتك إلى واقع رقمي مبهر</p>
-                    
-                    <div class="flex flex-wrap justify-center gap-4 pt-6">
-                        <a href="mailto:your@email.com" class="flex items-center gap-3 bg-white text-primary-600 px-8 py-4 rounded-xl font-bold text-lg shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
-                            <i data-lucide="mail" class="w-6 h-6"></i>
-                            <span>راسلني عبر البريد</span>
-                        </a>
-                        <a href="https://wa.me/yourphone" class="flex items-center gap-3 bg-green-500 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
-                            <i data-lucide="message-circle" class="w-6 h-6"></i>
-                            <span>واتساب</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Simplified Footer -->
+    <!-- Footer -->
     <footer class="bg-slate-900 text-white py-12 px-4">
         <div class="max-w-7xl mx-auto">
             <div class="flex flex-col md:flex-row items-center justify-between gap-6">
                 <div class="text-center md:text-right">
                     <h3 class="text-3xl font-black gradient-text mb-2">حيدر</h3>
-                    <p class="text-slate-400">مدرس و مطور رقمي</p>
+                    <p class="text-slate-400">Portfolio</p>
                 </div>
                 
                 <div class="flex gap-4">
                     <a href="#" class="w-12 h-12 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center transition-all hover:-translate-y-1">
-                        <i data-lucide="github" class="w-5 h-5"></i>
-                    </a>
-                    <a href="#" class="w-12 h-12 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center transition-all hover:-translate-y-1">
-                        <i data-lucide="linkedin" class="w-5 h-5"></i>
+                        <i data-lucide="instagram" class="w-5 h-5"></i>
                     </a>
                     <a href="#" class="w-12 h-12 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center transition-all hover:-translate-y-1">
                         <i data-lucide="twitter" class="w-5 h-5"></i>
@@ -524,46 +410,58 @@
         </div>
     </footer>
 
-    <!-- Scroll to Top -->
-    <button id="scrollTop" class="fixed bottom-8 left-8 w-14 h-14 bg-gradient-to-r from-primary-600 to-secondary-500 text-white rounded-full shadow-xl flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 hover:-translate-y-1 z-40">
-        <i data-lucide="arrow-up" class="w-6 h-6"></i>
-    </button>
-
-    <!-- Video Modal -->
-    <div id="videoModal" class="fixed inset-0 bg-black/95 z-[100] hidden items-center justify-center p-4 backdrop-blur-sm">
-        <button onclick="closeVideo()" class="absolute top-6 right-6 w-14 h-14 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center transition-all hover:rotate-90 z-[101]">
-            <i data-lucide="x" class="w-7 h-7 text-white"></i>
-        </button>
-        
-        <div class="max-w-6xl w-full bg-black rounded-2xl overflow-hidden shadow-2xl">
-            <div id="videoPlayer" class="relative">
-                <video id="videoElement" class="w-full" controls>
-                    <source src="" type="video/mp4">
-                </video>
-            </div>
-        </div>
-    </div>
-
     <script>
         lucide.createIcons();
         
-        const videoLinks = {
-            android: 'https://dso7.raed.net:451/files/Demo-Vid-InstaDoodle.mp4',
-            website: 'YOUR_WEBSITE_VIDEO_URL.mp4'
+        // External Links Configuration
+        const externalLinks = {
+            songs: 'YOUR_SONGS_LINK',
+            designs: 'YOUR_DESIGNS_LINK',
+            cv: 'YOUR_CV_LINK'
         };
         
-        const orderLinks = {
-            android: 'YOUR_ANDROID_ORDER_URL',
-            website: 'YOUR_WEBSITE_ORDER_URL'
-        };
+        // Handle external links
+        document.querySelectorAll('[data-link]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const linkType = link.getAttribute('data-link');
+                if (externalLinks[linkType] && !externalLinks[linkType].includes('YOUR_')) {
+                    window.open(externalLinks[linkType], '_blank');
+                } else {
+                    alert('يرجى إضافة الرابط في الكود');
+                }
+            });
+        });
         
-        // Enhanced Mobile Menu
+        // Mobile Menu & First Visit Logic
         const mobileToggle = document.getElementById('mobileToggle');
         const mobileClose = document.getElementById('mobileClose');
         const mobileMenu = document.getElementById('mobileMenu');
         const mobileOverlay = document.getElementById('mobileOverlay');
         const mobileLinks = document.querySelectorAll('.mobile-link');
         const mobileMenuItems = document.querySelectorAll('.mobile-menu-item');
+        const firstVisitBlur = document.getElementById('firstVisitBlur');
+        const menuCallout = document.getElementById('menuCallout');
+        const calloutArrow = document.getElementById('calloutArrow');
+        
+        let firstVisit = !localStorage.getItem('hasVisited');
+        let blurActive = false;
+        
+        // Callout Color Animation
+        function startCalloutAnimation() {
+            menuCallout.classList.add('callout-animate');
+            
+            setInterval(() => {
+                if (menuCallout.style.opacity !== '0' && !menuCallout.classList.contains('hidden')) {
+                    const currentColor = calloutArrow.style.borderBottomColor;
+                    if (currentColor === 'rgb(30, 64, 175)' || currentColor === '#1e40af') {
+                        calloutArrow.style.borderBottomColor = '#3b82f6';
+                    } else {
+                        calloutArrow.style.borderBottomColor = '#1e40af';
+                    }
+                }
+            }, 1000);
+        }
         
         function toggleMobileMenu() {
             const isOpen = !mobileMenu.classList.contains('translate-x-full');
@@ -572,12 +470,34 @@
                 mobileMenu.classList.add('translate-x-full');
                 document.body.style.overflow = 'auto';
                 mobileMenuItems.forEach(item => item.classList.remove('show'));
+                
+                // Hide blur permanently after first interaction
+                if (blurActive) {
+                    firstVisitBlur.style.opacity = '0';
+                    setTimeout(() => {
+                        firstVisitBlur.classList.add('hidden');
+                    }, 500);
+                    menuCallout.style.opacity = '0';
+                    menuCallout.classList.remove('callout-animate');
+                    blurActive = false;
+                }
             } else {
                 mobileMenu.classList.remove('translate-x-full');
                 document.body.style.overflow = 'hidden';
                 mobileMenuItems.forEach((item, index) => {
                     setTimeout(() => item.classList.add('show'), index * 100);
                 });
+                
+                // Hide callout and blur when menu opens
+                if (blurActive) {
+                    menuCallout.style.opacity = '0';
+                    menuCallout.classList.remove('callout-animate');
+                    firstVisitBlur.style.opacity = '0';
+                    setTimeout(() => {
+                        firstVisitBlur.classList.add('hidden');
+                    }, 500);
+                    blurActive = false;
+                }
             }
         }
         
@@ -585,6 +505,40 @@
         mobileClose.addEventListener('click', toggleMobileMenu);
         mobileOverlay.addEventListener('click', toggleMobileMenu);
         mobileLinks.forEach(link => link.addEventListener('click', toggleMobileMenu));
+        
+        // First visit blur effect - FOR ALL DEVICES
+        console.log('Testing First Visit:');
+        console.log('firstVisit:', firstVisit);
+        console.log('window.innerWidth:', window.innerWidth);
+        console.log('Blur element:', firstVisitBlur);
+        console.log('Callout element:', menuCallout);
+        
+        if (firstVisit) {
+            console.log('✅ First visit blur will start...');
+            
+            setTimeout(() => {
+                console.log('▶️ Showing blur now');
+                firstVisitBlur.classList.remove('hidden');
+                firstVisitBlur.style.opacity = '1';
+                blurActive = true;
+                
+                // Show callout only on mobile
+                if (window.innerWidth < 768) {
+                    setTimeout(() => {
+                        console.log('▶️ Showing callout now (mobile)');
+                        menuCallout.style.opacity = '1';
+                        menuCallout.style.transform = 'translateX(-50%) translateY(5px)';
+                        startCalloutAnimation();
+                    }, 500);
+                } else {
+                    console.log('ℹ️ Callout hidden (desktop)');
+                }
+                
+                localStorage.setItem('hasVisited', 'true');
+            }, 1000);
+        } else {
+            console.log('❌ Blur NOT shown because: Not first visit');
+        }
         
         // Navbar Scroll Effect
         const navbar = document.getElementById('navbar');
@@ -596,41 +550,52 @@
             }
         });
         
-        // Active Nav Link
-        const sections = document.querySelectorAll('section[id]');
-        const navLinks = document.querySelectorAll('.nav-link');
+        // Contact Modal Functions
+        function openContactModal() {
+            document.getElementById('contactModal').classList.remove('hidden');
+            document.getElementById('contactModal').classList.add('flex');
+            document.body.style.overflow = 'hidden';
+            showContactMain();
+            setTimeout(() => lucide.createIcons(), 100);
+        }
         
-        window.addEventListener('scroll', () => {
-            let current = '';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                if (window.pageYOffset >= (sectionTop - 200)) {
-                    current = section.getAttribute('id');
-                }
-            });
-            
-            navLinks.forEach(link => {
-                link.classList.remove('bg-white', 'text-primary-600', 'shadow-md');
-                if (link.getAttribute('href') === `#${current}`) {
-                    link.classList.add('bg-white', 'text-primary-600', 'shadow-md');
-                }
-            });
-        });
+        function closeContactModal() {
+            document.getElementById('contactModal').classList.add('hidden');
+            document.getElementById('contactModal').classList.remove('flex');
+            document.body.style.overflow = 'auto';
+        }
         
-        // Scroll to Top Button
-        const scrollTopBtn = document.getElementById('scrollTop');
+        function showContactMain() {
+            document.getElementById('contactMain').classList.remove('hidden');
+            document.getElementById('messageOptions').classList.add('hidden');
+            document.getElementById('chatBox').classList.add('hidden');
+        }
         
-        window.addEventListener('scroll', () => {
-            if (window.pageYOffset > 500) {
-                scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none');
-            } else {
-                scrollTopBtn.classList.add('opacity-0', 'pointer-events-none');
-            }
-        });
+        function showMessageOptions() {
+            document.getElementById('contactMain').classList.add('hidden');
+            document.getElementById('messageOptions').classList.remove('hidden');
+            document.getElementById('chatBox').classList.add('hidden');
+            setTimeout(() => lucide.createIcons(), 100);
+        }
         
-        scrollTopBtn.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
+        function showSocialMedia() {
+            alert('سيتم إضافة روابط مواقع التواصل الاجتماعي قريباً');
+        }
+        
+        function showChatBox() {
+            document.getElementById('contactMain').classList.add('hidden');
+            document.getElementById('messageOptions').classList.add('hidden');
+            document.getElementById('chatBox').classList.remove('hidden');
+            setTimeout(() => lucide.createIcons(), 100);
+        }
+        
+        // Make functions global
+        window.openContactModal = openContactModal;
+        window.closeContactModal = closeContactModal;
+        window.showContactMain = showContactMain;
+        window.showMessageOptions = showMessageOptions;
+        window.showSocialMedia = showSocialMedia;
+        window.showChatBox = showChatBox;
         
         // Smooth Scroll
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -643,99 +608,14 @@
             });
         });
         
-        // Video Modal
-        function openVideo(type) {
-            const modal = document.getElementById('videoModal');
-            const video = document.getElementById('videoElement');
-            
-            if (videoLinks[type] && !videoLinks[type].includes('YOUR_')) {
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-                document.body.style.overflow = 'hidden';
-                
-                video.querySelector('source').src = videoLinks[type];
-                video.load();
-                video.play();
-                
-                // Show callout after page loads
-        setTimeout(() => {
-            const callout = document.getElementById('menuCallout');
-            if (callout && window.innerWidth < 768) {
-                callout.style.opacity = '1';
-                callout.style.transform = 'translateX(-50%) translateY(5px)';
-                
-                // Hide after 5 seconds
-                setTimeout(() => {
-                    callout.style.opacity = '0';
-                    callout.style.transform = 'translateX(-50%) translateY(0)';
-                }, 5000);
-            }
-        }, 2000);
-        
-        // Hide callout when menu is opened
-        mobileToggle.addEventListener('click', () => {
-            const callout = document.getElementById('menuCallout');
-            if (callout) {
-                callout.style.opacity = '0';
-            }
-        });
-        
-        setTimeout(() => lucide.createIcons(), 100);
-            } else {
-                alert('يرجى إضافة رابط الفيديو في الكود');
-            }
-        }
-        
-        function closeVideo() {
-            const modal = document.getElementById('videoModal');
-            const video = document.getElementById('videoElement');
-            
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-            document.body.style.overflow = 'auto';
-            
-            video.pause();
-            video.currentTime = 0;
-        }
-        
-        document.getElementById('videoModal').addEventListener('click', function(e) {
-            if (e.target === this) closeVideo();
-        });
-        
-        // Order Service
-        function orderService(type) {
-            if (orderLinks[type] && !orderLinks[type].includes('YOUR_')) {
-                window.open(orderLinks[type], '_blank');
-            } else {
-                alert('يرجى إضافة رابط الطلب في الكود');
-            }
-        }
-        
-        // Intersection Observer
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -100px 0px'
-        };
-        
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animate-slide-up');
-                }
-            });
-        }, observerOptions);
-        
-        document.querySelectorAll('.stat-item').forEach(el => {
-            observer.observe(el);
-        });
-        
-        // Keyboard Navigation
+        // Close modal on escape key
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && !document.getElementById('videoModal').classList.contains('hidden')) {
-                closeVideo();
+            if (e.key === 'Escape') {
+                closeContactModal();
             }
         });
         
+        // Reinitialize icons after animations
         setTimeout(() => lucide.createIcons(), 100);
     </script>
 </body>

@@ -152,10 +152,20 @@
 <body class="bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 text-slate-900 overflow-x-hidden">
 
     <!-- First Visit Blur Overlay - z-index: 55 -->
-    <div id="firstVisitBlur" class="fixed inset-0 bg-black/70 z-[55] hidden transition-opacity duration-500"></div>
+    <div id="firstVisitBlur" class="fixed inset-0 bg-black/70 z-[55] hidden transition-opacity duration-500">
+        <div class="absolute inset-0" style="backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);"></div>
+        
+        <!-- Helper Text for Desktop -->
+        <div id="blurHelperText" class="hidden md:flex absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-center flex-col items-center gap-4 z-[56]">
+            <div class="text-4xl font-black animate-pulse">👆</div>
+            <div class="text-2xl font-bold bg-white/10 backdrop-blur-sm px-8 py-4 rounded-2xl">
+                مرحباً بك! انقر في أي مكان للمتابعة
+            </div>
+        </div>
+    </div>
 
     <!-- Floating Navbar -->
-    <nav id="navbar" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-7xl transition-all duration-500">
+    <nav id="navbar" class="fixed top-4 left-1/2 -translate-x-1/2 z-[60] w-[95%] max-w-7xl transition-all duration-500">
         <div class="glass rounded-2xl px-6 py-4 shadow-xl border border-white/20">
             <div class="flex items-center justify-between">
                 <a href="#home" class="text-3xl font-black gradient-text hover:scale-110 transition-transform duration-300">
@@ -506,21 +516,50 @@
         mobileOverlay.addEventListener('click', toggleMobileMenu);
         mobileLinks.forEach(link => link.addEventListener('click', toggleMobileMenu));
         
-        // First visit blur effect - ONLY ON MOBILE
-        if (firstVisit && window.innerWidth < 768) {
+        // First visit blur effect - FOR ALL DEVICES
+        console.log('Testing First Visit:');
+        console.log('firstVisit:', firstVisit);
+        console.log('window.innerWidth:', window.innerWidth);
+        console.log('Blur element:', firstVisitBlur);
+        console.log('Callout element:', menuCallout);
+        
+        if (firstVisit) {
+            console.log('✅ First visit blur will start...');
+            
             setTimeout(() => {
+                console.log('▶️ Showing blur now');
                 firstVisitBlur.classList.remove('hidden');
                 firstVisitBlur.style.opacity = '1';
                 blurActive = true;
                 
-                setTimeout(() => {
-                    menuCallout.style.opacity = '1';
-                    menuCallout.style.transform = 'translateX(-50%) translateY(5px)';
-                    startCalloutAnimation();
-                }, 500);
+                // Show callout only on mobile
+                if (window.innerWidth < 768) {
+                    setTimeout(() => {
+                        console.log('▶️ Showing callout now (mobile)');
+                        menuCallout.style.opacity = '1';
+                        menuCallout.style.transform = 'translateX(-50%) translateY(5px)';
+                        startCalloutAnimation();
+                    }, 500);
+                } else {
+                    console.log('ℹ️ Callout hidden (desktop)');
+                }
                 
                 localStorage.setItem('hasVisited', 'true');
             }, 1000);
+            
+            // Allow clicking blur to dismiss (desktop only)
+            firstVisitBlur.addEventListener('click', function() {
+                if (window.innerWidth >= 768) {
+                    console.log('▶️ Blur clicked - hiding');
+                    firstVisitBlur.style.opacity = '0';
+                    setTimeout(() => {
+                        firstVisitBlur.classList.add('hidden');
+                    }, 500);
+                    blurActive = false;
+                }
+            });
+        } else {
+            console.log('❌ Blur NOT shown because: Not first visit');
         }
         
         // Navbar Scroll Effect

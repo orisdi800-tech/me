@@ -834,6 +834,163 @@
         
         // Reinitialize icons after animations
         setTimeout(() => lucide.createIcons(), 100);
+
+
+// ====================================
+// الطريقة 1: Google Translate (الأسهل والأفضل - مجانية)
+// ====================================
+
+// أضف هذا الكود في <head> أو قبل </body>
+
+function googleTranslateElementInit() {
+    // كشف لغة المتصفح
+    const browserLang = (navigator.language || navigator.userLanguage).split('-')[0];
+    
+    new google.translate.TranslateElement({
+        pageLanguage: 'ar', // لغة صفحتك الأصلية (غيّرها حسب محتواك)
+        autoDisplay: true,
+        includedLanguages: 'ar,en,fr,es,de,it,tr,ru,zh-CN,ja,ko', // اللغات المدعومة
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+    }, 'google_translate_element');
+    
+    // ترجمة تلقائية حسب لغة المتصفح
+    setTimeout(function() {
+        const targetLang = browserLang;
+        const selectElement = document.querySelector('.goog-te-combo');
+        if (selectElement && targetLang !== 'ar') { // إذا اللغة ليست العربية
+            selectElement.value = targetLang;
+            selectElement.dispatchEvent(new Event('change'));
+        }
+    }, 1000);
+}
+
+// تحميل سكريبت Google Translate
+(function() {
+    const script = document.createElement('script');
+    script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+    script.async = true;
+    document.head.appendChild(script);
+})();
+
+
+// ====================================
+// CSS لتحسين مظهر أداة الترجمة (اختياري)
+// ====================================
+
+const style = document.createElement('style');
+style.textContent = `
+    /* إخفاء البانر العلوي لـ Google */
+    .goog-te-banner-frame {
+        display: none !important;
+    }
+    
+    body {
+        top: 0 !important;
+    }
+    
+    /* تنسيق قائمة اللغات */
+    #google_translate_element {
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        display: inline-block;
+    }
+    
+    .goog-te-gadget {
+        font-family: Arial, sans-serif !important;
+    }
+    
+    .goog-te-gadget-simple {
+        background-color: #fff !important;
+        border: 1px solid #ddd !important;
+        padding: 8px 12px !important;
+        border-radius: 6px !important;
+        font-size: 14px !important;
+    }
+    
+    .goog-te-gadget-simple:hover {
+        background-color: #f0f0f0 !important;
+    }
+`;
+document.head.appendChild(style);
+
+
+// ====================================
+// إضافة أزرار لغات مخصصة (اختياري)
+// ====================================
+
+function createLanguageButtons() {
+    const languages = [
+        { code: 'ar', name: 'العربية', flag: '🇸🇦' },
+        { code: 'en', name: 'English', flag: '🇬🇧' },
+        { code: 'fr', name: 'Français', flag: '🇫🇷' },
+        { code: 'es', name: 'Español', flag: '🇪🇸' },
+        { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
+        { code: 'tr', name: 'Türkçe', flag: '🇹🇷' }
+    ];
+    
+    const container = document.getElementById('custom_lang_buttons');
+    if (!container) return;
+    
+    languages.forEach(lang => {
+        const btn = document.createElement('button');
+        btn.innerHTML = `${lang.flag} ${lang.name}`;
+        btn.className = 'lang-btn';
+        btn.onclick = () => changeLanguage(lang.code);
+        container.appendChild(btn);
+    });
+}
+
+function changeLanguage(langCode) {
+    const selectElement = document.querySelector('.goog-te-combo');
+    if (selectElement) {
+        selectElement.value = langCode;
+        selectElement.dispatchEvent(new Event('change'));
+    }
+}
+
+// تشغيل إنشاء الأزرار بعد التحميل
+setTimeout(createLanguageButtons, 1500);
+
+
+// ====================================
+// CSS للأزرار المخصصة (اختياري)
+// ====================================
+
+const buttonStyle = document.createElement('style');
+buttonStyle.textContent = `
+    #custom_lang_buttons {
+        margin: 20px 0;
+        text-align: center;
+    }
+    
+    .lang-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        margin: 5px;
+        border-radius: 25px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: bold;
+        transition: transform 0.2s, box-shadow 0.2s;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    .lang-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+    
+    .lang-btn:active {
+        transform: translateY(0);
+    }
+`;
+document.head.appendChild(buttonStyle);
+
+        
     </script>
 </body>
 </html>
+

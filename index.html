@@ -38,6 +38,7 @@
                         'scale-in': 'scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
                         'glow': 'glow 2s ease-in-out infinite',
                         'shimmer': 'shimmer 3s linear infinite',
+                        'fade-in': 'fadeIn 0.5s ease-out',
                     },
                     keyframes: {
                         float: {
@@ -67,6 +68,10 @@
                         shimmer: {
                             '0%': { backgroundPosition: '-200% 0' },
                             '100%': { backgroundPosition: '200% 0' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
                         },
                     },
                 }
@@ -165,7 +170,7 @@
             animation: blueColorPulse 2s ease-in-out infinite;
         }
 
-        /* Contact Modal Styles from first code */
+        /* Contact Modal Styles - تأثير Blur بدلاً من Gradient */
         .contact-card {
             background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%);
             backdrop-filter: blur(30px);
@@ -225,9 +230,11 @@
             border-radius: inherit;
         }
         
+        /* Modal Overlay - تأثير Blur */
         .modal-overlay {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.95) 100%);
-            backdrop-filter: blur(20px);
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
         }
         
         .floating-particles {
@@ -240,7 +247,7 @@
         
         .particle {
             position: absolute;
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.15);
             border-radius: 50%;
             animation: floatParticle 8s infinite;
         }
@@ -265,6 +272,43 @@
         .tellonym-icon {
             background: linear-gradient(135deg, #FF6B6B, #FFE66D);
             animation: glow 2s ease-in-out infinite;
+        }
+        
+        /* Social Buttons Animation */
+        .social-buttons-container {
+            opacity: 0;
+            transition: opacity 0.5s ease-out;
+        }
+        
+        .social-buttons-container.show {
+            opacity: 1;
+        }
+        
+        .social-button {
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.4s ease-out;
+        }
+        
+        .social-buttons-container.show .social-button {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .social-buttons-container.show .social-button:nth-child(1) {
+            transition-delay: 0.1s;
+        }
+        
+        .social-buttons-container.show .social-button:nth-child(2) {
+            transition-delay: 0.2s;
+        }
+        
+        .social-buttons-container.show .social-button:nth-child(3) {
+            transition-delay: 0.3s;
+        }
+        
+        .social-buttons-container.show .social-button:nth-child(4) {
+            transition-delay: 0.4s;
         }
     </style>
 </head>
@@ -297,9 +341,8 @@
                 
                 <!-- Enhanced Contact Button -->
                 <button onclick="openContactModal()" class="hidden md:flex items-center gap-2 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-white px-8 py-4 rounded-2xl font-black text-lg shadow-2xl hover:shadow-pink-500/50 hover:scale-105 transition-all duration-300 animate-pulse-scale">
-                    <i data-lucide="sparkles" class="w-6 h-6"></i>
+                    <i data-lucide="feather" class="w-6 h-6"></i>
                     <span>تواصل معي</span>
-                    <i data-lucide="arrow-left" class="w-5 h-5"></i>
                 </button>
                 
                 <!-- Mobile Menu Toggle Button - z-index: 65 -->
@@ -369,7 +412,7 @@
                 
                 <div class="mt-8 pt-8 border-t border-slate-200">
                     <button onclick="openContactModal()" class="mobile-menu-item w-full flex items-center justify-center gap-2 bg-gradient-to-r from-primary-600 to-secondary-500 text-white px-6 py-4 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all">
-                        <i data-lucide="sparkles" class="w-5 h-5"></i>
+                        <i data-lucide="feather" class="w-5 h-5"></i>
                         <span>تواصل معي</span>
                     </button>
                 </div>
@@ -377,7 +420,7 @@
         </div>
     </div>
 
-    <!-- Contact Modal from first code -->
+    <!-- Contact Modal -->
     <div id="contactModal" class="fixed inset-0 z-[90] hidden items-center justify-center p-4">
         <div class="modal-overlay absolute inset-0" id="modalBackdrop">
             <div class="floating-particles">
@@ -397,7 +440,7 @@
             <div id="contactMainView" class="text-center space-y-6">
                 <div class="relative inline-block">
                     <div class="w-24 h-24 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-3xl flex items-center justify-center mx-auto shadow-2xl animate-glow">
-                        <i data-lucide="sparkles" class="w-12 h-12 text-white"></i>
+                        <i data-lucide="feather" class="w-12 h-12 text-white"></i>
                     </div>
                     <div class="absolute -top-2 -right-2 w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center shadow-lg animate-bounce">
                         <span class="text-xl">✨</span>
@@ -418,7 +461,7 @@
                             <div class="text-lg font-black">رسالة خاصة</div>
                             <div class="text-sm text-white/80"></div>
                         </div>
-                        <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                        <i data-lucide="pointer" class="w-5 h-5"></i>
                     </button>
                     
                     <button id="socialMediaBtn" class="contact-btn w-full flex items-center gap-4 bg-gradient-to-r from-pink-500 to-rose-500 text-white px-6 py-5 rounded-2xl font-bold shadow-xl">
@@ -429,7 +472,6 @@
                             <div class="text-lg font-black">على حسابات حيدر</div>
                             <div class="text-sm text-white/80">سوشيال ميديا</div>
                         </div>
-                        <i data-lucide="arrow-left" class="w-5 h-5"></i>
                     </button>
                 </div>
                 
@@ -441,14 +483,14 @@
             <div id="privateMessageView" class="hidden space-y-6">
                 <button id="backToMain" class="flex items-center gap-2 text-slate-600 hover:text-purple-600 font-bold transition-colors group">
                     <div class="w-8 h-8 rounded-full bg-slate-100 group-hover:bg-purple-100 flex items-center justify-center transition-colors">
-                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        <i data-lucide="chevron-right" class="w-5 h-5"></i>
                     </div>
                     <span>رجوع</span>
                 </button>
                 
                 <div class="text-center">
                     <div class="w-16 h-16 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto shadow-xl mb-4">
-                        <i data-lucide="message-square" class="w-8 h-8 text-white"></i>
+                        <i data-lucide="feather" class="w-8 h-8 text-white"></i>
                     </div>
                     <h3 class="text-2xl font-black bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">إرسال رسالة خاصة</h3>
                 </div>
@@ -462,7 +504,7 @@
                             <div class="text-lg font-black">إرسال رسالة هنا</div>
                             <div class="text-sm text-white/80"></div>
                         </div>
-                        <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                        <i data-lucide="pointer" class="w-5 h-5"></i>
                     </button>
                     
                     <a href="https://tellonym.me/user.hi8000" target="_blank" class="contact-btn w-full flex items-center gap-4 bg-gradient-to-r from-orange-500 to-amber-500 text-white px-6 py-5 rounded-2xl font-bold shadow-xl">
@@ -473,7 +515,7 @@
                             <div class="text-lg font-black">Tellonym</div>
                             <div class="text-sm text-white/80">ارسال رسالة كمجهول </div>
                         </div>
-                        <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                        <i data-lucide="pointer" class="w-5 h-5"></i>
                     </a>
                 </div>
             </div>
@@ -481,7 +523,7 @@
             <div id="chatView" class="hidden">
                 <button id="backFromChat" class="flex items-center gap-2 text-slate-600 hover:text-purple-600 font-bold transition-colors group mb-6">
                     <div class="w-8 h-8 rounded-full bg-slate-100 group-hover:bg-purple-100 flex items-center justify-center transition-colors">
-                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        <i data-lucide="chevron-right" class="w-5 h-5"></i>
                     </div>
                     <span>رجوع</span>
                 </button>
@@ -498,6 +540,70 @@
     </div>
 
     <!-- Hero Section -->
+    <section id="home" class="min-h-screen flex items-center pt-32 pb-20 px-4 lg:px-8 relative overflow-hidden">
+        <div class="absolute top-20 right-20 w-72 h-72 bg-primary-400/20 rounded-full blur-3xl animate-float"></div>
+        <div class="absolute bottom-20 left-20 w-96 h-96 bg-purple-400/20 rounded-full blur-3xl animate-float" style="animation-delay: 2s;"></div>
+        
+        <div class="max-w-7xl mx-auto w-full">
+            <div class="flex flex-col items-center gap-12 lg:gap-16">
+                <!-- الصورة والبطاقات في الأعلى -->
+                <div class="relative animate-slide-up w-full max-w-md lg:max-w-lg">
+                    <div class="relative z-10">
+                        <div class="relative rounded-3xl overflow-hidden shadow-2xl border-8 border-white">
+                            <img src="https://www.raed.net/img?id=1447558" alt="حيدر" class="w-full h-auto hover:scale-105 transition-transform duration-500">
+                        </div>
+                        
+                        <div class="absolute -top-6 -right-6 glass p-4 lg:p-5 rounded-2xl shadow-xl border border-white/20 animate-float">
+                            <div class="flex items-center gap-3 lg:gap-4">
+                                <div class="w-12 h-12 lg:w-14 lg:h-14 bg-gradient-to-br from-primary-600 to-secondary-500 rounded-xl flex items-center justify-center shadow-lg">
+                                    <i data-lucide="graduation-cap" class="w-6 h-6 lg:w-7 lg:h-7 text-white"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-900 text-sm lg:text-base">بكالوريوس</h4>
+                                    <p class="text-slate-600 text-xs lg:text-sm">لغة إنجليزية</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="absolute -bottom-6 -left-6 glass p-4 lg:p-5 rounded-2xl shadow-xl border border-white/20 animate-float" style="animation-delay: 1s;">
+                            <div class="flex items-center gap-3 lg:gap-4">
+                                <div class="w-12 h-12 lg:w-14 lg:h-14 bg-gradient-to-br from-purple-600 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
+                                    <i data-lucide="code-2" class="w-6 h-6 lg:w-7 lg:h-7 text-white"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-900 text-sm lg:text-base">مبرمج</h4>
+                                    <p class="text-slate-600 text-xs lg:text-sm">صفحات انترنت</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- زر تواصل معي في الوسط -->
+                <div class="flex flex-wrap gap-4 justify-center">
+                    <button onclick="openContactModal()" class="group flex items-center gap-3 bg-gradient-to-r from-primary-600 to-secondary-500 text-white px-6 lg:px-8 py-3 lg:py-4 rounded-xl font-bold text-base lg:text-lg shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
+                        <i data-lucide="feather" class="w-5 h-5 lg:w-6 lg:h-6 group-hover:animate-bounce"></i>
+                        <span>تواصل معي</span>
+                        <i data-lucide="pointer" class="w-5 h-5 lg:w-6 lg:h-6 group-hover:scale-110 transition-transform"></i>
+                    </button>
+                </div>
+                
+                <!-- أزرار التواصل مع تأثير Fade In -->
+                <div id="socialButtons" class="social-buttons-container flex flex-wrap gap-4 justify-center w-full max-w-md">
+                    <a href="#" class="social-button w-12 h-12 bg-gradient-to-br from-pink-500 to-rose-500 text-white rounded-xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:-translate-y-1">
+                        <i data-lucide="instagram" class="w-5 h-5"></i>
+                    </a>
+                    <a href="#" class="social-button w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 text-white rounded-xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:-translate-y-1">
+                        <i data-lucide="twitter" class="w-5 h-5"></i>
+                    </a>
+                    <a href="#" class="social-button w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 text-white rounded-xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:-translate-y-1">
+                        <i data-lucide="message-circle" class="w-5 h-5"></i>
+                    </a>
+                    <a href="#" class="social-button w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-500 text-white rounded-xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:-translate-y-1">
+                        <i data-lucide="linkedin" class="w-5 h-5"></i>
+                    </a>
+                </div>
+                
                 <!-- المحتوى النصي في الأسفل -->
                 <div class="space-y-6 lg:space-y-8 animate-slide-up text-center lg:text-right w-full">
                     <div class="inline-flex items-center gap-3 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 px-4 lg:px-6 py-2 lg:py-3 rounded-full shadow-lg">
@@ -525,18 +631,11 @@
                             اليوم، أعمل <span class="font-bold text-slate-900">موظفًا حكوميًا ومدرسًا للّغة الإنجليزية</span>، أحمل <span class="font-bold text-primary-600">شهادة البكالوريوس في اللغة الإنجليزية</span>، وأسعى دائمًا لـ<span class="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600">تطوير نفسي ومهاراتي في مجالات أوسع</span>.
                         </p>
                     </div>
-                    
-                    <div class="flex flex-wrap gap-4 justify-center lg:justify-start">
-                        <button onclick="openContactModal()" class="group flex items-center gap-3 bg-gradient-to-r from-primary-600 to-secondary-500 text-white px-6 lg:px-8 py-3 lg:py-4 rounded-xl font-bold text-base lg:text-lg shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
-                            <i data-lucide="sparkles" class="w-5 h-5 lg:w-6 lg:h-6 group-hover:animate-bounce"></i>
-                            <span>تواصل معي</span>
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>
-   </section>
-    
+    </section>
+
     <!-- Footer -->
     <footer class="bg-slate-900 text-white py-12 px-4">
         <div class="max-w-7xl mx-auto">
@@ -662,17 +761,8 @@
         mobileLinks.forEach(link => link.addEventListener('click', toggleMobileMenu));
         
         // First visit blur effect - FOR ALL DEVICES
-        console.log('Testing First Visit:');
-        console.log('firstVisit:', firstVisit);
-        console.log('window.innerWidth:', window.innerWidth);
-        console.log('Blur element:', firstVisitBlur);
-        console.log('Callout element:', menuCallout);
-        
         if (firstVisit) {
-            console.log('✅ First visit blur will start...');
-            
             setTimeout(() => {
-                console.log('▶️ Showing blur now');
                 firstVisitBlur.classList.remove('hidden');
                 firstVisitBlur.style.opacity = '1';
                 blurActive = true;
@@ -680,13 +770,10 @@
                 // Show callout only on mobile
                 if (window.innerWidth < 768) {
                     setTimeout(() => {
-                        console.log('▶️ Showing callout now (mobile)');
                         menuCallout.style.opacity = '1';
                         menuCallout.style.transform = 'translateX(-50%) translateY(5px)';
                         startCalloutAnimation();
                     }, 500);
-                } else {
-                    console.log('ℹ️ Callout hidden (desktop)');
                 }
                 
                 localStorage.setItem('hasVisited', 'true');
@@ -695,7 +782,6 @@
             // Allow clicking blur to dismiss (desktop only)
             firstVisitBlur.addEventListener('click', function() {
                 if (window.innerWidth >= 768) {
-                    console.log('▶️ Blur clicked - hiding');
                     firstVisitBlur.style.opacity = '0';
                     setTimeout(() => {
                         firstVisitBlur.classList.add('hidden');
@@ -703,8 +789,6 @@
                     blurActive = false;
                 }
             });
-        } else {
-            console.log('❌ Blur NOT shown because: Not first visit');
         }
         
         // Navbar Scroll Effect
@@ -717,7 +801,7 @@
             }
         });
         
-        // Contact Modal Functions from first code
+        // Contact Modal Functions
         const contactModal = document.getElementById('contactModal');
         const closeContactModalBtn = document.getElementById('closeContactModal');
         const modalBackdrop = document.getElementById('modalBackdrop');
@@ -796,168 +880,78 @@
         // Reinitialize icons after animations
         setTimeout(() => lucide.createIcons(), 100);
 
-
-// ====================================
-// الطريقة 1: Google Translate (الأسهل والأفضل - مجانية)
-// ====================================
-
-// أضف هذا الكود في <head> أو قبل </body>
-
-function googleTranslateElementInit() {
-    // كشف لغة المتصفح
-    const browserLang = (navigator.language || navigator.userLanguage).split('-')[0];
-    
-    new google.translate.TranslateElement({
-        pageLanguage: 'ar', // لغة صفحتك الأصلية (غيّرها حسب محتواك)
-        autoDisplay: true,
-        includedLanguages: 'ar,en,fr,es,de,it,tr,ru,zh-CN,ja,ko', // اللغات المدعومة
-        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-    }, 'google_translate_element');
-    
-    // ترجمة تلقائية حسب لغة المتصفح
-    setTimeout(function() {
-        const targetLang = browserLang;
-        const selectElement = document.querySelector('.goog-te-combo');
-        if (selectElement && targetLang !== 'ar') { // إذا اللغة ليست العربية
-            selectElement.value = targetLang;
-            selectElement.dispatchEvent(new Event('change'));
+        // Google Translate Integration
+        function googleTranslateElementInit() {
+            const browserLang = (navigator.language || navigator.userLanguage).split('-')[0];
+            
+            new google.translate.TranslateElement({
+                pageLanguage: 'ar',
+                autoDisplay: true,
+                includedLanguages: 'ar,en,fr,es,de,it,tr,ru,zh-CN,ja,ko',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+            }, 'google_translate_element');
+            
+            setTimeout(function() {
+                const targetLang = browserLang;
+                const selectElement = document.querySelector('.goog-te-combo');
+                if (selectElement && targetLang !== 'ar') {
+                    selectElement.value = targetLang;
+                    selectElement.dispatchEvent(new Event('change'));
+                }
+            }, 1000);
         }
-    }, 1000);
-}
 
-// تحميل سكريبت Google Translate
-(function() {
-    const script = document.createElement('script');
-    script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
-    script.async = true;
-    document.head.appendChild(script);
-})();
+        (function() {
+            const script = document.createElement('script');
+            script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+            script.async = true;
+            document.head.appendChild(script);
+        })();
 
-
-// ====================================
-// CSS لتحسين مظهر أداة الترجمة (اختياري)
-// ====================================
-
-const style = document.createElement('style');
-style.textContent = `
-    /* إخفاء البانر العلوي لـ Google */
-    .goog-te-banner-frame {
-        display: none !important;
-    }
-    
-    body {
-        top: 0 !important;
-    }
-    
-    /* تنسيق قائمة اللغات */
-    #google_translate_element {
-        padding: 10px;
-        background: #f8f9fa;
-        border-radius: 8px;
-        display: inline-block;
-    }
-    
-    .goog-te-gadget {
-        font-family: Arial, sans-serif !important;
-    }
-    
-    .goog-te-gadget-simple {
-        background-color: #fff !important;
-        border: 1px solid #ddd !important;
-        padding: 8px 12px !important;
-        border-radius: 6px !important;
-        font-size: 14px !important;
-    }
-    
-    .goog-te-gadget-simple:hover {
-        background-color: #f0f0f0 !important;
-    }
-`;
-document.head.appendChild(style);
-
-
-// ====================================
-// إضافة أزرار لغات مخصصة (اختياري)
-// ====================================
-
-function createLanguageButtons() {
-    const languages = [
-        { code: 'ar', name: 'العربية', flag: '🇸🇦' },
-        { code: 'en', name: 'English', flag: '🇬🇧' },
-        { code: 'fr', name: 'Français', flag: '🇫🇷' },
-        { code: 'es', name: 'Español', flag: '🇪🇸' },
-        { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
-        { code: 'tr', name: 'Türkçe', flag: '🇹🇷' }
-    ];
-    
-    const container = document.getElementById('custom_lang_buttons');
-    if (!container) return;
-    
-    languages.forEach(lang => {
-        const btn = document.createElement('button');
-        btn.innerHTML = `${lang.flag} ${lang.name}`;
-        btn.className = 'lang-btn';
-        btn.onclick = () => changeLanguage(lang.code);
-        container.appendChild(btn);
-    });
-}
-
-function changeLanguage(langCode) {
-    const selectElement = document.querySelector('.goog-te-combo');
-    if (selectElement) {
-        selectElement.value = langCode;
-        selectElement.dispatchEvent(new Event('change'));
-    }
-}
-
-// تشغيل إنشاء الأزرار بعد التحميل
-setTimeout(createLanguageButtons, 1500);
-
-
-// ====================================
-// CSS للأزرار المخصصة (اختياري)
-// ====================================
-
-const buttonStyle = document.createElement('style');
-buttonStyle.textContent = `
-    #custom_lang_buttons {
-        margin: 20px 0;
-        text-align: center;
-    }
-    
-    .lang-btn {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        margin: 5px;
-        border-radius: 25px;
-        cursor: pointer;
-        font-size: 14px;
-        font-weight: bold;
-        transition: transform 0.2s, box-shadow 0.2s;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    }
-    
-    .lang-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-    }
-    
-    .lang-btn:active {
-        transform: translateY(0);
-    }
-`;
-document.head.appendChild(buttonStyle);
-
+        const style = document.createElement('style');
+        style.textContent = `
+            .goog-te-banner-frame {
+                display: none !important;
+            }
+            
+            body {
+                top: 0 !important;
+            }
+            
+            #google_translate_element {
+                padding: 10px;
+                background: #f8f9fa;
+                border-radius: 8px;
+                display: inline-block;
+            }
+            
+            .goog-te-gadget {
+                font-family: Arial, sans-serif !important;
+            }
+            
+            .goog-te-gadget-simple {
+                background-color: #fff !important;
+                border: 1px solid #ddd !important;
+                padding: 8px 12px !important;
+                border-radius: 6px !important;
+                font-size: 14px !important;
+            }
+            
+            .goog-te-gadget-simple:hover {
+                background-color: #f0f0f0 !important;
+            }
+        `;
+        document.head.appendChild(style);
         
+        // إظهار أزرار التواصل مع تأثير Fade In
+        const contactButton = document.querySelector('button[onclick="openContactModal()"]');
+        const socialButtons = document.getElementById('socialButtons');
+        
+        contactButton.addEventListener('click', function() {
+            setTimeout(() => {
+                socialButtons.classList.add('show');
+            }, 300);
+        });
     </script>
 </body>
 </html>
-
-
-
-
-
-
-

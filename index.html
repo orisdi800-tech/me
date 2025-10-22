@@ -10,6 +10,11 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+    
     <script>
         tailwind.config = {
             theme: {
@@ -148,13 +153,11 @@
             font-family: serif;
         }
         
-        /* Blur Overlay */
         #firstVisitBlur {
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
         }
         
-        /* Callout Animation */
         @keyframes blueColorPulse {
             0%, 100% {
                 background-color: #3b82f6;
@@ -170,7 +173,6 @@
             animation: blueColorPulse 2s ease-in-out infinite;
         }
 
-        /* Contact Modal Styles - تأثير Blur بدلاً من Gradient */
         .contact-card {
             background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%);
             backdrop-filter: blur(30px);
@@ -215,22 +217,6 @@
             transform: rotate(360deg) scale(1.1);
         }
         
-        .gradient-border {
-            position: relative;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-            background-size: 200% 200%;
-            animation: shimmer 3s linear infinite;
-        }
-        
-        .gradient-border::before {
-            content: '';
-            position: absolute;
-            inset: 2px;
-            background: white;
-            border-radius: inherit;
-        }
-        
-        /* Modal Overlay - تأثير Blur */
         .modal-overlay {
             background: rgba(15, 23, 42, 0.85);
             backdrop-filter: blur(25px);
@@ -273,178 +259,143 @@
             background: linear-gradient(135deg, #FF6B6B, #FFE66D);
             animation: glow 2s ease-in-out infinite;
         }
-        
-        /* Social Buttons Animation */
-        .social-buttons-container {
-            opacity: 0;
-            transition: opacity 0.5s ease-out;
-        }
-        
-        .social-buttons-container.show {
-            opacity: 1;
-        }
-        
-        .social-button {
-            transform: translateY(20px);
-            opacity: 0;
-            transition: all 0.4s ease-out;
-        }
-        
-        .social-buttons-container.show .social-button {
-            transform: translateY(0);
-            opacity: 1;
-        }
-        
-        .social-buttons-container.show .social-button:nth-child(1) {
-            transition-delay: 0.1s;
-        }
-        
-        .social-buttons-container.show .social-button:nth-child(2) {
-            transition-delay: 0.2s;
-        }
-        
-        .social-buttons-container.show .social-button:nth-child(3) {
-            transition-delay: 0.3s;
-        }
-        
-        .social-buttons-container.show .social-button:nth-child(4) {
-            transition-delay: 0.4s;
-        }
-        
-        /* تنسيق واجهة الدردشة */
-        #chatContainer {
-            position: fixed;
-            inset: 0;
-            background: rgba(255, 255, 255, 0.95);
-            display: none; /* تغيير من chat-hidden إلى none */
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            direction: rtl;
-            font-family: "Tajawal", sans-serif;
-        }
-        .chat-hidden { display: none; }
 
-        .chat-box {
-            width: 90%;
-            max-width: 400px;
-            height: 550px;
-            background: #fff;
-            border-radius: 20px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.15);
+        /* Chat System Styles */
+        .chat-view-container {
+            max-height: 85vh;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
-            animation: fadeIn 0.3s ease;
         }
 
         .chat-header {
-            background: #f7f7f7;
-            padding: 12px 15px;
-            font-weight: bold;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #ddd;
-        }
-        #closeChat {
-            background: none;
-            border: none;
-            font-size: 22px;
-            cursor: pointer;
-            color: #666;
+            flex-shrink: 0;
         }
 
-        .chat-body {
+        .chat-messages-wrapper {
             flex: 1;
-            padding: 15px;
-            overflow-y: auto;
+            min-height: 0;
             display: flex;
             flex-direction: column;
-            gap: 10px;
         }
 
-        .message {
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+            padding: 1rem;
+        }
+
+        .messages-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .messages-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            border-radius: 10px;
+        }
+
+        .message-bubble {
             max-width: 80%;
-            padding: 10px 14px;
-            border-radius: 12px;
-            line-height: 1.4;
             word-wrap: break-word;
-        }
-        .my-message {
-            align-self: flex-end;
-            background: #dcf8c6;
-        }
-        .visitor-message {
-            align-self: flex-start;
-            background: #f1f0f0;
-        }
-        .message img {
-            max-width: 100%;
-            border-radius: 8px;
-            margin-top: 5px;
+            animation: messageSlide 0.3s ease-out;
         }
 
-        .chat-footer {
+        @media (min-width: 768px) {
+            .message-bubble {
+                max-width: 70%;
+            }
+        }
+
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message-image {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            object-fit: cover;
+        }
+
+        .message-image:hover {
+            transform: scale(1.02);
+        }
+
+        .chat-input-area {
+            flex-shrink: 0;
+            border-top: 2px solid #e2e8f0;
+            background: white;
+        }
+
+        .image-preview-box {
+            position: relative;
+            display: inline-block;
+        }
+
+        .image-preview-box img {
+            max-width: 120px;
+            max-height: 120px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 3px solid #e2e8f0;
+        }
+
+        .image-preview-box button {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
             display: flex;
             align-items: center;
-            border-top: 1px solid #ddd;
-            background: #fafafa;
-            padding: 8px;
-        }
-        #chatInput {
-            flex: 1;
-            padding: 10px;
-            border-radius: 20px;
-            border: 1px solid #ccc;
-            outline: none;
-        }
-        #sendMessage, #sendImage {
-            background: #4CAF50;
-            border: none;
-            color: white;
-            padding: 10px 14px;
-            border-radius: 50%;
-            margin-left: 5px;
-            cursor: pointer;
-        }
-        #sendImage { background: #2196F3; }
-
-        /* نافذة إدخال الاسم */
-        #nameModal {
-            position: absolute;
-            inset: 0;
-            background: rgba(255,255,255,0.97);
-            display: none; /* تغيير من flex إلى none */
-            align-items: center;
             justify-content: center;
-        }
-        .name-box {
-            background: white;
-            padding: 25px;
-            border-radius: 20px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.15);
-            text-align: center;
-        }
-        .name-box input {
-            width: 100%;
-            margin-top: 10px;
-            padding: 10px;
-            border-radius: 12px;
-            border: 1px solid #ccc;
-        }
-        .name-box button {
-            background: #4CAF50;
-            color: white;
-            border: none;
-            margin-top: 10px;
-            padding: 8px 20px;
-            border-radius: 12px;
             cursor: pointer;
+            border: 3px solid white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
+
+        .image-preview-box button:hover {
+            transform: scale(1.1);
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+        }
+
+        .welcome-bubble {
+            animation: welcomePulse 2s ease-in-out;
+        }
+
+        @keyframes welcomePulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        /* Firebase Notice */
+        .firebase-notice {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(251, 191, 36, 0.3);
         }
     </style>
 </head>
@@ -568,11 +519,12 @@
             </div>
         </div>
         
-        <div class="contact-card rounded-3xl p-8 max-w-md w-full shadow-2xl relative z-10 animate-scale-in">
-            <button id="closeContactModal" class="absolute top-4 left-4 w-10 h-10 bg-gradient-to-br from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 rounded-full flex items-center justify-center transition-all hover:scale-110 shadow-lg">
+        <div class="contact-card rounded-3xl p-8 max-w-md w-full shadow-2xl relative z-10 animate-scale-in max-h-[90vh] overflow-y-auto">
+            <button id="closeContactModal" class="absolute top-4 left-4 w-10 h-10 bg-gradient-to-br from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 rounded-full flex items-center justify-center transition-all hover:scale-110 shadow-lg z-50">
                 <i data-lucide="x" class="w-5 h-5 text-white"></i>
             </button>
             
+            <!-- Main View -->
             <div id="contactMainView" class="text-center space-y-6">
                 <div class="relative inline-block">
                     <div class="w-24 h-24 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-3xl flex items-center justify-center mx-auto shadow-2xl animate-glow">
@@ -616,6 +568,7 @@
                 </div>
             </div>
             
+            <!-- Private Message View -->
             <div id="privateMessageView" class="hidden space-y-6">
                 <button id="backToMain" class="flex items-center gap-2 text-slate-600 hover:text-purple-600 font-bold transition-colors group">
                     <div class="w-8 h-8 rounded-full bg-slate-100 group-hover:bg-purple-100 flex items-center justify-center transition-colors">
@@ -632,7 +585,7 @@
                 </div>
                 
                 <div class="space-y-3">
-                    <button id="sendMessageBtn" class="contact-btn w-full flex items-center gap-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white px-6 py-5 rounded-2xl font-bold shadow-xl">
+                    <button id="sendHereBtn" class="contact-btn w-full flex items-center gap-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white px-6 py-5 rounded-2xl font-bold shadow-xl">
                         <div class="icon-wrapper w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
                             <i data-lucide="message-circle" class="w-6 h-6"></i>
                         </div>
@@ -656,8 +609,9 @@
                 </div>
             </div>
             
-            <div id="socialMediaView" class="hidden">
-                <button id="backFromSocial" class="flex items-center gap-2 text-slate-600 hover:text-purple-600 font-bold transition-colors group mb-6">
+            <!-- Name Input View -->
+            <div id="nameInputView" class="hidden space-y-6">
+                <button id="backToPrivateMessage" class="flex items-center gap-2 text-slate-600 hover:text-purple-600 font-bold transition-colors group">
                     <div class="w-8 h-8 rounded-full bg-slate-100 group-hover:bg-purple-100 flex items-center justify-center transition-colors">
                         <i data-lucide="chevron-right" class="w-5 h-5"></i>
                     </div>
@@ -665,39 +619,89 @@
                 </button>
                 
                 <div class="text-center">
-                    <div class="w-16 h-16 bg-gradient-to-br from-pink-500 to-rose-500 rounded-2xl flex items-center justify-center mx-auto shadow-xl mb-4">
-                        <i data-lucide="share-2" class="w-8 h-8 text-white"></i>
+                    <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-3xl flex items-center justify-center mx-auto shadow-xl mb-4 welcome-bubble">
+                        <i data-lucide="user-round" class="w-10 h-10 text-white"></i>
                     </div>
-                    <h3 class="text-2xl font-black bg-gradient-to-r from-pink-500 to-rose-500 bg-clip-text text-transparent">حسابات حيدر</h3>
+                    <h3 class="text-2xl font-black bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent mb-2">أهلاً بك! 👋</h3>
+                    <p class="text-slate-600">يرجى إدخال اسمك للبدء بالمحادثة</p>
                 </div>
                 
-                <div class="space-y-3 mt-6">
-                    <a href="#" class="contact-btn w-full flex items-center gap-4 bg-gradient-to-r from-blue-400 to-blue-600 text-white px-6 py-4 rounded-2xl font-bold shadow-xl">
-                        <div class="icon-wrapper w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-                            <i data-lucide="facebook" class="w-5 h-5"></i>
+                <div class="space-y-4">
+                    <div class="relative">
+                        <input type="text" id="userNameInput" placeholder="اسمك الكريم..." class="w-full px-6 py-4 pr-14 rounded-xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none text-lg font-bold text-center transition-all" maxlength="30">
+                        <div class="absolute top-1/2 -translate-y-1/2 right-4">
+                            <i data-lucide="user" class="w-5 h-5 text-slate-400"></i>
                         </div>
-                        <div class="flex-1 text-right">
-                            <div class="text-lg font-black">فيسبوك</div>
-                        </div>
-                    </a>
+                    </div>
                     
-                    <a href="#" class="contact-btn w-full flex items-center gap-4 bg-gradient-to-r from-purple-400 to-purple-600 text-white px-6 py-4 rounded-2xl font-bold shadow-xl">
-                        <div class="icon-wrapper w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-                            <i data-lucide="instagram" class="w-5 h-5"></i>
+                    <button id="startChatBtn" class="w-full bg-gradient-to-r from-blue-600 to-cyan-600 text-white px-6 py-4 rounded-xl font-bold shadow-xl hover:shadow-2xl hover:scale-105 transition-all flex items-center justify-center gap-3">
+                        <span>ابدأ المحادثة</span>
+                        <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Chat View -->
+            <div id="chatView" class="hidden chat-view-container">
+                <!-- Firebase Notice -->
+                <div class="firebase-notice">
+                    <i data-lucide="info" class="w-4 h-4 inline-block ml-1"></i>
+                    نسخة تجريبية - الرسائل محفوظة محلياً
+                </div>
+                
+                <!-- Chat Header -->
+                <div class="chat-header flex items-center justify-between mb-4">
+                    <button id="backFromChat" class="flex items-center gap-2 text-slate-600 hover:text-purple-600 font-bold transition-colors group">
+                        <div class="w-8 h-8 rounded-full bg-slate-100 group-hover:bg-purple-100 flex items-center justify-center transition-colors">
+                            <i data-lucide="chevron-right" class="w-5 h-5"></i>
                         </div>
-                        <div class="flex-1 text-right">
-                            <div class="text-lg font-black">إنستغرام</div>
-                        </div>
-                    </a>
+                        <span>رجوع</span>
+                    </button>
                     
-                    <a href="#" class="contact-btn w-full flex items-center gap-4 bg-gradient-to-r from-blue-300 to-blue-500 text-white px-6 py-4 rounded-2xl font-bold shadow-xl">
-                        <div class="icon-wrapper w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-                            <i data-lucide="twitter" class="w-5 h-5"></i>
+                    <div class="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2 rounded-full shadow-lg">
+                        <i data-lucide="user-circle" class="w-5 h-5"></i>
+                        <span id="chatUserName" class="font-bold text-sm"></span>
+                    </div>
+                </div>
+                
+                <!-- Messages Area -->
+                <div class="chat-messages-wrapper bg-gradient-to-br from-slate-50 to-blue-50 rounded-2xl border-2 border-slate-200 shadow-inner">
+                    <div id="messagesContainer" class="messages-container min-h-[300px] max-h-[400px]">
+                        <!-- Welcome Message -->
+                        <div class="flex justify-center py-4">
+                            <div class="bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full text-sm text-slate-600 font-bold shadow-sm">
+                                <i data-lucide="sparkles" class="w-4 h-4 inline-block ml-1"></i>
+                                بداية المحادثة
+                            </div>
                         </div>
-                        <div class="flex-1 text-right">
-                            <div class="text-lg font-black">تويتر</div>
+                    </div>
+                    
+                    <!-- Input Area -->
+                    <div class="chat-input-area p-4">
+                        <!-- Image Preview -->
+                        <div id="imagePreviewContainer" class="hidden mb-3"></div>
+                        
+                        <!-- Input Controls -->
+                        <div class="flex items-end gap-2">
+                            <!-- Image Upload Button -->
+                            <label class="cursor-pointer flex-shrink-0">
+                                <input type="file" id="imageInput" accept="image/*" class="hidden">
+                                <div class="w-11 h-11 bg-gradient-to-br from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 rounded-xl flex items-center justify-center transition-all hover:scale-110 shadow-lg">
+                                    <i data-lucide="image-plus" class="w-5 h-5 text-white"></i>
+                                </div>
+                            </label>
+                            
+                            <!-- Text Input -->
+                            <div class="flex-1 relative">
+                                <textarea id="messageInput" placeholder="اكتب رسالتك هنا..." rows="1" class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none resize-none text-base" style="max-height: 120px;"></textarea>
+                            </div>
+                            
+                            <!-- Send Button -->
+                            <button id="sendMessageBtn" class="flex-shrink-0 w-11 h-11 bg-gradient-to-br from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 rounded-xl flex items-center justify-center transition-all hover:scale-110 shadow-lg">
+                                <i data-lucide="send" class="w-5 h-5 text-white"></i>
+                            </button>
                         </div>
-                    </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -710,7 +714,6 @@
         
         <div class="max-w-7xl mx-auto w-full">
             <div class="flex flex-col items-center gap-12 lg:gap-16">
-                <!-- الصورة والبطاقات في الأعلى -->
                 <div class="relative animate-slide-up w-full max-w-md lg:max-w-lg">
                     <div class="relative z-10">
                         <div class="relative rounded-3xl overflow-hidden shadow-2xl border-8 border-white">
@@ -743,7 +746,6 @@
                     </div>
                 </div>
                 
-                <!-- زر تواصل معي في الوسط -->
                 <div class="flex flex-wrap gap-4 justify-center">
                     <button onclick="openContactModal()" class="group flex items-center gap-3 bg-gradient-to-r from-primary-600 to-secondary-500 text-white px-6 lg:px-8 py-3 lg:py-4 rounded-xl font-bold text-base lg:text-lg shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
                         <i data-lucide="feather" class="w-5 h-5 lg:w-6 lg:h-6 group-hover:animate-bounce"></i>
@@ -752,7 +754,6 @@
                     </button>
                 </div>
                 
-                <!-- المحتوى النصي في الأسفل -->
                 <div class="space-y-6 lg:space-y-8 animate-slide-up text-center lg:text-right w-full">
                     <div class="space-y-3 lg:space-y-4">
                         <h1 class="text-4xl sm:text-5xl lg:text-7xl font-black leading-tight">
@@ -804,35 +805,55 @@
         </div>
     </footer>
 
-    <!-- نظام الدردشة -->
-    <div id="chatContainer" class="chat-hidden">
-        <div class="chat-box">
-            <div class="chat-header">
-                <span id="chatUserName">💬 دردشة</span>
-                <button id="closeChat">✕</button>
-            </div>
-            <div class="chat-body" id="chatBody"></div>
-            <div class="chat-footer">
-                <input type="file" id="chatImage" accept="image/*" hidden>
-                <input type="text" id="chatInput" placeholder="اكتب رسالتك هنا..." />
-                <button id="sendImage">📷</button>
-                <button id="sendMessage">📩</button>
-            </div>
-        </div>
-
-        <!-- نافذة إدخال الاسم أولاً -->
-        <div id="nameModal">
-            <div class="name-box">
-                <h3>مرحبًا 👋</h3>
-                <p>الرجاء إدخال اسمك قبل بدء الدردشة</p>
-                <input type="text" id="userNameInput" placeholder="اكتب اسمك هنا..." />
-                <button id="startChat">ابدأ</button>
-            </div>
-        </div>
-    </div>
-
     <script>
         lucide.createIcons();
+        
+        // Firebase Configuration (DEMO MODE)
+        const firebaseConfig = {
+            apiKey: "DEMO-KEY",
+            authDomain: "demo.firebaseapp.com",
+            projectId: "demo-project",
+            storageBucket: "demo.appspot.com",
+            messagingSenderId: "123456",
+            appId: "demo-app-id"
+        };
+        
+        // Chat Variables
+        let currentUserName = null;
+        let selectedImageFile = null;
+        
+        // Get or Create User ID
+        function getUserId() {
+            let userId = localStorage.getItem('chatUserId');
+            if (!userId) {
+                userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('chatUserId', userId);
+            }
+            return userId;
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function viewFullImage(imageSrc) {
+            window.open(imageSrc, '_blank');
+        }
+        
+        function scrollMessagesToBottom() {
+            const container = document.getElementById('messagesContainer');
+            setTimeout(() => {
+                container.scrollTop = container.scrollHeight;
+            }, 100);
+        }
+        
+        // Auto-resize textarea
+        document.getElementById('messageInput').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
         
         // External Links Configuration
         const externalLinks = {
@@ -854,7 +875,7 @@
             });
         });
         
-        // Mobile Menu & First Visit Logic
+        // Mobile Menu Logic
         const mobileToggle = document.getElementById('mobileToggle');
         const mobileClose = document.getElementById('mobileClose');
         const mobileMenu = document.getElementById('mobileMenu');
@@ -868,22 +889,6 @@
         let firstVisit = !localStorage.getItem('hasVisited');
         let blurActive = false;
         
-        // Callout Color Animation
-        function startCalloutAnimation() {
-            menuCallout.classList.add('callout-animate');
-            
-            setInterval(() => {
-                if (menuCallout.style.opacity !== '0' && !menuCallout.classList.contains('hidden')) {
-                    const currentColor = calloutArrow.style.borderBottomColor;
-                    if (currentColor === 'rgb(30, 64, 175)' || currentColor === '#1e40af') {
-                        calloutArrow.style.borderBottomColor = '#3b82f6';
-                    } else {
-                        calloutArrow.style.borderBottomColor = '#1e40af';
-                    }
-                }
-            }, 1000);
-        }
-        
         function toggleMobileMenu() {
             const isOpen = !mobileMenu.classList.contains('translate-x-full');
             
@@ -892,14 +897,10 @@
                 document.body.style.overflow = 'auto';
                 mobileMenuItems.forEach(item => item.classList.remove('show'));
                 
-                // Hide blur permanently after first interaction
                 if (blurActive) {
                     firstVisitBlur.style.opacity = '0';
-                    setTimeout(() => {
-                        firstVisitBlur.classList.add('hidden');
-                    }, 500);
+                    setTimeout(() => firstVisitBlur.classList.add('hidden'), 500);
                     menuCallout.style.opacity = '0';
-                    menuCallout.classList.remove('callout-animate');
                     blurActive = false;
                 }
             } else {
@@ -909,14 +910,10 @@
                     setTimeout(() => item.classList.add('show'), index * 100);
                 });
                 
-                // Hide callout and blur when menu opens
                 if (blurActive) {
                     menuCallout.style.opacity = '0';
-                    menuCallout.classList.remove('callout-animate');
                     firstVisitBlur.style.opacity = '0';
-                    setTimeout(() => {
-                        firstVisitBlur.classList.add('hidden');
-                    }, 500);
+                    setTimeout(() => firstVisitBlur.classList.add('hidden'), 500);
                     blurActive = false;
                 }
             }
@@ -927,32 +924,26 @@
         mobileOverlay.addEventListener('click', toggleMobileMenu);
         mobileLinks.forEach(link => link.addEventListener('click', toggleMobileMenu));
         
-        // First visit blur effect - FOR ALL DEVICES
+        // First visit blur
         if (firstVisit) {
             setTimeout(() => {
                 firstVisitBlur.classList.remove('hidden');
                 firstVisitBlur.style.opacity = '1';
                 blurActive = true;
                 
-                // Show callout only on mobile
                 if (window.innerWidth < 768) {
                     setTimeout(() => {
                         menuCallout.style.opacity = '1';
-                        menuCallout.style.transform = 'translateX(-50%) translateY(5px)';
-                        startCalloutAnimation();
                     }, 500);
                 }
                 
                 localStorage.setItem('hasVisited', 'true');
             }, 1000);
             
-            // Allow clicking blur to dismiss (desktop only)
             firstVisitBlur.addEventListener('click', function() {
                 if (window.innerWidth >= 768) {
                     firstVisitBlur.style.opacity = '0';
-                    setTimeout(() => {
-                        firstVisitBlur.classList.add('hidden');
-                    }, 500);
+                    setTimeout(() => firstVisitBlur.classList.add('hidden'), 500);
                     blurActive = false;
                 }
             });
@@ -968,26 +959,15 @@
             }
         });
         
-        // Contact Modal Functions
+        // Modal Functions
         const contactModal = document.getElementById('contactModal');
-        const closeContactModalBtn = document.getElementById('closeContactModal');
-        const modalBackdrop = document.getElementById('modalBackdrop');
-        
-        const contactMainView = document.getElementById('contactMainView');
-        const privateMessageView = document.getElementById('privateMessageView');
-        const socialMediaView = document.getElementById('socialMediaView');
-        
-        const privateMessageBtn = document.getElementById('privateMessageBtn');
-        const socialMediaBtn = document.getElementById('socialMediaBtn');
-        const sendHereBtn = document.getElementById('sendMessageBtn');
-        const backToMain = document.getElementById('backToMain');
-        const backFromSocial = document.getElementById('backFromSocial');
         
         function openContactModal() {
             contactModal.classList.remove('hidden');
             contactModal.classList.add('flex');
             document.body.style.overflow = 'hidden';
             showView('main');
+            lucide.createIcons();
         }
         
         function closeContactModal() {
@@ -996,31 +976,218 @@
             document.body.style.overflow = 'auto';
         }
         
-        function showView(view) {
-            contactMainView.classList.add('hidden');
-            privateMessageView.classList.add('hidden');
-            socialMediaView.classList.add('hidden');
+        function showView(viewName) {
+            document.getElementById('contactMainView').classList.add('hidden');
+            document.getElementById('privateMessageView').classList.add('hidden');
+            document.getElementById('nameInputView').classList.add('hidden');
+            document.getElementById('chatView').classList.add('hidden');
             
-            if (view === 'main') {
-                contactMainView.classList.remove('hidden');
-            } else if (view === 'private') {
-                privateMessageView.classList.remove('hidden');
-            } else if (view === 'social') {
-                socialMediaView.classList.remove('hidden');
+            if (viewName === 'main') {
+                document.getElementById('contactMainView').classList.remove('hidden');
+            } else if (viewName === 'private') {
+                document.getElementById('privateMessageView').classList.remove('hidden');
+            } else if (viewName === 'name') {
+                document.getElementById('nameInputView').classList.remove('hidden');
+                setTimeout(() => document.getElementById('userNameInput').focus(), 100);
+            } else if (viewName === 'chat') {
+                document.getElementById('chatView').classList.remove('hidden');
+                loadChatMessages();
             }
+            
+            setTimeout(() => lucide.createIcons(), 100);
         }
         
-        closeContactModalBtn.addEventListener('click', closeContactModal);
-        modalBackdrop.addEventListener('click', closeContactModal);
+        // Event Listeners
+        document.getElementById('closeContactModal').addEventListener('click', closeContactModal);
+        document.getElementById('modalBackdrop').addEventListener('click', closeContactModal);
+        document.getElementById('privateMessageBtn').addEventListener('click', () => showView('private'));
+        document.getElementById('backToMain').addEventListener('click', () => showView('main'));
+        document.getElementById('backToPrivateMessage').addEventListener('click', () => showView('private'));
+        document.getElementById('backFromChat').addEventListener('click', () => showView('private'));
         
-        privateMessageBtn.addEventListener('click', () => showView('private'));
-        socialMediaBtn.addEventListener('click', () => showView('social'));
-        backToMain.addEventListener('click', () => showView('main'));
-        backFromSocial.addEventListener('click', () => showView('main'));
+        document.getElementById('sendHereBtn').addEventListener('click', () => {
+            const savedName = localStorage.getItem('chatUserName');
+            if (savedName) {
+                currentUserName = savedName;
+                document.getElementById('chatUserName').textContent = savedName;
+                showView('chat');
+            } else {
+                showView('name');
+            }
+        });
+        
+        document.getElementById('socialMediaBtn').addEventListener('click', () => {
+            alert('هنا ستضيف روابط حساباتك على مواقع التواصل الاجتماعي');
+        });
+        
+        // Start Chat
+        document.getElementById('startChatBtn').addEventListener('click', () => {
+            const name = document.getElementById('userNameInput').value.trim();
+            if (name.length < 2) {
+                alert('يرجى إدخال اسم صحيح (حرفين على الأقل)');
+                return;
+            }
+            
+            currentUserName = name;
+            localStorage.setItem('chatUserName', name);
+            document.getElementById('chatUserName').textContent = name;
+            showView('chat');
+        });
+        
+        document.getElementById('userNameInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('startChatBtn').click();
+            }
+        });
+        
+        // Image Upload
+        document.getElementById('imageInput').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('حجم الصورة كبير جداً! الحد الأقصى 5MB');
+                    e.target.value = '';
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    selectedImageFile = e.target.result;
+                    showImagePreview(e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        function showImagePreview(imageData) {
+            const container = document.getElementById('imagePreviewContainer');
+            container.innerHTML = `
+                <div class="image-preview-box">
+                    <img src="${imageData}" alt="Preview">
+                    <button onclick="removeImagePreview()" type="button">
+                        <i data-lucide="x" class="w-3 h-3"></i>
+                    </button>
+                </div>
+            `;
+            container.classList.remove('hidden');
+            lucide.createIcons();
+        }
+        
+        function removeImagePreview() {
+            selectedImageFile = null;
+            document.getElementById('imagePreviewContainer').classList.add('hidden');
+            document.getElementById('imageInput').value = '';
+        }
+        
+        // Send Message
+        document.getElementById('sendMessageBtn').addEventListener('click', sendMessage);
+        document.getElementById('messageInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+        
+        function sendMessage() {
+            const text = document.getElementById('messageInput').value.trim();
+            
+            if (!text && !selectedImageFile) {
+                return;
+            }
+            
+            const message = {
+                id: 'msg_' + Date.now(),
+                userId: getUserId(),
+                userName: currentUserName,
+                text: text,
+                image: selectedImageFile,
+                timestamp: new Date().toISOString(),
+                sender: 'user'
+            };
+            
+            saveMessageToStorage(message);
+            displayMessage(message);
+            
+            document.getElementById('messageInput').value = '';
+            document.getElementById('messageInput').style.height = 'auto';
+            removeImagePreview();
+            
+            scrollMessagesToBottom();
+        }
+        
+        function saveMessageToStorage(message) {
+            const userId = getUserId();
+            let messages = JSON.parse(localStorage.getItem(`chat_messages_${userId}`) || '[]');
+            messages.push(message);
+            localStorage.setItem(`chat_messages_${userId}`, JSON.stringify(messages));
+        }
+        
+        function loadChatMessages() {
+            const userId = getUserId();
+            const messages = JSON.parse(localStorage.getItem(`chat_messages_${userId}`) || '[]');
+            
+            const container = document.getElementById('messagesContainer');
+            container.innerHTML = `
+                <div class="flex justify-center py-4">
+                    <div class="bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full text-sm text-slate-600 font-bold shadow-sm">
+                        <i data-lucide="sparkles" class="w-4 h-4 inline-block ml-1"></i>
+                        بداية المحادثة
+                    </div>
+                </div>
+            `;
+            
+            messages.forEach(msg => displayMessage(msg));
+            scrollMessagesToBottom();
+            lucide.createIcons();
+        }
+        
+        function displayMessage(message) {
+            const container = document.getElementById('messagesContainer');
+            const isUser = message.sender === 'user';
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `flex ${isUser ? 'justify-end' : 'justify-start'} mb-3`;
+            
+            const time = new Date(message.timestamp).toLocaleTimeString('ar-IQ', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            let imageHtml = '';
+            if (message.image) {
+                imageHtml = `<img src="${message.image}" class="message-image mb-2" onclick="viewFullImage('${message.image}')" alt="صورة">`;
+            }
+            
+            messageDiv.innerHTML = `
+                <div class="message-bubble">
+                    <div class="${isUser ? 'bg-gradient-to-br from-blue-500 to-cyan-500' : 'bg-white'} ${isUser ? 'text-white' : 'text-slate-700'} px-4 py-3 rounded-2xl shadow-lg">
+                        ${!isUser ? `<div class="font-bold text-sm mb-1 text-purple-600 flex items-center gap-1"><i data-lucide="user-circle" class="w-4 h-4"></i><span>حيدر</span></div>` : ''}
+                        ${imageHtml}
+                        ${message.text ? `<p class="text-base leading-relaxed whitespace-pre-wrap break-words">${escapeHtml(message.text)}</p>` : ''}
+                        <div class="text-xs mt-2 ${isUser ? 'text-white/70' : 'text-slate-500'} flex items-center gap-1">
+                            <i data-lucide="clock" class="w-3 h-3"></i>
+                            <span>${time}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            container.appendChild(messageDiv);
+            lucide.createIcons();
+        }
         
         // Make functions global
         window.openContactModal = openContactModal;
         window.closeContactModal = closeContactModal;
+        window.removeImagePreview = removeImagePreview;
+        window.viewFullImage = viewFullImage;
+        
+        // Close modal on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeContactModal();
+            }
+        });
         
         // Smooth Scroll
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -1033,200 +1200,8 @@
             });
         });
         
-        // Close modal on escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeContactModal();
-            }
-        });
-        
-        // Reinitialize icons after animations
+        // Reinitialize icons
         setTimeout(() => lucide.createIcons(), 100);
-
-        // Google Translate Integration
-        function googleTranslateElementInit() {
-            const browserLang = (navigator.language || navigator.userLanguage).split('-')[0];
-            
-            new google.translate.TranslateElement({
-                pageLanguage: 'ar',
-                autoDisplay: true,
-                includedLanguages: 'ar,en,fr,es,de,it,tr,ru,zh-CN,ja,ko',
-                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-            }, 'google_translate_element');
-            
-            setTimeout(function() {
-                const targetLang = browserLang;
-                const selectElement = document.querySelector('.goog-te-combo');
-                if (selectElement && targetLang !== 'ar') {
-                    selectElement.value = targetLang;
-                    selectElement.dispatchEvent(new Event('change'));
-                }
-            }, 1000);
-        }
-
-        (function() {
-            const script = document.createElement('script');
-            script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
-            script.async = true;
-            document.head.appendChild(script);
-        })();
-
-        const style = document.createElement('style');
-        style.textContent = `
-            .goog-te-banner-frame {
-                display: none !important;
-            }
-            
-            body {
-                top: 0 !important;
-            }
-            
-            #google_translate_element {
-                padding: 10px;
-                background: #f8f9fa;
-                border-radius: 8px;
-                display: inline-block;
-            }
-            
-            .goog-te-gadget {
-                font-family: Arial, sans-serif !important;
-            }
-            
-            .goog-te-gadget-simple {
-                background-color: #fff !important;
-                border: 1px solid #ddd !important;
-                padding: 8px 12px !important;
-                border-radius: 6px !important;
-                font-size: 14px !important;
-            }
-            
-            .goog-te-gadget-simple:hover {
-                background-color: #f0f0f0 !important;
-            }
-        `;
-        document.head.appendChild(style);
-        
-        // إظهار أزرار التواصل مع تأثير Fade In
-        const contactButton = document.querySelector('button[onclick="openContactModal()"]');
-        const socialButtons = document.getElementById('socialButtons');
-        
-        contactButton.addEventListener('click', function() {
-            setTimeout(() => {
-                socialButtons.classList.add('show');
-            }, 300);
-        });
-
-        // نظام الدردشة
-        const chatContainer = document.getElementById('chatContainer');
-        const closeChat = document.getElementById('closeChat');
-        const startChatBtn = document.getElementById('startChat');
-        const nameModal = document.getElementById('nameModal');
-        const userNameInput = document.getElementById('userNameInput');
-        const chatBody = document.getElementById('chatBody');
-        const chatInput = document.getElementById('chatInput');
-        const sendMessage = document.getElementById('sendMessage');
-        const sendImage = document.getElementById('sendImage');
-        const chatImage = document.getElementById('chatImage');
-        const chatUserName = document.getElementById('chatUserName');
-
-        let visitorName = localStorage.getItem('visitorName');
-        let messages = JSON.parse(localStorage.getItem('chatMessages') || '[]');
-
-        function renderMessages() {
-            chatBody.innerHTML = '';
-            messages.forEach(msg => {
-                const div = document.createElement('div');
-                div.className = 'message ' + (msg.sender === 'visitor' ? 'my-message' : 'visitor-message');
-                div.innerHTML = `
-                    <div>${msg.text || ''}</div>
-                    ${msg.image ? `<img src="${msg.image}" />` : ''}
-                    <small style="font-size:10px;color:#888;">${msg.time}</small>
-                `;
-                chatBody.appendChild(div);
-            });
-            chatBody.scrollTop = chatBody.scrollHeight;
-        }
-
-        function saveMessages() {
-            localStorage.setItem('chatMessages', JSON.stringify(messages));
-        }
-
-        function sendMsg(text, image = null) {
-            const msg = {
-                sender: 'visitor',
-                text,
-                image,
-                time: new Date().toLocaleString()
-            };
-            messages.push(msg);
-            saveMessages();
-            renderMessages();
-        }
-
-        // فتح الدردشة عند الضغط على زر "إرسال رسالة هنا"
-        sendHereBtn.addEventListener('click', function() {
-            closeContactModal();
-            openChat();
-        });
-
-        // فتح الدردشة
-        function openChat() {
-            chatContainer.style.display = 'flex';
-            if (visitorName) {
-                nameModal.style.display = 'none';
-                chatUserName.textContent = `💬 ${visitorName}`;
-                renderMessages();
-            } else {
-                nameModal.style.display = 'flex';
-            }
-        }
-
-        // بدء الدردشة بعد إدخال الاسم
-        startChatBtn.onclick = () => {
-            const name = userNameInput.value.trim();
-            if (!name) return alert('الرجاء إدخال الاسم');
-            visitorName = name;
-            localStorage.setItem('visitorName', name);
-            nameModal.style.display = 'none';
-            chatUserName.textContent = `💬 ${name}`;
-            renderMessages();
-        };
-
-        // إرسال رسالة نصية
-        sendMessage.onclick = () => {
-            const text = chatInput.value.trim();
-            if (!text) return;
-            sendMsg(text);
-            chatInput.value = '';
-        };
-
-        // إرسال صورة
-        sendImage.onclick = () => chatImage.click();
-        chatImage.onchange = (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = () => sendMsg('', reader.result);
-                reader.readAsDataURL(file);
-            }
-        };
-
-        closeChat.onclick = () => {
-            chatContainer.style.display = 'none';
-        };
-
-        // إرسال بالضغط على Enter
-        chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                sendMessage.click();
-            }
-        });
-
-        // التأكد من أن نظام الدردشة مخفي عند تحميل الصفحة
-        window.addEventListener('load', function() {
-            chatContainer.style.display = 'none';
-            nameModal.style.display = 'none';
-        });
     </script>
 </body>
 </html>

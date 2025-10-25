@@ -970,28 +970,28 @@
     </div>
 
     <!-- Professional Full-Screen Chat System -->
-    <div id="chatFullscreen" class="chat-fullscreen-container">
-        <div class="chat-wrapper">
-            <!-- Chat Header -->
-            <header class="chat-header">
-                <button class="chat-header-back" id="chatBackBtn" aria-label="العودة">
-                    <i data-lucide="arrow-right" class="w-6 h-6 text-white"></i>
-                </button>
-                
-                <div class="chat-header-user">
-                    <div class="chat-header-avatar">
-                        <i data-lucide="sparkles" class="w-6 h-6 text-pink-500"></i>
-                        <div id="onlineStatus" class="online-indicator"></div>
-                    </div>
-                    <div class="chat-header-info">
-                        <h2 class="chat-header-name">حيدر</h2>
-                        <p class="chat-header-status" id="chatHeaderStatus">
-                            <i data-lucide="circle" class="w-2 h-2"></i>
-                            <span id="statusText">غير متصل</span>
-                        </p>
-                    </div>
+<div id="chatFullscreen" class="chat-fullscreen-container">
+    <div class="chat-wrapper">
+        <!-- Chat Header -->
+        <header class="chat-header">
+            <button class="chat-header-back" id="chatBackBtn" aria-label="العودة">
+                <i data-lucide="arrow-right" class="w-6 h-6 text-white"></i>
+            </button>
+            
+            <div class="chat-header-user">
+                <div class="chat-header-avatar">
+                    <img src="https://www.raed.net/img?id=1447558" alt="حيدر" class="w-full h-full rounded-full object-cover">
+                    <div id="onlineStatus" class="online-indicator"></div>
                 </div>
-            </header>
+                <div class="chat-header-info">
+                    <h2 class="chat-header-name">حيدر</h2>
+                    <p class="chat-header-status" id="chatHeaderStatus">
+                        <i data-lucide="circle" class="w-2 h-2"></i>
+                        <span id="statusText">غير متصل</span>
+                    </p>
+                </div>
+            </div>
+        </header>
             
             <!-- Messages Container -->
             <main class="chat-messages-container" id="chatMessages" role="log" aria-live="polite" aria-atomic="false">
@@ -1003,18 +1003,15 @@
                 <!-- Empty State -->
                 <div class="chat-empty-state" id="chatEmptyState">
                     <i data-lucide="mail-heart" class="chat-empty-icon text-pink-400"></i>
-                    <p class="text-lg font-bold mb-2"> ابدأ المحادثة</p>
-                    <p class="text-sm">أرسل رسالتك الأولى</p>
+                    <p class="text-lg font-bold mb-2"> ملاحظة</p>
+                    <p class="text-sm">هذه المحادثة ليست ماسنجر ولا تيليغرام هذه المحادثة قام بصنعها حيدر وجميع الرسائل هنا لا يراها فقط انت وحيدر</p>
                 </div>
             </main>
             
             <!-- Input Area -->
             <footer class="chat-input-area">
                 <!-- تنبيه حجم الصورة -->
-                <div class="text-xs text-center text-pink-600 mb-2 font-bold">
-                    <i data-lucide="info" class="w-3 h-3 inline-block"></i>
-                    يُفضل إرسال صور بحجم أقل من 1MB للحصول على أفضل أداء
-                </div>
+                
                 
                 <!-- Image Preview Container -->
                 <div id="chatImagePreview" class="image-preview-container hidden"></div>
@@ -1203,12 +1200,27 @@
         
         let isHaydarOnline = false;
         let onlineStatusRef = null;
-        
+
+        // دالة للاستماع لحالة الاتصال من Firebase
         function checkOnlineStatus() {
-            isHaydarOnline = Math.random() > 0.5;
-            updateOnlineUI();
+            // مرجع قاعدة البيانات لحالة حيدر
+            onlineStatusRef = firebase.database().ref('users/haydar/status');
             
-            setTimeout(checkOnlineStatus, 30000);
+            // الاستماع للتغييرات في الوقت الفعلي
+            onlineStatusRef.on('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    const status = snapshot.val();
+                    isHaydarOnline = status.online || false;
+                    
+                    console.log('✅ حالة الاتصال:', isHaydarOnline ? 'متصل' : 'غير متصل');
+                } else {
+                    // إذا لم توجد بيانات، اعتبره غير متصل
+                    isHaydarOnline = false;
+                    console.log('⚠️ لا توجد بيانات حالة الاتصال');
+                }
+                
+                updateOnlineUI();
+            });
         }
         
         function updateOnlineUI() {
@@ -1356,6 +1368,11 @@
         function closeFullscreenChat() {
             document.getElementById('chatFullscreen').classList.remove('active');
             document.body.style.overflow = 'auto';
+            
+            // إيقاف الاستماع لحالة الاتصال (توفير موارد)
+            if (onlineStatusRef) {
+                onlineStatusRef.off();
+            }
         }
         
         async function loadMessages() {
@@ -1851,5 +1868,3 @@
     </script>
 </body>
 </html>
-
-

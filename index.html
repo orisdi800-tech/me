@@ -1363,26 +1363,28 @@
         let onlineStatusRef = null;
 
         // دالة للاستماع لحالة الاتصال من Firebase
-        function checkOnlineStatus() {
-            // مرجع قاعدة البيانات لحالة حيدر
-            onlineStatusRef = firebase.database().ref('users/haydar/status');
-            
-            // الاستماع للتغييرات في الوقت الفعلي
-            onlineStatusRef.on('value', (snapshot) => {
-                if (snapshot.exists()) {
-                    const status = snapshot.val();
-                    isHaydarOnline = status.online || false;
-                    
-                    console.log('✅ حالة الاتصال:', isHaydarOnline ? 'متصل' : 'غير متصل');
-                } else {
-                    // إذا لم توجد بيانات، اعتبره غير متصل
-                    isHaydarOnline = false;
-                    console.log('⚠️ لا توجد بيانات حالة الاتصال');
-                }
-                
-                updateOnlineUI();
-            });
+function checkOnlineStatus() {
+    const presenceRef = firebase.database().ref('users/haydar/status');
+    
+    presenceRef.on('value', (snapshot) => {
+        if (snapshot.exists()) {
+            const status = snapshot.val();
+            isHaydarOnline = status.online || false;
+            console.log('✅ حالة الاتصال:', isHaydarOnline ? 'متصل' : 'غير متصل');
+        } else {
+            isHaydarOnline = false;
+            console.log('⚠️ لا توجد بيانات حالة الاتصال');
         }
+        
+        // تحديث الواجهة فقط إذا كانت العناصر موجودة
+        const statusIndicator = document.getElementById('onlineStatus');
+        const statusText = document.getElementById('statusText');
+        
+        if (statusIndicator && statusText) {
+            updateOnlineUI();
+        }
+    });
+}
         
         function updateOnlineUI() {
             const statusIndicator = document.getElementById('onlineStatus');
@@ -2109,4 +2111,5 @@ document.addEventListener('DOMContentLoaded', function() {
     </script>
 </body>
 </html>
+
 

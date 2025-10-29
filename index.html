@@ -1538,75 +1538,79 @@ function checkOnlineStatus() {
             }
         }
         
-        async function loadMessages() {
-            const userId = getUserId();
+async function loadMessages() {
+    const userId = getUserId();
+    
+    try {
+        const container = document.getElementById('chatMessages');
+        const dateDivider = container.querySelector('.date-divider');
+        const emptyState = document.getElementById('chatEmptyState');
+        
+        container.innerHTML = '';
+        container.appendChild(dateDivider);
+        
+        // تحميل الرسائل مرة واحدة فقط
+        const snapshot = await firebase.firestore()
+            .collection('chats')
+            .doc(userId)
+            .collection('messages')
+            .orderBy('timestamp', 'asc')
+            .get();
+        
+        if (snapshot.empty) {
+            emptyState.classList.remove('hidden');
+        } else {
+            emptyState.classList.add('hidden');
             
-            try {
-                // تحميل الرسائل من Firebase
-                const snapshot = await firebase.firestore()
-                    .collection('chats')
-                    .doc(userId)
-                    .collection('messages')
-                    .orderBy('timestamp', 'asc')
-                    .get();
-                
-                const container = document.getElementById('chatMessages');
-                const dateDivider = container.querySelector('.date-divider');
-                const emptyState = document.getElementById('chatEmptyState');
-                
-                container.innerHTML = '';
-                container.appendChild(dateDivider);
-                
-                if (snapshot.empty) {
-                    emptyState.classList.remove('hidden');
+            snapshot.forEach(doc => {
+                const messageData = doc.data();
+                if (messageData.timestamp) {
+                    messageData.timestamp = messageData.timestamp.toDate().toISOString();
                 } else {
-                    emptyState.classList.add('hidden');
-                    
-                    snapshot.forEach(doc => {
-                        const messageData = doc.data();
-                        // تحويل Firebase Timestamp لـ ISO string
-                        if (messageData.timestamp) {
-                            messageData.timestamp = messageData.timestamp.toDate().toISOString();
-                        } else {
-                            messageData.timestamp = new Date().toISOString();
-                        }
-                        displayMessage(messageData, false);
-                    });
+                    messageData.timestamp = new Date().toISOString();
+                }
+                displayMessage(messageData, false);
+            });
+        }
+        
+        scrollToBottom(false);
+        
+        // الاستماع للرسائل الجديدة فقط (بعد الآن)
+        let isFirstSnapshot = true;
+        firebase.firestore()
+            .collection('chats')
+            .doc(userId)
+            .collection('messages')
+            .orderBy('timestamp', 'asc')
+            .onSnapshot((snapshot) => {
+                // تجاهل أول snapshot (لأننا حملنا الرسائل بالفعل)
+                if (isFirstSnapshot) {
+                    isFirstSnapshot = false;
+                    return;
                 }
                 
-                scrollToBottom(false);
-                
-                // الاستماع للرسائل الجديدة (Real-time)
-                firebase.firestore()
-                    .collection('chats')
-                    .doc(userId)
-                    .collection('messages')
-                    .orderBy('timestamp', 'asc')
-                    .onSnapshot((snapshot) => {
-                        snapshot.docChanges().forEach((change) => {
-                            if (change.type === 'added') {
-                                const messageData = change.doc.data();
-                                
-                                // تحقق إذا كانت رسالة من الأدمن (حيدر)
-                                if (messageData.sender === 'admin') {
-                                    // تحويل timestamp
-                                    if (messageData.timestamp) {
-                                        messageData.timestamp = messageData.timestamp.toDate().toISOString();
-                                    } else {
-                                        messageData.timestamp = new Date().toISOString();
-                                    }
-                                    
-                                    // عرض الرسالة فوراً
-                                    displayMessage(messageData, true);
-                                    scrollToBottom();
-                                    
-                                    // صوت تنبيه (اختياري)
-                                    const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIGGS57OihUhELTKXh8LZjHAU7k9n0yXQrBSl9zPLaizsKGGk=');
-                                    audio.play().catch(() => {});
-                                }
+                snapshot.docChanges().forEach((change) => {
+                    if (change.type === 'added') {
+                        const messageData = change.doc.data();
+                        
+                        // عرض فقط رسائل من الأدمن (حيدر)
+                        if (messageData.sender === 'admin') {
+                            if (messageData.timestamp) {
+                                messageData.timestamp = messageData.timestamp.toDate().toISOString();
+                            } else {
+                                messageData.timestamp = new Date().toISOString();
                             }
-                        });
-                    });
+                            
+                            displayMessage(messageData, true);
+                            scrollToBottom();
+                            
+                            // صوت تنبيه
+                            const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIGGS57OihUhELTKXh8LZjHAU7k9n0yXQrBSl9zPLaizsKGGk=');
+                            audio.play().catch(() => {});
+                        }
+                    }
+                });
+            });
                 
                 setTimeout(() => lucide.createIcons(), 50);
                 
@@ -2111,5 +2115,6 @@ document.addEventListener('DOMContentLoaded', function() {
     </script>
 </body>
 </html>
+
 
 

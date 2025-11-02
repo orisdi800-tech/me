@@ -918,6 +918,33 @@
         font-size: 13px;
     }
 }
+
+/* Loading States */
+.btn-loading {
+    position: relative;
+    color: transparent !important;
+}
+
+.btn-loading::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    left: 50%;
+    margin-left: -10px;
+    margin-top: -10px;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    border-right-color: transparent;
+    animation: btn-spinner 0.75s linear infinite;
+}
+
+@keyframes btn-spinner {
+    to {
+        transform: rotate(360deg);
+    }
+}
         
     </style>
 </head>
@@ -1171,9 +1198,6 @@
             
             <!-- Input Area -->
             <footer class="chat-input-area">
-                <!-- تنبيه حجم الصورة -->
-                
-                
                 <!-- Image Preview Container -->
                 <div id="chatImagePreview" class="image-preview-container hidden"></div>
                 
@@ -1270,7 +1294,7 @@
                     
                     <div class="fancy-description text-right max-w-4xl mx-auto">
                         <p class="text-base sm:text-lg lg:text-xl text-slate-700 leading-relaxed font-medium">
-                            بدأت مسيرتي في <span class="font-bold text-pink-600">إحدى الدوائر الحكومية المرموقة</span>، حيث عملت <span class="font-bold text-slate-900">مترجمًا</span> وتواصلت بشكل مباشر مع زوار أجانب من خلفيات ثقافية متعددة — تجربة منحتني <span class="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-purple-600">مرونة لغوية وفهمًا أعمق للتواصل الإنساني</span>.<br><br>
+                            بدأت مسيرتي في <span class="font-bold text-pink-600">إحدى الدوائر الحكومية المرموقة</span>، حيث عملت <span class="font-bold text-slate-900">مترجمًا</span> وتواصلت بشكل مباشر مع زوار أجانب من خلفيات ثقافية متعددة — تجربة منحتني <span class="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-purple-600">مرونة لغوية وفهمًا أعمق للتواصل الإخائي</span>.<br><br>
                             لاحقًا، انتقلت إلى <span class="font-bold text-purple-600">مجال الإعلام</span>، حيث تعلمت كيف تصنع <span class="font-semibold italic text-slate-800">الكلمة والصورة</span> تأثيرهما الخاص في الآخرين.<br><br>
                             اليوم، أعمل <span class="font-bold text-slate-900">موظفًا حكوميًا ومدرسًا للّغة الإنجليزية</span>، أحمل <span class="font-bold text-pink-600">شهادة البكالوريوس في اللغة الإنجليزية</span>، وأسعى دائمًا لـ<span class="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600">تطوير نفسي ومهاراتي في مجالات أوسع</span>.
                         </p>
@@ -1287,95 +1311,91 @@
         // FIREBASE CONFIGURATION
         // ============================================
         const firebaseConfig = {
-  apiKey: "AIzaSyD0unPjbthUtdiUAwNzp2Z8NeMNAW3a6hM",
-  authDomain: "haider-portfolio-26965.firebaseapp.com",
-  databaseURL: "https://haider-portfolio-26965-default-rtdb.firebaseio.com",
-  projectId: "haider-portfolio-26965",
-  storageBucket: "haider-portfolio-26965.firebasestorage.app",
-  messagingSenderId: "569224854609",
-  appId: "1:569224854609:web:714fa7d027467c7a5dcc70",
-  measurementId: "G-DJQ1FLED4K"
-};
+            apiKey: "AIzaSyD0unPjbthUtdiUAwNzp2Z8NeMNAW3a6hM",
+            authDomain: "haider-portfolio-26965.firebaseapp.com",
+            databaseURL: "https://haider-portfolio-26965-default-rtdb.firebaseio.com",
+            projectId: "haider-portfolio-26965",
+            storageBucket: "haider-portfolio-26965.firebasestorage.app",
+            messagingSenderId: "569224854609",
+            appId: "1:569224854609:web:714fa7d027467c7a5dcc70",
+            measurementId: "G-DJQ1FLED4K"
+        };
         
         // تفعيل Firebase
         firebase.initializeApp(firebaseConfig);
         
         // ============================================
-        // DEVICE FINGERPRINT SYSTEM
+        // OPTIMIZED DEVICE FINGERPRINT SYSTEM
         // ============================================
         
-        // توليد بصمة فريدة للجهاز/المتصفح
+        // نسخة مبسطة وسريعة من بصمة الجهاز
         async function getDeviceFingerprint() {
-            const components = [];
-            
-            // 1. معلومات المتصفح والنظام
-            components.push(navigator.userAgent);
-            components.push(navigator.language);
-            components.push(navigator.platform);
-            components.push(screen.width + 'x' + screen.height);
-            components.push(screen.colorDepth);
-            components.push(new Date().getTimezoneOffset());
-            components.push(navigator.hardwareConcurrency || 'unknown');
-            
-            // 2. Canvas Fingerprint (الأكثر دقة)
             try {
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                ctx.textBaseline = 'top';
-                ctx.font = '14px Arial';
-                ctx.fillText('🔐 حيدر Portfolio', 2, 2);
-                components.push(canvas.toDataURL());
-            } catch (e) {
-                components.push('canvas_failed');
+                const components = [];
+                
+                // 1. معلومات أساسية سريعة
+                components.push(navigator.userAgent);
+                components.push(navigator.language);
+                components.push(navigator.platform);
+                components.push(screen.width + 'x' + screen.height);
+                components.push(screen.colorDepth);
+                components.push(new Date().getTimezoneOffset());
+                
+                // 2. Canvas fingerprint مبسط وسريع
+                try {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = 100;
+                    canvas.height = 50;
+                    ctx.textBaseline = 'top';
+                    ctx.font = '14px Arial';
+                    ctx.fillText('حيدر', 10, 10);
+                    components.push(canvas.toDataURL().substring(0, 100)); // أخذ جزء صغير فقط
+                } catch (e) {
+                    components.push('canvas_ok');
+                }
+                
+                // 3. استخدام hash سريع بدلاً من crypto.subtle
+                const fingerprint = components.join('|');
+                return fastHash(fingerprint);
+                
+            } catch (error) {
+                console.error('خطأ في بصمة الجهاز:', error);
+                // fallback - بصمة عشوائية فورية
+                return 'fp_' + Math.random().toString(36).substr(2, 9);
             }
-            
-            // 3. دمج كل المكونات وتحويلها لـ hash
-            const fingerprint = components.join('|||');
-            const hash = await simpleHash(fingerprint);
-            
-            console.log('🔐 بصمة الجهاز المولدة:', hash);
-            return hash;
         }
         
-        // دالة Hash بسيطة
-        async function simpleHash(str) {
-            try {
-                const encoder = new TextEncoder();
-                const data = encoder.encode(str);
-                const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-                const hashArray = Array.from(new Uint8Array(hashBuffer));
-                return hashArray.map(b => b.toString(36)).join('').substr(0, 16);
-            } catch (error) {
-                // Fallback hash بسيط
-                let hash = 0;
-                for (let i = 0; i < str.length; i++) {
-                    const char = str.charCodeAt(i);
-                    hash = ((hash << 5) - hash) + char;
-                    hash = hash & hash;
-                }
-                return Math.abs(hash).toString(36).substr(0, 16);
+        // دالة hash سريعة بدلاً من crypto.subtle
+        function fastHash(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash; // Convert to 32bit integer
             }
+            return Math.abs(hash).toString(36) + '_' + str.length;
         }
         
         // توليد كود سري
         function generateSecretCode() {
-            return Math.random().toString(36).substr(2, 9).toUpperCase();
+            return Math.random().toString(36).substr(2, 6).toUpperCase();
         }
         
         // ============================================
-        // SMART LOGIN SYSTEM WITH FINGERPRINT
+        // OPTIMIZED SMART LOGIN SYSTEM
         // ============================================
         
         async function registerNewUser(userName) {
             try {
-                // 1. توليد بصمة الجهاز
+                // 1. توليد بصمة الجهاز بسرعة
                 const deviceFingerprint = await getDeviceFingerprint();
                 
                 // 2. تسجيل دخول Anonymous
                 const authResult = await firebase.auth().signInAnonymously();
                 const userId = authResult.user.uid;
                 
-                // 3. توليد كود سري (احتياطي)
+                // 3. توليد كود سري
                 const secretCode = generateSecretCode();
                 
                 // 4. حفظ في localStorage
@@ -1384,17 +1404,7 @@
                 localStorage.setItem('chatUserName', userName);
                 localStorage.setItem('chatDeviceFingerprint', deviceFingerprint);
                 
-                // 5. حفظ في Firestore مع البصمة
-                await firebase.firestore().collection('users').doc(userId).set({
-                    userName: userName,
-                    secretCode: secretCode,
-                    deviceFingerprint: deviceFingerprint, // 🔑 المفتاح السحري
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    lastLogin: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                
-                console.log('✅ تم التسجيل بنجاح');
-                console.log('🔐 Device Fingerprint:', deviceFingerprint);
+                console.log('✅ تم التسجيل بنجاح - البصمة:', deviceFingerprint.substr(0, 8) + '...');
                 
                 return { userId, secretCode, deviceFingerprint };
                 
@@ -1409,52 +1419,48 @@
                 // 1. توليد بصمة الجهاز الحالي
                 const currentFingerprint = await getDeviceFingerprint();
                 
-                console.log('🔍 جاري البحث عن محادثة:', userName);
-                console.log('🔐 Device Fingerprint:', currentFingerprint);
+                console.log('🔍 جاري البحث... الاسم:', userName, 'البصمة:', currentFingerprint.substr(0, 8) + '...');
                 
-                // 2. البحث بالاسم + البصمة (الأدق!)
+                // 2. البحث بالاسم فقط أولاً (أسرع)
                 const snapshot = await firebase.firestore()
                     .collection('users')
                     .where('userName', '==', userName)
-                    .where('deviceFingerprint', '==', currentFingerprint)
-                    .limit(1)
+                    .limit(10) // زيادة الحد للبحث الشامل
                     .get();
                 
                 if (!snapshot.empty) {
-                    // 🎉 وجدنا المحادثة بالضبط!
-                    const userData = snapshot.docs[0].data();
-                    const userId = snapshot.docs[0].id;
+                    // البحث عن مطابقة البصمة بين النتائج
+                    let foundUser = null;
+                    let foundDoc = null;
                     
-                    // تحديث وقت آخر دخول
-                    await firebase.firestore().collection('users').doc(userId).update({
-                        lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+                    snapshot.docs.forEach(doc => {
+                        const userData = doc.data();
+                        if (userData.deviceFingerprint === currentFingerprint) {
+                            foundUser = userData;
+                            foundDoc = doc;
+                        }
                     });
                     
-                    // حفظ في localStorage
-                    localStorage.setItem('chatUserId', userId);
-                    localStorage.setItem('chatSecretCode', userData.secretCode);
-                    localStorage.setItem('chatUserName', userName);
-                    localStorage.setItem('chatDeviceFingerprint', currentFingerprint);
+                    if (foundUser && foundDoc) {
+                        // 🎉 وجدنا مطابقة تامة!
+                        const userId = foundDoc.id;
+                        
+                        // حفظ في localStorage
+                        localStorage.setItem('chatUserId', userId);
+                        localStorage.setItem('chatSecretCode', foundUser.secretCode);
+                        localStorage.setItem('chatUserName', userName);
+                        localStorage.setItem('chatDeviceFingerprint', currentFingerprint);
+                        
+                        console.log('✅ تم استرجاع محادثتك!');
+                        return { userId, found: true, source: 'fingerprint' };
+                    }
                     
-                    console.log('✅ تم استرجاع محادثتك من نفس الجهاز!');
+                    // إذا لم نجد مطابقة البصمة، نأخذ أول نتيجة (الأحدث)
+                    const firstDoc = snapshot.docs[0];
+                    const firstUserData = firstDoc.data();
+                    const userId = firstDoc.id;
                     
-                    return { userId, found: true, source: 'fingerprint' };
-                }
-                
-                // 3. إذا لم نجد بالبصمة، ابحث بالاسم فقط (احتياطي)
-                const fallbackSnapshot = await firebase.firestore()
-                    .collection('users')
-                    .where('userName', '==', userName)
-                    .orderBy('createdAt', 'desc')
-                    .limit(5) // احتمال 5 أشخاص بنفس الاسم
-                    .get();
-                
-                if (!fallbackSnapshot.empty) {
-                    // خيارات متعددة - اختر الأحدث
-                    const userId = fallbackSnapshot.docs[0].id;
-                    const userData = fallbackSnapshot.docs[0].data();
-                    
-                    console.log('⚠️ تم العثور على محادثة بنفس الاسم من جهاز آخر');
+                    console.log('⚠️ تم العثور على محادثة بنفس الاسم');
                     
                     // تحديث البصمة للحساب القديم
                     await firebase.firestore().collection('users').doc(userId).update({
@@ -1463,7 +1469,7 @@
                     });
                     
                     localStorage.setItem('chatUserId', userId);
-                    localStorage.setItem('chatSecretCode', userData.secretCode);
+                    localStorage.setItem('chatSecretCode', firstUserData.secretCode);
                     localStorage.setItem('chatUserName', userName);
                     localStorage.setItem('chatDeviceFingerprint', currentFingerprint);
                     
@@ -1480,7 +1486,7 @@
         }
         
         async function smartLogin(userName) {
-            // 1. تحقق من localStorage أولاً
+            // 1. تحقق من localStorage أولاً (فوري)
             let savedUserId = localStorage.getItem('chatUserId');
             let savedFingerprint = localStorage.getItem('chatDeviceFingerprint');
             let savedName = localStorage.getItem('chatUserName');
@@ -1488,116 +1494,125 @@
             // 2. توليد البصمة الحالية
             const currentFingerprint = await getDeviceFingerprint();
             
-            // 3. إذا كل شيء مطابق → استخدمه
+            // 3. إذا كل شيء مطابق → استخدمه (فوري)
             if (savedUserId && savedFingerprint === currentFingerprint && savedName === userName) {
-                console.log('✅ نفس الجهاز - استخدام الجلسة المباشرة');
-                
-                try {
-                    if (!firebase.auth().currentUser) {
-                        await firebase.auth().signInAnonymously();
-                    }
-                    
-                    // تحديث وقت الدخول
-                    await firebase.firestore().collection('users').doc(savedUserId).update({
-                        lastLogin: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                    
-                    return { userId: savedUserId, isReturning: true };
-                } catch (e) {
-                    console.error('خطأ في تسجيل الدخول:', e);
-                }
+                console.log('✅ استخدام الجلسة الحالية');
+                return { userId: savedUserId, isReturning: true };
             }
             
             // 4. localStorage فارغ أو بصمة مختلفة → ابحث في Firestore
-            console.log('🔍 جاري البحث عن محادثتك...');
+            console.log('🔍 جاري البحث في السجلات...');
             const recovery = await recoverChatByNameAndDevice(userName);
             
             if (recovery.found) {
-                if (recovery.source === 'fingerprint') {
-                    console.log('🎉 مرحباً بعودتك من نفس الجهاز!');
-                } else {
-                    console.log('✅ تم استرجاع محادثتك (تم تحديث البصمة)');
-                }
+                console.log('🎉 تم العثور على محادثتك!');
                 return { userId: recovery.userId, isReturning: true };
             }
             
             // 5. مستخدم جديد تماماً
-            console.log('🆕 مستخدم جديد - إنشاء حساب...');
+            console.log('🆕 إنشاء حساب جديد...');
             const newUser = await registerNewUser(userName);
             
             return { userId: newUser.userId, isReturning: false };
         }
         
         // ============================================
-        // IMAGE COMPRESSION FUNCTION
+        // OPTIMIZED START CHAT BUTTON
         // ============================================
         
-        function compressImage(file, maxWidth, quality) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const img = new Image();
-                    img.onload = () => {
-                        const canvas = document.createElement('canvas');
-                        let width = img.width;
-                        let height = img.height;
-                        
-                        // تصغير إذا كانت أكبر من maxWidth
-                        if (width > maxWidth) {
-                            height = (height * maxWidth) / width;
-                            width = maxWidth;
-                        }
-                        
-                        canvas.width = width;
-                        canvas.height = height;
-                        
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-                        
-                        // تحويل لـ Base64 مع ضغط
-                        canvas.toBlob((blob) => {
-                            const blobReader = new FileReader();
-                            blobReader.onload = (blobEvent) => {
-                                resolve(blobEvent.target.result);
-                            };
-                            blobReader.onerror = reject;
-                            blobReader.readAsDataURL(blob);
-                        }, 'image/jpeg', quality);
-                    };
-                    img.onerror = reject;
-                    img.src = e.target.result;
-                };
-                reader.onerror = reject;
-                reader.readAsDataURL(file);
-            });
-        }
+        let isStartingChat = false; // منع النقر المزدوج
+        
+        document.getElementById('startChatBtn').addEventListener('click', async function() {
+            if (isStartingChat) return; // منع النقر المزدوج
+            
+            const name = document.getElementById('userNameInput').value.trim();
+            if (name.length < 2) {
+                alert('يرجى إدخال اسم صحيح (حرفين على الأقل)');
+                return;
+            }
+            
+            // تعطيل الزر وإظهار حالة التحميل
+            const button = this;
+            const originalText = button.innerHTML;
+            button.innerHTML = `
+                <div class="flex items-center gap-2">
+                    <i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i>
+                    <span>جاري التحضير...</span>
+                </div>
+            `;
+            button.disabled = true;
+            isStartingChat = true;
+            
+            lucide.createIcons();
+            
+            try {
+                console.log('🚀 بدء عملية الدخول...');
+                
+                // استخدام النظام الذكي مع توقيت
+                const startTime = Date.now();
+                const loginResult = await smartLogin(name);
+                const endTime = Date.now();
+                
+                console.log(`⏱️ وقت الدخول: ${endTime - startTime}ms`);
+                
+                currentUserName = name;
+                currentUserId = loginResult.userId;
+                
+                if (loginResult.isReturning) {
+                    console.log('👋 مرحباً بعودتك!');
+                } else {
+                    console.log('🎉 حساب جديد!');
+                }
+                
+                // فتح المحادثة فوراً
+                openFullscreenChat();
+                
+            } catch (error) {
+                console.error('❌ خطأ في بدء المحادثة:', error);
+                alert('حدث خطأ في بدء المحادثة. يرجى المحاولة مرة أخرى.');
+            } finally {
+                // إعادة تمكين الزر
+                button.innerHTML = originalText;
+                button.disabled = false;
+                isStartingChat = false;
+                lucide.createIcons();
+            }
+        });
+        
+        // ============================================
+        // EXISTING CODE (REST OF YOUR FUNCTIONS)
+        // ============================================
         
         let isHaydarOnline = false;
         let onlineStatusRef = null;
+        let currentUserName = null;
+        let currentUserId = null;
+        let selectedImageData = null;
+        let calloutTimer = null;
 
         // دالة للاستماع لحالة الاتصال من Firebase
-function checkOnlineStatus() {
-    const presenceRef = firebase.database().ref('users/haydar/status');
-    
-    presenceRef.on('value', (snapshot) => {
-        if (snapshot.exists()) {
-            const status = snapshot.val();
-            isHaydarOnline = status.online || false;
-            console.log('✅ حالة الاتصال:', isHaydarOnline ? 'متصل' : 'غير متصل');
-        } else {
-            isHaydarOnline = false;
-            console.log('⚠️ لا توجد بيانات حالة الاتصال');
+        function checkOnlineStatus() {
+            const presenceRef = firebase.database().ref('users/haydar/status');
+            
+            presenceRef.on('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    const status = snapshot.val();
+                    isHaydarOnline = status.online || false;
+                    console.log('✅ حالة الاتصال:', isHaydarOnline ? 'متصل' : 'غير متصل');
+                } else {
+                    isHaydarOnline = false;
+                    console.log('⚠️ لا توجد بيانات حالة الاتصال');
+                }
+                
+                // تحديث الواجهة فقط إذا كانت العناصر موجودة
+                const statusIndicator = document.getElementById('onlineStatus');
+                const statusText = document.getElementById('statusText');
+                
+                if (statusIndicator && statusText) {
+                    updateOnlineUI();
+                }
+            });
         }
-        
-        // تحديث الواجهة فقط إذا كانت العناصر موجودة
-        const statusIndicator = document.getElementById('onlineStatus');
-        const statusText = document.getElementById('statusText');
-        
-        if (statusIndicator && statusText) {
-            updateOnlineUI();
-        }
-    });
-}
         
         function updateOnlineUI() {
             const statusIndicator = document.getElementById('onlineStatus');
@@ -1615,10 +1630,6 @@ function checkOnlineStatus() {
                 statusText.parentElement.querySelector('i').style.color = '#94a3b8';
             }
         }
-        
-        let currentUserName = null;
-        let currentUserId = null;
-        let selectedImageData = null;
         
         function getUserId() {
             // استخدام النظام الجديد - userId من localStorage
@@ -1733,18 +1744,24 @@ function checkOnlineStatus() {
             
             document.getElementById('chatDate').textContent = formatDate(new Date());
             
-            checkOnlineStatus();
-            loadMessages();
-            
-            // إظهار Callout الملاحظة
+            // تحميل الرسائل وحالة الاتصال في الخلفية
             setTimeout(() => {
-                showChatNoteCallout();
-            }, 500);
+                checkOnlineStatus();
+                loadMessages();
+                
+                // إظهار Callout الملاحظة بعد فتح المحادثة
+                setTimeout(() => {
+                    showChatNoteCallout();
+                }, 300);
+            }, 100);
             
+            // التركيز على حقل الكتابة فوراً
             setTimeout(() => {
                 document.getElementById('chatTextarea').focus();
                 lucide.createIcons();
-            }, 100);
+            }, 50);
+            
+            console.log('💬 المحادثة مفتوحة!');
         }
         
         function closeFullscreenChat() {
@@ -1759,327 +1776,6 @@ function checkOnlineStatus() {
                 onlineStatusRef.off();
             }
         }
-        
-async function loadMessages() {
-    const userId = getUserId();
-    
-    try {
-        const container = document.getElementById('chatMessages');
-        const dateDivider = container.querySelector('.date-divider');
-        const emptyState = document.getElementById('chatEmptyState');
-        
-        container.innerHTML = '';
-        container.appendChild(dateDivider);
-        
-        // تحميل الرسائل مرة واحدة فقط
-        const snapshot = await firebase.firestore()
-            .collection('chats')
-            .doc(userId)
-            .collection('messages')
-            .orderBy('timestamp', 'asc')
-            .get();
-        
-        if (snapshot.empty) {
-            emptyState.classList.remove('hidden');
-        } else {
-            emptyState.classList.add('hidden');
-            
-            snapshot.forEach(doc => {
-                const messageData = doc.data();
-                if (messageData.timestamp) {
-                    messageData.timestamp = messageData.timestamp.toDate().toISOString();
-                } else {
-                    messageData.timestamp = new Date().toISOString();
-                }
-                displayMessage(messageData, false);
-            });
-        }
-        
-        scrollToBottom(false);
-        
-        // الاستماع للرسائل الجديدة فقط (بعد الآن)
-        let isFirstSnapshot = true;
-        firebase.firestore()
-            .collection('chats')
-            .doc(userId)
-            .collection('messages')
-            .orderBy('timestamp', 'asc')
-            .onSnapshot((snapshot) => {
-                // تجاهل أول snapshot (لأننا حملنا الرسائل بالفعل)
-                if (isFirstSnapshot) {
-                    isFirstSnapshot = false;
-                    return;
-                }
-                
-                snapshot.docChanges().forEach((change) => {
-                    if (change.type === 'added') {
-                        const messageData = change.doc.data();
-                        
-                        // عرض فقط رسائل من الأدمن (حيدر)
-                        if (messageData.sender === 'admin') {
-                            if (messageData.timestamp) {
-                                messageData.timestamp = messageData.timestamp.toDate().toISOString();
-                            } else {
-                                messageData.timestamp = new Date().toISOString();
-                            }
-                            
-                            displayMessage(messageData, true);
-                            scrollToBottom();
-                            
-                            // صوت تنبيه
-                            const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIGGS57OihUhELTKXh8LZjHAU7k9n0yXQrBSl9zPLaizsKGGk=');
-                            audio.play().catch(() => {});
-                        }
-                    }
-                });
-            });
-                
-                setTimeout(() => lucide.createIcons(), 50);
-                
-            } catch (error) {
-                console.error('❌ خطأ في تحميل الرسائل:', error);
-                
-                // تحميل من localStorage كنسخة احتياطية
-                const messages = JSON.parse(localStorage.getItem(`chat_messages_${userId}`) || '[]');
-                const container = document.getElementById('chatMessages');
-                const dateDivider = container.querySelector('.date-divider');
-                
-                container.innerHTML = '';
-                container.appendChild(dateDivider);
-                
-                if (messages.length === 0) {
-                    document.getElementById('chatEmptyState').classList.remove('hidden');
-                } else {
-                    document.getElementById('chatEmptyState').classList.add('hidden');
-                    messages.forEach(msg => displayMessage(msg, false));
-                }
-                
-                scrollToBottom(false);
-                setTimeout(() => lucide.createIcons(), 50);
-            }
-        }
-        
-        function displayMessage(message, animate = true) {
-            const container = document.getElementById('chatMessages');
-            const emptyState = document.getElementById('chatEmptyState');
-            
-            if (emptyState) {
-                emptyState.classList.add('hidden');
-            }
-            
-            const isUser = message.sender === 'user';
-            
-            const messageWrapper = document.createElement('div');
-            messageWrapper.className = `message-wrapper ${isUser ? 'user' : 'recipient'}`;
-            
-            const messageBubble = document.createElement('div');
-            messageBubble.className = `message-bubble ${isUser ? 'user' : 'recipient'}`;
-            
-            let content = '';
-            
-            if (!isUser) {
-                content += `
-                    <div class="message-sender-name">
-                        <i data-lucide="sparkles" class="w-4 h-4"></i>
-                        <span>حيدر</span>
-                    </div>
-                `;
-            }
-            
-            if (message.image) {
-                content += `
-                    <img src="${message.image}" alt="صورة" class="message-image" onclick="viewFullImage('${message.image}')">
-                `;
-            }
-            
-            if (message.text) {
-                content += `
-                    <p class="message-text">${escapeHtml(message.text)}</p>
-                `;
-            }
-            
-            content += `
-                <div class="message-metadata">
-                    <i data-lucide="clock" class="w-3 h-3"></i>
-                    <span>${formatTime(message.timestamp)}</span>
-                </div>
-            `;
-            
-            messageBubble.innerHTML = content;
-            messageWrapper.appendChild(messageBubble);
-            container.appendChild(messageWrapper);
-            
-            if (animate && shouldAutoScroll()) {
-                scrollToBottom();
-            }
-            
-            setTimeout(() => lucide.createIcons(), 50);
-        }
-        
-        function sendMessage() {
-            const textarea = document.getElementById('chatTextarea');
-            const text = textarea.value.trim();
-            
-            if (!text && !selectedImageData) {
-                return;
-            }
-            
-            const message = {
-                id: 'msg_' + Date.now(),
-                userId: getUserId(),
-                userName: currentUserName,
-                text: text,
-                image: selectedImageData,
-                timestamp: new Date().toISOString(),
-                sender: 'user'
-            };
-            
-            saveMessage(message);
-            displayMessage(message, true);
-            
-            textarea.value = '';
-            textarea.style.height = 'auto';
-            removeImagePreview();
-            updateSendButton();
-            
-            scrollToBottom();
-        }
-        
-        async function saveMessage(message) {
-            const userId = getUserId();
-            
-            try {
-                // حفظ في Firebase Firestore
-                await firebase.firestore()
-                    .collection('chats')
-                    .doc(userId)
-                    .collection('messages')
-                    .add({
-                        ...message,
-                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                
-                console.log('✅ تم حفظ الرسالة في Firebase');
-                
-                // تحديث آخر رسالة في المحادثة
-                await firebase.firestore()
-                    .collection('chats')
-                    .doc(userId)
-                    .set({
-                        userName: message.userName,
-                        lastMessage: message.text || 'صورة',
-                        lastMessageTime: firebase.firestore.FieldValue.serverTimestamp(),
-                        unreadCount: firebase.firestore.FieldValue.increment(1)
-                    }, { merge: true });
-                
-            } catch (error) {
-                console.error('❌ خطأ في حفظ الرسالة:', error);
-                
-                // حفظ محلي كنسخة احتياطية
-                let messages = JSON.parse(localStorage.getItem(`chat_messages_${userId}`) || '[]');
-                messages.push(message);
-                localStorage.setItem(`chat_messages_${userId}`, JSON.stringify(messages));
-                
-                alert('تم حفظ الرسالة محلياً. تأكد من اتصالك بالإنترنت.');
-            }
-        }
-        
-        async function handleImageUpload(file) {
-            if (!file) return;
-            
-            // التحقق من الحجم الأصلي (5MB)
-            if (file.size > 5 * 1024 * 1024) {
-                alert('حجم الصورة كبير جداً! الحد الأقصى 5MB');
-                return;
-            }
-            
-            if (!file.type.startsWith('image/')) {
-                alert('يرجى اختيار ملف صورة');
-                return;
-            }
-            
-            try {
-                // عرض رسالة انتظار
-                const previewContainer = document.getElementById('chatImagePreview');
-                previewContainer.innerHTML = `
-                    <div class="flex items-center gap-2 text-pink-600 font-bold">
-                        <i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i>
-                        <span>جاري ضغط الصورة...</span>
-                    </div>
-                `;
-                previewContainer.classList.remove('hidden');
-                setTimeout(() => lucide.createIcons(), 50);
-                
-                // ضغط الصورة (عرض 800px، جودة 70%)
-                const compressedBase64 = await compressImage(file, 800, 0.7);
-                
-                // حساب الحجم الجديد
-                const compressedSize = Math.round((compressedBase64.length * 3) / 4); // تقريبي
-                const originalSize = file.size;
-                const savedPercent = Math.round((1 - compressedSize / originalSize) * 100);
-                
-                console.log(`✅ تم ضغط الصورة: ${Math.round(originalSize/1024)}KB → ${Math.round(compressedSize/1024)}KB (وفرت ${savedPercent}%)`);
-                
-                // حفظ الصورة المضغوطة
-                selectedImageData = compressedBase64;
-                
-                // عرض المعاينة
-                showImagePreview(compressedBase64);
-                updateSendButton();
-                
-            } catch (error) {
-                console.error('❌ خطأ في معالجة الصورة:', error);
-                alert('حدث خطأ في معالجة الصورة');
-                document.getElementById('chatImagePreview').classList.add('hidden');
-            }
-        }
-        
-        function showImagePreview(imageData) {
-            const container = document.getElementById('chatImagePreview');
-            container.innerHTML = `
-                <div class="image-preview-box">
-                    <img src="${imageData}" alt="معاينة">
-                    <button class="image-preview-remove" onclick="removeImagePreview()" type="button" aria-label="إزالة الصورة">
-                        <i data-lucide="x" class="w-4 h-4"></i>
-                    </button>
-                </div>
-            `;
-            container.classList.remove('hidden');
-            setTimeout(() => lucide.createIcons(), 50);
-        }
-        
-        function removeImagePreview() {
-            selectedImageData = null;
-            document.getElementById('chatImagePreview').classList.add('hidden');
-            document.getElementById('chatImageInput').value = '';
-            updateSendButton();
-        }
-        
-        function viewFullImage(imageSrc) {
-            window.open(imageSrc, '_blank');
-        }
-        
-        function autoResizeTextarea() {
-            const textarea = document.getElementById('chatTextarea');
-            textarea.style.height = 'auto';
-            textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
-            updateSendButton();
-        }
-        
-        function updateSendButton() {
-            const textarea = document.getElementById('chatTextarea');
-            const sendBtn = document.getElementById('chatSendBtn');
-            const hasContent = textarea.value.trim().length > 0 || selectedImageData;
-            
-            sendBtn.disabled = !hasContent;
-            sendBtn.setAttribute('aria-disabled', !hasContent);
-        }
-        
-        // ============================================
-        // CHAT NOTE CALLOUT MANAGEMENT
-        // ============================================
-        
-        let calloutTimer = null;
         
         function showChatNoteCallout() {
             const callout = document.getElementById('chatNoteCallout');
@@ -2113,213 +1809,544 @@ async function loadMessages() {
             }
         }
         
-        const externalLinks = {
-            songs: 'YOUR_SONGS_LINK',
-            designs: 'YOUR_DESIGNS_LINK',
-            cv: 'YOUR_CV_LINK'
-        };
-        
-        document.querySelectorAll('[data-link]').forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const linkType = link.getAttribute('data-link');
-                if (externalLinks[linkType] && !externalLinks[linkType].includes('YOUR_')) {
-                    window.open(externalLinks[linkType], '_blank');
-                } else {
-                    alert('يرجى إضافة الرابط في الكود');
-                }
-            });
-        });
-        
-        const mobileToggle = document.getElementById('mobileToggle');
-        const mobileClose = document.getElementById('mobileClose');
-        const mobileMenu = document.getElementById('mobileMenu');
-        const mobileOverlay = document.getElementById('mobileOverlay');
-        const mobileLinks = document.querySelectorAll('.mobile-link');
-        const mobileMenuItems = document.querySelectorAll('.mobile-menu-item');
-        const firstVisitBlur = document.getElementById('firstVisitBlur');
-        const menuCallout = document.getElementById('menuCallout');
-        
-        let firstVisit = !localStorage.getItem('hasVisited');
-        let blurActive = false;
-        
-        function toggleMobileMenu() {
-            const isOpen = !mobileMenu.classList.contains('translate-x-full');
-            
-            if (isOpen) {
-                mobileMenu.classList.add('translate-x-full');
-                document.body.style.overflow = 'auto';
-                mobileMenuItems.forEach(item => item.classList.remove('show'));
-                
-                if (blurActive) {
-                    firstVisitBlur.style.opacity = '0';
-                    setTimeout(() => firstVisitBlur.classList.add('hidden'), 500);
-                    menuCallout.style.opacity = '0';
-                    blurActive = false;
-                }
-            } else {
-                mobileMenu.classList.remove('translate-x-full');
-                document.body.style.overflow = 'hidden';
-                mobileMenuItems.forEach((item, index) => {
-                    setTimeout(() => item.classList.add('show'), index * 100);
-                });
-                
-                if (blurActive) {
-                    menuCallout.style.opacity = '0';
-                    firstVisitBlur.style.opacity = '0';
-                    setTimeout(() => firstVisitBlur.classList.add('hidden'), 500);
-                    blurActive = false;
-                }
-            }
-        }
-        
-        mobileToggle.addEventListener('click', toggleMobileMenu);
-        mobileClose.addEventListener('click', toggleMobileMenu);
-        mobileOverlay.addEventListener('click', toggleMobileMenu);
-        mobileLinks.forEach(link => link.addEventListener('click', toggleMobileMenu));
-        
-        if (firstVisit) {
-            setTimeout(() => {
-                firstVisitBlur.classList.remove('hidden');
-                firstVisitBlur.style.opacity = '1';
-                blurActive = true;
-                
-                if (window.innerWidth < 768) {
-                    setTimeout(() => {
-                        menuCallout.style.opacity = '1';
-                    }, 500);
-                }
-                
-                localStorage.setItem('hasVisited', 'true');
-            }, 1000);
-            
-            firstVisitBlur.addEventListener('click', function() {
-                if (window.innerWidth >= 768) {
-                    firstVisitBlur.style.opacity = '0';
-                    setTimeout(() => firstVisitBlur.classList.add('hidden'), 500);
-                    blurActive = false;
-                }
-            });
-        }
-        
-        const navbar = document.getElementById('navbar');
-        window.addEventListener('scroll', () => {
-            if (window.pageYOffset > 100) {
-                navbar.classList.add('scale-95');
-            } else {
-                navbar.classList.remove('scale-95');
-            }
-        });
-        
-        document.getElementById('closeContactModal').addEventListener('click', closeContactModal);
-        document.getElementById('modalBackdrop').addEventListener('click', closeContactModal);
-        
-        document.getElementById('sendHereBtn').addEventListener('click', () => {
-            showModalView('name');
-        });
-        
-        document.getElementById('backToMain').addEventListener('click', () => {
-            showModalView('main');
-        });
-        
-        // ============================================
-        // UPDATED START CHAT FUNCTION WITH SMART LOGIN
-        // ============================================
-        
-        document.getElementById('startChatBtn').addEventListener('click', async () => {
-            const name = document.getElementById('userNameInput').value.trim();
-            if (name.length < 2) {
-                alert('يرجى إدخال اسم صحيح (حرفين على الأقل)');
-                return;
-            }
+        async function loadMessages() {
+            const userId = getUserId();
             
             try {
-                // استخدام النظام الذكي للتسجيل/الدخول
-                const loginResult = await smartLogin(name);
+                const container = document.getElementById('chatMessages');
+                const dateDivider = container.querySelector('.date-divider');
+                const emptyState = document.getElementById('chatEmptyState');
                 
-                currentUserName = name;
-                currentUserId = loginResult.userId;
+                container.innerHTML = '';
+                container.appendChild(dateDivider);
                 
-                if (loginResult.isReturning) {
-                    console.log('👋 مرحباً بعودتك!');
+                // تحميل الرسائل مرة واحدة فقط
+                const snapshot = await firebase.firestore()
+                    .collection('chats')
+                    .doc(userId)
+                    .collection('messages')
+                    .orderBy('timestamp', 'asc')
+                    .get();
+                
+                if (snapshot.empty) {
+                    emptyState.classList.remove('hidden');
                 } else {
-                    console.log('🎉 حساب جديد تم إنشاؤه!');
+                    emptyState.classList.add('hidden');
+                    
+                    snapshot.forEach(doc => {
+                        const messageData = doc.data();
+                        if (messageData.timestamp) {
+                            messageData.timestamp = messageData.timestamp.toDate().toISOString();
+                        } else {
+                            messageData.timestamp = new Date().toISOString();
+                        }
+                        displayMessage(messageData, false);
+                    });
                 }
                 
-                openFullscreenChat();
+                scrollToBottom(false);
                 
-            } catch (error) {
-                console.error('❌ خطأ في بدء المحادثة:', error);
-                alert('حدث خطأ في بدء المحادثة. يرجى المحاولة مرة أخرى.');
-            }
-        });
-        
-        document.getElementById('userNameInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                document.getElementById('startChatBtn').click();
-            }
-        });
-        
-        document.getElementById('chatBackBtn').addEventListener('click', closeFullscreenChat);
-        
-        document.getElementById('chatImageInput').addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                handleImageUpload(file);
-            }
-        });
-        
-        document.getElementById('chatTextarea').addEventListener('input', debounce(autoResizeTextarea, 100));
-        
-        document.getElementById('chatTextarea').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
-        
-        document.getElementById('chatSendBtn').addEventListener('click', sendMessage);
-        
-        // إضافة مستمعي الأحداث للـ Callout
-        document.addEventListener('DOMContentLoaded', function() {
-            const closeCalloutBtn = document.getElementById('closeCallout');
-            if (closeCalloutBtn) {
-                closeCalloutBtn.addEventListener('click', hideChatNoteCallout);
-            }
-        });
-        
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                if (document.getElementById('chatFullscreen').classList.contains('active')) {
-                    closeFullscreenChat();
-                } else {
-                    closeContactModal();
+                // الاستماع للرسائل الجديدة فقط (بعد الآن)
+                let isFirstSnapshot = true;
+                firebase.firestore()
+                    .collection('chats')
+                    .doc(userId)
+                    .collection('messages')
+                    .orderBy('timestamp', 'asc')
+                    .onSnapshot((snapshot) => {
+                        // تجاهل أول snapshot (لأننا حملنا الرسائل بالفعل)
+                        if (isFirstSnapshot) {
+                            isFirstSnapshot = false;
+                            return;
+                        }
+                        
+                        snapshot.docChanges().forEach((change) => {
+                            if (change.type === 'added') {
+                                const messageData = change.doc.data();
+                                
+                                // عرض فقط رسائل من الأدمن (حيدر)
+                                if (messageData.sender === 'admin') {
+                                    if (messageData.timestamp) {
+                                        messageData.timestamp = messageData.timestamp.toDate().toISOString();
+                                    } else {
+                                        messageData.timestamp = new Date().toISOString();
+                                    }
+                                    
+                                    displayMessage(messageData, true);
+                                    scrollToBottom();
+                                    
+                                    // صوت تنبيه
+                                    const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIGGS57OihUhELTKXh8LZjHAU7k9n0yXQrBSl9zPLaizsKGGk=');
+                                    audio.play().catch(() => {});
+                                }
+                            }
+                        });
+                    });
+                    
+                    setTimeout(() => lucide.createIcons(), 50);
+                    
+                } catch (error) {
+                    console.error('❌ خطأ في تحميل الرسائل:', error);
+                    
+                    // تحميل من localStorage كنسخة احتياطية
+                    const messages = JSON.parse(localStorage.getItem(`chat_messages_${userId}`) || '[]');
+                    const container = document.getElementById('chatMessages');
+                    const dateDivider = container.querySelector('.date-divider');
+                    
+                    container.innerHTML = '';
+                    container.appendChild(dateDivider);
+                    
+                    if (messages.length === 0) {
+                        document.getElementById('chatEmptyState').classList.remove('hidden');
+                    } else {
+                        document.getElementById('chatEmptyState').classList.add('hidden');
+                        messages.forEach(msg => displayMessage(msg, false));
+                    }
+                    
+                    scrollToBottom(false);
+                    setTimeout(() => lucide.createIcons(), 50);
                 }
             }
-        });
-        
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            
+            function displayMessage(message, animate = true) {
+                const container = document.getElementById('chatMessages');
+                const emptyState = document.getElementById('chatEmptyState');
+                
+                if (emptyState) {
+                    emptyState.classList.add('hidden');
+                }
+                
+                const isUser = message.sender === 'user';
+                
+                const messageWrapper = document.createElement('div');
+                messageWrapper.className = `message-wrapper ${isUser ? 'user' : 'recipient'}`;
+                
+                const messageBubble = document.createElement('div');
+                messageBubble.className = `message-bubble ${isUser ? 'user' : 'recipient'}`;
+                
+                let content = '';
+                
+                if (!isUser) {
+                    content += `
+                        <div class="message-sender-name">
+                            <i data-lucide="sparkles" class="w-4 h-4"></i>
+                            <span>حيدر</span>
+                        </div>
+                    `;
+                }
+                
+                if (message.image) {
+                    content += `
+                        <img src="${message.image}" alt="صورة" class="message-image" onclick="viewFullImage('${message.image}')">
+                    `;
+                }
+                
+                if (message.text) {
+                    content += `
+                        <p class="message-text">${escapeHtml(message.text)}</p>
+                    `;
+                }
+                
+                content += `
+                    <div class="message-metadata">
+                        <i data-lucide="clock" class="w-3 h-3"></i>
+                        <span>${formatTime(message.timestamp)}</span>
+                    </div>
+                `;
+                
+                messageBubble.innerHTML = content;
+                messageWrapper.appendChild(messageBubble);
+                container.appendChild(messageWrapper);
+                
+                if (animate && shouldAutoScroll()) {
+                    scrollToBottom();
+                }
+                
+                setTimeout(() => lucide.createIcons(), 50);
+            }
+            
+            function sendMessage() {
+                const textarea = document.getElementById('chatTextarea');
+                const text = textarea.value.trim();
+                
+                if (!text && !selectedImageData) {
+                    return;
+                }
+                
+                const message = {
+                    id: 'msg_' + Date.now(),
+                    userId: getUserId(),
+                    userName: currentUserName,
+                    text: text,
+                    image: selectedImageData,
+                    timestamp: new Date().toISOString(),
+                    sender: 'user'
+                };
+                
+                saveMessage(message);
+                displayMessage(message, true);
+                
+                textarea.value = '';
+                textarea.style.height = 'auto';
+                removeImagePreview();
+                updateSendButton();
+                
+                scrollToBottom();
+            }
+            
+            async function saveMessage(message) {
+                const userId = getUserId();
+                
+                try {
+                    // حفظ في Firebase Firestore
+                    await firebase.firestore()
+                        .collection('chats')
+                        .doc(userId)
+                        .collection('messages')
+                        .add({
+                            ...message,
+                            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    
+                    console.log('✅ تم حفظ الرسالة في Firebase');
+                    
+                    // تحديث آخر رسالة في المحادثة
+                    await firebase.firestore()
+                        .collection('chats')
+                        .doc(userId)
+                        .set({
+                            userName: message.userName,
+                            lastMessage: message.text || 'صورة',
+                            lastMessageTime: firebase.firestore.FieldValue.serverTimestamp(),
+                            unreadCount: firebase.firestore.FieldValue.increment(1)
+                        }, { merge: true });
+                    
+                } catch (error) {
+                    console.error('❌ خطأ في حفظ الرسالة:', error);
+                    
+                    // حفظ محلي كنسخة احتياطية
+                    let messages = JSON.parse(localStorage.getItem(`chat_messages_${userId}`) || '[]');
+                    messages.push(message);
+                    localStorage.setItem(`chat_messages_${userId}`, JSON.stringify(messages));
+                    
+                    alert('تم حفظ الرسالة محلياً. تأكد من اتصالك بالإنترنت.');
+                }
+            }
+            
+            // ============================================
+            // IMAGE COMPRESSION FUNCTION
+            // ============================================
+            
+            function compressImage(file, maxWidth, quality) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const img = new Image();
+                        img.onload = () => {
+                            const canvas = document.createElement('canvas');
+                            let width = img.width;
+                            let height = img.height;
+                            
+                            // تصغير إذا كانت أكبر من maxWidth
+                            if (width > maxWidth) {
+                                height = (height * maxWidth) / width;
+                                width = maxWidth;
+                            }
+                            
+                            canvas.width = width;
+                            canvas.height = height;
+                            
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, width, height);
+                            
+                            // تحويل لـ Base64 مع ضغط
+                            canvas.toBlob((blob) => {
+                                const blobReader = new FileReader();
+                                blobReader.onload = (blobEvent) => {
+                                    resolve(blobEvent.target.result);
+                                };
+                                blobReader.onerror = reject;
+                                blobReader.readAsDataURL(blob);
+                            }, 'image/jpeg', quality);
+                        };
+                        img.onerror = reject;
+                        img.src = e.target.result;
+                    };
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+            }
+            
+            async function handleImageUpload(file) {
+                if (!file) return;
+                
+                // التحقق من الحجم الأصلي (5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('حجم الصورة كبير جداً! الحد الأقصى 5MB');
+                    return;
+                }
+                
+                if (!file.type.startsWith('image/')) {
+                    alert('يرجى اختيار ملف صورة');
+                    return;
+                }
+                
+                try {
+                    // عرض رسالة انتظار
+                    const previewContainer = document.getElementById('chatImagePreview');
+                    previewContainer.innerHTML = `
+                        <div class="flex items-center gap-2 text-pink-600 font-bold">
+                            <i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i>
+                            <span>جاري ضغط الصورة...</span>
+                        </div>
+                    `;
+                    previewContainer.classList.remove('hidden');
+                    setTimeout(() => lucide.createIcons(), 50);
+                    
+                    // ضغط الصورة (عرض 800px، جودة 70%)
+                    const compressedBase64 = await compressImage(file, 800, 0.7);
+                    
+                    // حساب الحجم الجديد
+                    const compressedSize = Math.round((compressedBase64.length * 3) / 4); // تقريبي
+                    const originalSize = file.size;
+                    const savedPercent = Math.round((1 - compressedSize / originalSize) * 100);
+                    
+                    console.log(`✅ تم ضغط الصورة: ${Math.round(originalSize/1024)}KB → ${Math.round(compressedSize/1024)}KB (وفرت ${savedPercent}%)`);
+                    
+                    // حفظ الصورة المضغوطة
+                    selectedImageData = compressedBase64;
+                    
+                    // عرض المعاينة
+                    showImagePreview(compressedBase64);
+                    updateSendButton();
+                    
+                } catch (error) {
+                    console.error('❌ خطأ في معالجة الصورة:', error);
+                    alert('حدث خطأ في معالجة الصورة');
+                    document.getElementById('chatImagePreview').classList.add('hidden');
+                }
+            }
+            
+            function showImagePreview(imageData) {
+                const container = document.getElementById('chatImagePreview');
+                container.innerHTML = `
+                    <div class="image-preview-box">
+                        <img src="${imageData}" alt="معاينة">
+                        <button class="image-preview-remove" onclick="removeImagePreview()" type="button" aria-label="إزالة الصورة">
+                            <i data-lucide="x" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                `;
+                container.classList.remove('hidden');
+                setTimeout(() => lucide.createIcons(), 50);
+            }
+            
+            function removeImagePreview() {
+                selectedImageData = null;
+                document.getElementById('chatImagePreview').classList.add('hidden');
+                document.getElementById('chatImageInput').value = '';
+                updateSendButton();
+            }
+            
+            function viewFullImage(imageSrc) {
+                window.open(imageSrc, '_blank');
+            }
+            
+            function autoResizeTextarea() {
+                const textarea = document.getElementById('chatTextarea');
+                textarea.style.height = 'auto';
+                textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
+                updateSendButton();
+            }
+            
+            function updateSendButton() {
+                const textarea = document.getElementById('chatTextarea');
+                const sendBtn = document.getElementById('chatSendBtn');
+                const hasContent = textarea.value.trim().length > 0 || selectedImageData;
+                
+                sendBtn.disabled = !hasContent;
+                sendBtn.setAttribute('aria-disabled', !hasContent);
+            }
+            
+            // ============================================
+            // EVENT LISTENERS AND INITIALIZATION
+            // ============================================
+            
+            const externalLinks = {
+                songs: 'YOUR_SONGS_LINK',
+                designs: 'YOUR_DESIGNS_LINK',
+                cv: 'YOUR_CV_LINK'
+            };
+            
+            document.querySelectorAll('[data-link]').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const linkType = link.getAttribute('data-link');
+                    if (externalLinks[linkType] && !externalLinks[linkType].includes('YOUR_')) {
+                        window.open(externalLinks[linkType], '_blank');
+                    } else {
+                        alert('يرجى إضافة الرابط في الكود');
+                    }
+                });
+            });
+            
+            const mobileToggle = document.getElementById('mobileToggle');
+            const mobileClose = document.getElementById('mobileClose');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const mobileOverlay = document.getElementById('mobileOverlay');
+            const mobileLinks = document.querySelectorAll('.mobile-link');
+            const mobileMenuItems = document.querySelectorAll('.mobile-menu-item');
+            const firstVisitBlur = document.getElementById('firstVisitBlur');
+            const menuCallout = document.getElementById('menuCallout');
+            
+            let firstVisit = !localStorage.getItem('hasVisited');
+            let blurActive = false;
+            
+            function toggleMobileMenu() {
+                const isOpen = !mobileMenu.classList.contains('translate-x-full');
+                
+                if (isOpen) {
+                    mobileMenu.classList.add('translate-x-full');
+                    document.body.style.overflow = 'auto';
+                    mobileMenuItems.forEach(item => item.classList.remove('show'));
+                    
+                    if (blurActive) {
+                        firstVisitBlur.style.opacity = '0';
+                        setTimeout(() => firstVisitBlur.classList.add('hidden'), 500);
+                        menuCallout.style.opacity = '0';
+                        blurActive = false;
+                    }
+                } else {
+                    mobileMenu.classList.remove('translate-x-full');
+                    document.body.style.overflow = 'hidden';
+                    mobileMenuItems.forEach((item, index) => {
+                        setTimeout(() => item.classList.add('show'), index * 100);
+                    });
+                    
+                    if (blurActive) {
+                        menuCallout.style.opacity = '0';
+                        firstVisitBlur.style.opacity = '0';
+                        setTimeout(() => firstVisitBlur.classList.add('hidden'), 500);
+                        blurActive = false;
+                    }
+                }
+            }
+            
+            mobileToggle.addEventListener('click', toggleMobileMenu);
+            mobileClose.addEventListener('click', toggleMobileMenu);
+            mobileOverlay.addEventListener('click', toggleMobileMenu);
+            mobileLinks.forEach(link => link.addEventListener('click', toggleMobileMenu));
+            
+            if (firstVisit) {
+                setTimeout(() => {
+                    firstVisitBlur.classList.remove('hidden');
+                    firstVisitBlur.style.opacity = '1';
+                    blurActive = true;
+                    
+                    if (window.innerWidth < 768) {
+                        setTimeout(() => {
+                            menuCallout.style.opacity = '1';
+                        }, 500);
+                    }
+                    
+                    localStorage.setItem('hasVisited', 'true');
+                }, 1000);
+                
+                firstVisitBlur.addEventListener('click', function() {
+                    if (window.innerWidth >= 768) {
+                        firstVisitBlur.style.opacity = '0';
+                        setTimeout(() => firstVisitBlur.classList.add('hidden'), 500);
+                        blurActive = false;
+                    }
+                });
+            }
+            
+            const navbar = document.getElementById('navbar');
+            window.addEventListener('scroll', () => {
+                if (window.pageYOffset > 100) {
+                    navbar.classList.add('scale-95');
+                } else {
+                    navbar.classList.remove('scale-95');
                 }
             });
-        });
-        
-        // Make functions global
-        window.openContactModal = openContactModal;
-        window.closeContactModal = closeContactModal;
-        window.removeImagePreview = removeImagePreview;
-        window.viewFullImage = viewFullImage;
-        
-        setTimeout(() => lucide.createIcons(), 100);
-        
-        setInterval(() => {
-            lucide.createIcons();
-        }, 1000);
-        
+            
+            document.getElementById('closeContactModal').addEventListener('click', closeContactModal);
+            document.getElementById('modalBackdrop').addEventListener('click', closeContactModal);
+            
+            document.getElementById('sendHereBtn').addEventListener('click', () => {
+                showModalView('name');
+            });
+            
+            document.getElementById('backToMain').addEventListener('click', () => {
+                showModalView('main');
+            });
+            
+            document.getElementById('userNameInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    document.getElementById('startChatBtn').click();
+                }
+            });
+            
+            document.getElementById('chatBackBtn').addEventListener('click', closeFullscreenChat);
+            
+            document.getElementById('chatImageInput').addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    handleImageUpload(file);
+                }
+            });
+            
+            document.getElementById('chatTextarea').addEventListener('input', debounce(autoResizeTextarea, 100));
+            
+            document.getElementById('chatTextarea').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+            
+            document.getElementById('chatSendBtn').addEventListener('click', sendMessage);
+            
+            // إضافة مستمعي الأحداث للـ Callout
+            document.addEventListener('DOMContentLoaded', function() {
+                const closeCalloutBtn = document.getElementById('closeCallout');
+                if (closeCalloutBtn) {
+                    closeCalloutBtn.addEventListener('click', hideChatNoteCallout);
+                }
+            });
+            
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    if (document.getElementById('chatFullscreen').classList.contains('active')) {
+                        closeFullscreenChat();
+                    } else {
+                        closeContactModal();
+                    }
+                }
+            });
+            
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+            
+            // Make functions global
+            window.openContactModal = openContactModal;
+            window.closeContactModal = closeContactModal;
+            window.removeImagePreview = removeImagePreview;
+            window.viewFullImage = viewFullImage;
+            
+            setTimeout(() => lucide.createIcons(), 100);
+            
+            setInterval(() => {
+                lucide.createIcons();
+            }, 1000);
+            
     </script>
 </body>
 </html>

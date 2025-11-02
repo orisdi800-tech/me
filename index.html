@@ -1300,20 +1300,233 @@
         // تفعيل Firebase
         firebase.initializeApp(firebaseConfig);
         
-        // تسجيل دخول مجهول تلقائي
-        firebase.auth().onAuthStateChanged(async (user) => {
-            if (!user) {
-                try {
-                    await firebase.auth().signInAnonymously();
-                    console.log('✅ تم تسجيل الدخول المجهول');
-                } catch (error) {
-                    console.error('❌ خطأ في تسجيل الدخول:', error);
-                }
-            } else {
-                console.log('✅ المستخدم متصل:', user.uid);
-                localStorage.setItem('chatUserId', user.uid);
+        // ============================================
+        // DEVICE FINGERPRINT SYSTEM
+        // ============================================
+        
+        // توليد بصمة فريدة للجهاز/المتصفح
+        async function getDeviceFingerprint() {
+            const components = [];
+            
+            // 1. معلومات المتصفح والنظام
+            components.push(navigator.userAgent);
+            components.push(navigator.language);
+            components.push(navigator.platform);
+            components.push(screen.width + 'x' + screen.height);
+            components.push(screen.colorDepth);
+            components.push(new Date().getTimezoneOffset());
+            components.push(navigator.hardwareConcurrency || 'unknown');
+            
+            // 2. Canvas Fingerprint (الأكثر دقة)
+            try {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                ctx.textBaseline = 'top';
+                ctx.font = '14px Arial';
+                ctx.fillText('🔐 حيدر Portfolio', 2, 2);
+                components.push(canvas.toDataURL());
+            } catch (e) {
+                components.push('canvas_failed');
             }
-        });
+            
+            // 3. دمج كل المكونات وتحويلها لـ hash
+            const fingerprint = components.join('|||');
+            const hash = await simpleHash(fingerprint);
+            
+            console.log('🔐 بصمة الجهاز المولدة:', hash);
+            return hash;
+        }
+        
+        // دالة Hash بسيطة
+        async function simpleHash(str) {
+            try {
+                const encoder = new TextEncoder();
+                const data = encoder.encode(str);
+                const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                return hashArray.map(b => b.toString(36)).join('').substr(0, 16);
+            } catch (error) {
+                // Fallback hash بسيط
+                let hash = 0;
+                for (let i = 0; i < str.length; i++) {
+                    const char = str.charCodeAt(i);
+                    hash = ((hash << 5) - hash) + char;
+                    hash = hash & hash;
+                }
+                return Math.abs(hash).toString(36).substr(0, 16);
+            }
+        }
+        
+        // توليد كود سري
+        function generateSecretCode() {
+            return Math.random().toString(36).substr(2, 9).toUpperCase();
+        }
+        
+        // ============================================
+        // SMART LOGIN SYSTEM WITH FINGERPRINT
+        // ============================================
+        
+        async function registerNewUser(userName) {
+            try {
+                // 1. توليد بصمة الجهاز
+                const deviceFingerprint = await getDeviceFingerprint();
+                
+                // 2. تسجيل دخول Anonymous
+                const authResult = await firebase.auth().signInAnonymously();
+                const userId = authResult.user.uid;
+                
+                // 3. توليد كود سري (احتياطي)
+                const secretCode = generateSecretCode();
+                
+                // 4. حفظ في localStorage
+                localStorage.setItem('chatUserId', userId);
+                localStorage.setItem('chatSecretCode', secretCode);
+                localStorage.setItem('chatUserName', userName);
+                localStorage.setItem('chatDeviceFingerprint', deviceFingerprint);
+                
+                // 5. حفظ في Firestore مع البصمة
+                await firebase.firestore().collection('users').doc(userId).set({
+                    userName: userName,
+                    secretCode: secretCode,
+                    deviceFingerprint: deviceFingerprint, // 🔑 المفتاح السحري
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                console.log('✅ تم التسجيل بنجاح');
+                console.log('🔐 Device Fingerprint:', deviceFingerprint);
+                
+                return { userId, secretCode, deviceFingerprint };
+                
+            } catch (error) {
+                console.error('❌ خطأ في التسجيل:', error);
+                throw error;
+            }
+        }
+        
+        async function recoverChatByNameAndDevice(userName) {
+            try {
+                // 1. توليد بصمة الجهاز الحالي
+                const currentFingerprint = await getDeviceFingerprint();
+                
+                console.log('🔍 جاري البحث عن محادثة:', userName);
+                console.log('🔐 Device Fingerprint:', currentFingerprint);
+                
+                // 2. البحث بالاسم + البصمة (الأدق!)
+                const snapshot = await firebase.firestore()
+                    .collection('users')
+                    .where('userName', '==', userName)
+                    .where('deviceFingerprint', '==', currentFingerprint)
+                    .limit(1)
+                    .get();
+                
+                if (!snapshot.empty) {
+                    // 🎉 وجدنا المحادثة بالضبط!
+                    const userData = snapshot.docs[0].data();
+                    const userId = snapshot.docs[0].id;
+                    
+                    // تحديث وقت آخر دخول
+                    await firebase.firestore().collection('users').doc(userId).update({
+                        lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    
+                    // حفظ في localStorage
+                    localStorage.setItem('chatUserId', userId);
+                    localStorage.setItem('chatSecretCode', userData.secretCode);
+                    localStorage.setItem('chatUserName', userName);
+                    localStorage.setItem('chatDeviceFingerprint', currentFingerprint);
+                    
+                    console.log('✅ تم استرجاع محادثتك من نفس الجهاز!');
+                    
+                    return { userId, found: true, source: 'fingerprint' };
+                }
+                
+                // 3. إذا لم نجد بالبصمة، ابحث بالاسم فقط (احتياطي)
+                const fallbackSnapshot = await firebase.firestore()
+                    .collection('users')
+                    .where('userName', '==', userName)
+                    .orderBy('createdAt', 'desc')
+                    .limit(5) // احتمال 5 أشخاص بنفس الاسم
+                    .get();
+                
+                if (!fallbackSnapshot.empty) {
+                    // خيارات متعددة - اختر الأحدث
+                    const userId = fallbackSnapshot.docs[0].id;
+                    const userData = fallbackSnapshot.docs[0].data();
+                    
+                    console.log('⚠️ تم العثور على محادثة بنفس الاسم من جهاز آخر');
+                    
+                    // تحديث البصمة للحساب القديم
+                    await firebase.firestore().collection('users').doc(userId).update({
+                        deviceFingerprint: currentFingerprint,
+                        lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    
+                    localStorage.setItem('chatUserId', userId);
+                    localStorage.setItem('chatSecretCode', userData.secretCode);
+                    localStorage.setItem('chatUserName', userName);
+                    localStorage.setItem('chatDeviceFingerprint', currentFingerprint);
+                    
+                    return { userId, found: true, source: 'name_only' };
+                }
+                
+                // لم يُعثر على أي شيء
+                return { found: false };
+                
+            } catch (error) {
+                console.error('❌ خطأ في البحث:', error);
+                return { found: false, error: error };
+            }
+        }
+        
+        async function smartLogin(userName) {
+            // 1. تحقق من localStorage أولاً
+            let savedUserId = localStorage.getItem('chatUserId');
+            let savedFingerprint = localStorage.getItem('chatDeviceFingerprint');
+            let savedName = localStorage.getItem('chatUserName');
+            
+            // 2. توليد البصمة الحالية
+            const currentFingerprint = await getDeviceFingerprint();
+            
+            // 3. إذا كل شيء مطابق → استخدمه
+            if (savedUserId && savedFingerprint === currentFingerprint && savedName === userName) {
+                console.log('✅ نفس الجهاز - استخدام الجلسة المباشرة');
+                
+                try {
+                    if (!firebase.auth().currentUser) {
+                        await firebase.auth().signInAnonymously();
+                    }
+                    
+                    // تحديث وقت الدخول
+                    await firebase.firestore().collection('users').doc(savedUserId).update({
+                        lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    
+                    return { userId: savedUserId, isReturning: true };
+                } catch (e) {
+                    console.error('خطأ في تسجيل الدخول:', e);
+                }
+            }
+            
+            // 4. localStorage فارغ أو بصمة مختلفة → ابحث في Firestore
+            console.log('🔍 جاري البحث عن محادثتك...');
+            const recovery = await recoverChatByNameAndDevice(userName);
+            
+            if (recovery.found) {
+                if (recovery.source === 'fingerprint') {
+                    console.log('🎉 مرحباً بعودتك من نفس الجهاز!');
+                } else {
+                    console.log('✅ تم استرجاع محادثتك (تم تحديث البصمة)');
+                }
+                return { userId: recovery.userId, isReturning: true };
+            }
+            
+            // 5. مستخدم جديد تماماً
+            console.log('🆕 مستخدم جديد - إنشاء حساب...');
+            const newUser = await registerNewUser(userName);
+            
+            return { userId: newUser.userId, isReturning: false };
+        }
         
         // ============================================
         // IMAGE COMPRESSION FUNCTION
@@ -1408,17 +1621,18 @@ function checkOnlineStatus() {
         let selectedImageData = null;
         
         function getUserId() {
-            // محاولة الحصول على Firebase UID أولاً
-            const firebaseUser = firebase.auth().currentUser;
-            if (firebaseUser) {
-                return firebaseUser.uid;
-            }
-            
-            // إذا لم يكن متصل، نستخدم localStorage
+            // استخدام النظام الجديد - userId من localStorage
             let userId = localStorage.getItem('chatUserId');
             if (!userId) {
-                userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                localStorage.setItem('chatUserId', userId);
+                // Fallback للنظام القديم
+                const firebaseUser = firebase.auth().currentUser;
+                if (firebaseUser) {
+                    userId = firebaseUser.uid;
+                    localStorage.setItem('chatUserId', userId);
+                } else {
+                    userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                    localStorage.setItem('chatUserId', userId);
+                }
             }
             return userId;
         }
@@ -1522,6 +1736,11 @@ function checkOnlineStatus() {
             checkOnlineStatus();
             loadMessages();
             
+            // إظهار Callout الملاحظة
+            setTimeout(() => {
+                showChatNoteCallout();
+            }, 500);
+            
             setTimeout(() => {
                 document.getElementById('chatTextarea').focus();
                 lucide.createIcons();
@@ -1531,6 +1750,9 @@ function checkOnlineStatus() {
         function closeFullscreenChat() {
             document.getElementById('chatFullscreen').classList.remove('active');
             document.body.style.overflow = 'auto';
+            
+            // إخفاء Callout الملاحظة
+            hideChatNoteCallout();
             
             // إيقاف الاستماع لحالة الاتصال (توفير موارد)
             if (onlineStatusRef) {
@@ -1853,6 +2075,44 @@ async function loadMessages() {
             sendBtn.setAttribute('aria-disabled', !hasContent);
         }
         
+        // ============================================
+        // CHAT NOTE CALLOUT MANAGEMENT
+        // ============================================
+        
+        let calloutTimer = null;
+        
+        function showChatNoteCallout() {
+            const callout = document.getElementById('chatNoteCallout');
+            if (callout) {
+                callout.classList.remove('hiding');
+                callout.style.display = 'block';
+                
+                // بدء العد التنازلي للإخفاء التلقائي (12 ثانية)
+                calloutTimer = setTimeout(() => {
+                    hideChatNoteCallout();
+                }, 12000);
+            }
+        }
+        
+        function hideChatNoteCallout() {
+            const callout = document.getElementById('chatNoteCallout');
+            if (callout) {
+                callout.classList.add('hiding');
+                
+                // إزالة العنصر بعد انتهاء الرسوم المتحركة
+                setTimeout(() => {
+                    callout.style.display = 'none';
+                    callout.classList.remove('hiding');
+                }, 400);
+                
+                // إلغاء المؤقت إذا كان موجوداً
+                if (calloutTimer) {
+                    clearTimeout(calloutTimer);
+                    calloutTimer = null;
+                }
+            }
+        }
+        
         const externalLinks = {
             songs: 'YOUR_SONGS_LINK',
             designs: 'YOUR_DESIGNS_LINK',
@@ -1962,17 +2222,36 @@ async function loadMessages() {
             showModalView('main');
         });
         
-        document.getElementById('startChatBtn').addEventListener('click', () => {
+        // ============================================
+        // UPDATED START CHAT FUNCTION WITH SMART LOGIN
+        // ============================================
+        
+        document.getElementById('startChatBtn').addEventListener('click', async () => {
             const name = document.getElementById('userNameInput').value.trim();
             if (name.length < 2) {
                 alert('يرجى إدخال اسم صحيح (حرفين على الأقل)');
                 return;
             }
             
-            currentUserName = name;
-            currentUserId = getUserId();
-            localStorage.setItem('chatUserName', name);
-            openFullscreenChat();
+            try {
+                // استخدام النظام الذكي للتسجيل/الدخول
+                const loginResult = await smartLogin(name);
+                
+                currentUserName = name;
+                currentUserId = loginResult.userId;
+                
+                if (loginResult.isReturning) {
+                    console.log('👋 مرحباً بعودتك!');
+                } else {
+                    console.log('🎉 حساب جديد تم إنشاؤه!');
+                }
+                
+                openFullscreenChat();
+                
+            } catch (error) {
+                console.error('❌ خطأ في بدء المحادثة:', error);
+                alert('حدث خطأ في بدء المحادثة. يرجى المحاولة مرة أخرى.');
+            }
         });
         
         document.getElementById('userNameInput').addEventListener('keypress', (e) => {
@@ -2000,6 +2279,14 @@ async function loadMessages() {
         });
         
         document.getElementById('chatSendBtn').addEventListener('click', sendMessage);
+        
+        // إضافة مستمعي الأحداث للـ Callout
+        document.addEventListener('DOMContentLoaded', function() {
+            const closeCalloutBtn = document.getElementById('closeCallout');
+            if (closeCalloutBtn) {
+                closeCalloutBtn.addEventListener('click', hideChatNoteCallout);
+            }
+        });
         
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
@@ -2033,88 +2320,6 @@ async function loadMessages() {
             lucide.createIcons();
         }, 1000);
         
-        // إدارة Callout الملاحظة
-let calloutTimer = null;
-
-function showChatNoteCallout() {
-    const callout = document.getElementById('chatNoteCallout');
-    if (callout) {
-        callout.classList.remove('hiding');
-        callout.style.display = 'block';
-        
-        // بدء العد التنازلي للإخفاء التلقائي (12 ثانية)
-        calloutTimer = setTimeout(() => {
-            hideChatNoteCallout();
-        }, 12000);
-    }
-}
-
-function hideChatNoteCallout() {
-    const callout = document.getElementById('chatNoteCallout');
-    if (callout) {
-        callout.classList.add('hiding');
-        
-        // إزالة العنصر بعد انتهاء الرسوم المتحركة
-        setTimeout(() => {
-            callout.style.display = 'none';
-            callout.classList.remove('hiding');
-        }, 400);
-        
-        // إلغاء المؤقت إذا كان موجوداً
-        if (calloutTimer) {
-            clearTimeout(calloutTimer);
-            calloutTimer = null;
-        }
-    }
-}
-
-// تحديث دالة openFullscreenChat لإظهار Callout
-function openFullscreenChat() {
-    document.getElementById('chatFullscreen').classList.add('active');
-    document.body.style.overflow = 'hidden';
-    closeContactModal();
-    
-    document.getElementById('chatDate').textContent = formatDate(new Date());
-    
-    checkOnlineStatus();
-    loadMessages();
-    
-    // إظهار Callout الملاحظة
-    setTimeout(() => {
-        showChatNoteCallout();
-    }, 500);
-    
-    setTimeout(() => {
-        document.getElementById('chatTextarea').focus();
-        lucide.createIcons();
-    }, 100);
-}
-
-// تحديث دالة closeFullscreenChat لإخفاء Callout
-function closeFullscreenChat() {
-    document.getElementById('chatFullscreen').classList.remove('active');
-    document.body.style.overflow = 'auto';
-    
-    // إخفاء Callout الملاحظة
-    hideChatNoteCallout();
-    
-    // إيقاف الاستماع لحالة الاتصال (توفير موارد)
-    if (onlineStatusRef) {
-        onlineStatusRef.off();
-    }
-}
-
-// إضافة مستمعي الأحداث للـ Callout
-document.addEventListener('DOMContentLoaded', function() {
-    const closeCalloutBtn = document.getElementById('closeCallout');
-    if (closeCalloutBtn) {
-        closeCalloutBtn.addEventListener('click', hideChatNoteCallout);
-    }
-});
-        
     </script>
 </body>
 </html>
-
-
-

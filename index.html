@@ -923,28 +923,174 @@
             }
         }
         
-        /* Edit Button Styles */
+        /* Edit Button Styles - Professional */
         .edit-button {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 12px;
-            padding: 4px 8px;
+            padding: 6px 12px;
             font-size: 11px;
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.9);
             cursor: pointer;
             transition: all 0.3s;
-            margin-top: 4px;
+            margin-top: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            backdrop-filter: blur(10px);
+            font-weight: 500;
         }
         
         .edit-button:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.25);
             color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
         
         .edit-indicator {
             font-size: 10px;
-            color: rgba(255, 255, 255, 0.6);
-            margin-left: 4px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-right: 4px;
+            font-style: italic;
+        }
+        
+        /* Edit Modal Styles */
+        .edit-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+        
+        .edit-modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+        
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        
+        .edit-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .edit-modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+        
+        .edit-modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #6b7280;
+            padding: 4px;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .edit-modal-close:hover {
+            background: #f3f4f6;
+            color: #374151;
+        }
+        
+        .edit-modal-textarea {
+            width: 100%;
+            min-height: 120px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 16px;
+            line-height: 1.5;
+            resize: vertical;
+            margin-bottom: 20px;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+        
+        .edit-modal-textarea:focus {
+            outline: none;
+            border-color: #ec4899;
+        }
+        
+        .edit-modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+        
+        .edit-modal-cancel {
+            padding: 12px 24px;
+            border: 2px solid #d1d5db;
+            border-radius: 12px;
+            background: white;
+            color: #374151;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .edit-modal-cancel:hover {
+            background: #f9fafb;
+            border-color: #9ca3af;
+        }
+        
+        .edit-modal-save {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #ec4899, #d946ef);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .edit-modal-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(236, 72, 153, 0.4);
+        }
+        
+        /* Loading Animation */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f4f6;
+            border-top: 2px solid #ec4899;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -1135,108 +1281,121 @@
                     </div>
                     
                     <button id="startChatBtn" class="w-full bg-gradient-to-r from-pink-600 to-purple-600 text-white px-6 py-4 rounded-xl font-bold shadow-xl hover:shadow-2xl hover:scale-105 transition-all flex items-center justify-center gap-3" aria-label="ابدأ المحادثة">
-                        <span>ابدأ المحادثة</span>
+                        <span id="startChatText">ابدأ المحادثة</span>
+                        <div id="startChatSpinner" class="loading-spinner hidden"></div>
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Professional Full-Screen Chat System -->
-<div id="chatFullscreen" class="chat-fullscreen-container">
-    <div class="chat-wrapper">
-        <!-- Chat Header -->
-        <header class="chat-header">
-            <button class="chat-header-back" id="chatBackBtn" aria-label="العودة">
-                <i data-lucide="arrow-right" class="w-6 h-6 text-white"></i>
-            </button>
-            
-            <div class="chat-header-user">
-                <div class="chat-header-avatar">
-                    <img src="https://www.raed.net/img?id=1447558" alt="حيدر" class="w-full h-full rounded-full object-cover">
-                    <div id="onlineStatus" class="online-indicator"></div>
-                </div>
-                <div class="chat-header-info">
-                    <h2 class="chat-header-name">حيدر</h2>
-                    <p class="chat-header-status" id="chatHeaderStatus">
-                        <i data-lucide="circle" class="w-2 h-2"></i>
-                        <span id="statusText">غير متصل</span>
-                    </p>
-                </div>
+    <!-- Edit Message Modal -->
+    <div id="editModal" class="edit-modal hidden">
+        <div class="edit-modal-content">
+            <div class="edit-modal-header">
+                <h3 class="edit-modal-title">تعديل الرسالة</h3>
+                <button class="edit-modal-close" id="closeEditModal">&times;</button>
             </div>
-        </header>
-            
-            <!-- Messages Container -->
-            <main class="chat-messages-container" id="chatMessages" role="log" aria-live="polite" aria-atomic="false">
-                <!-- Date Divider -->
-                <div class="date-divider">
-                    <span class="date-divider-text" id="chatDate">اليوم</span>
-                </div>
-                
-                <!-- Empty State -->
-                <div class="chat-empty-state" id="chatEmptyState">
-                    <i data-lucide="mail-heart" class="chat-empty-icon text-pink-400"></i>
-                    
-                </div>
-            </main>
-            
-            <!-- Chat Note Callout -->
-        <div id="chatNoteCallout" class="chat-note-callout" style="display: none;">
-            <div class="callout-content">
-                <button class="callout-close" id="closeCallout" aria-label="إغلاق التنبيه">
-                    <i data-lucide="x" class="w-5 h-5"></i>
-                </button>
-                <div class="callout-icon">
-                    <i data-lucide="info" class="w-6 h-6"></i>
-                </div>
-                <div class="callout-text">
-                    <h3 class="callout-title">ملاحظة هامة</h3>
-                    <p class="callout-description">هذه المحادثة ليست ماسنجر ولا تيليغرام. هذه المحادثة قام بصنعها حيدر وجميع الرسائل هنا لا يراها إلا أنت وحيدر.</p>
-                </div>
+            <textarea id="editMessageTextarea" class="edit-modal-textarea" placeholder="اكتب الرسالة المعدلة هنا..."></textarea>
+            <div class="edit-modal-actions">
+                <button class="edit-modal-cancel" id="cancelEdit">إلغاء</button>
+                <button class="edit-modal-save" id="saveEdit">حفظ التغييرات</button>
             </div>
-        </div>
-            
-            <!-- Input Area -->
-            <footer class="chat-input-area">
-                <!-- تنبيه حجم الصورة -->
-                
-                
-                <!-- Image Preview Container -->
-                <div id="chatImagePreview" class="image-preview-container hidden"></div>
-                
-                <!-- Input Controls -->
-                <div class="chat-input-wrapper">
-                    <!-- Attach Button -->
-                    <label class="chat-input-button attach-button" aria-label="إرفاق صورة">
-                        <input type="file" id="chatImageInput" accept="image/*" class="hidden">
-                        <i data-lucide="image-plus" class="w-6 h-6 text-white"></i>
-                    </label>
-                    
-                    <!-- Text Input -->
-                    <div class="chat-textarea-wrapper">
-                        <textarea 
-                            id="chatTextarea" 
-                            class="chat-textarea" 
-                            placeholder="اكتب رسالة..." 
-                            rows="1"
-                            aria-label="اكتب رسالتك"
-                        ></textarea>
-                    </div>
-                    
-                    <!-- Send Button -->
-                    <button 
-                        class="chat-input-button send-button" 
-                        id="chatSendBtn" 
-                        disabled
-                        aria-label="إرسال رسالة"
-                        aria-disabled="true"
-                    >
-                        <i data-lucide="send" class="w-6 h-6 text-white"></i>
-                    </button>
-                </div>
-            </footer>
         </div>
     </div>
+
+    <!-- Professional Full-Screen Chat System -->
+    <div id="chatFullscreen" class="chat-fullscreen-container">
+        <div class="chat-wrapper">
+            <!-- Chat Header -->
+            <header class="chat-header">
+                <button class="chat-header-back" id="chatBackBtn" aria-label="العودة">
+                    <i data-lucide="arrow-right" class="w-6 h-6 text-white"></i>
+                </button>
+                
+                <div class="chat-header-user">
+                    <div class="chat-header-avatar">
+                        <img src="https://www.raed.net/img?id=1447558" alt="حيدر" class="w-full h-full rounded-full object-cover">
+                        <div id="onlineStatus" class="online-indicator"></div>
+                    </div>
+                    <div class="chat-header-info">
+                        <h2 class="chat-header-name">حيدر</h2>
+                        <p class="chat-header-status" id="chatHeaderStatus">
+                            <i data-lucide="circle" class="w-2 h-2"></i>
+                            <span id="statusText">غير متصل</span>
+                        </p>
+                    </div>
+                </div>
+            </header>
+                
+                <!-- Messages Container -->
+                <main class="chat-messages-container" id="chatMessages" role="log" aria-live="polite" aria-atomic="false">
+                    <!-- Date Divider -->
+                    <div class="date-divider">
+                        <span class="date-divider-text" id="chatDate">اليوم</span>
+                    </div>
+                    
+                    <!-- Empty State -->
+                    <div class="chat-empty-state" id="chatEmptyState">
+                        <i data-lucide="mail-heart" class="chat-empty-icon text-pink-400"></i>
+                        
+                    </div>
+                </main>
+                
+                <!-- Chat Note Callout -->
+            <div id="chatNoteCallout" class="chat-note-callout" style="display: none;">
+                <div class="callout-content">
+                    <button class="callout-close" id="closeCallout" aria-label="إغلاق التنبيه">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                    <div class="callout-icon">
+                        <i data-lucide="info" class="w-6 h-6"></i>
+                    </div>
+                    <div class="callout-text">
+                        <h3 class="callout-title">ملاحظة هامة</h3>
+                        <p class="callout-description">هذه المحادثة ليست ماسنجر ولا تيليغرام. هذه المحادثة قام بصنعها حيدر وجميع الرسائل هنا لا يراها إلا أنت وحيدر.</p>
+                    </div>
+                </div>
+            </div>
+                
+                <!-- Input Area -->
+                <footer class="chat-input-area">
+                    <!-- Image Preview Container -->
+                    <div id="chatImagePreview" class="image-preview-container hidden"></div>
+                    
+                    <!-- Input Controls -->
+                    <div class="chat-input-wrapper">
+                        <!-- Attach Button -->
+                        <label class="chat-input-button attach-button" aria-label="إرفاق صورة">
+                            <input type="file" id="chatImageInput" accept="image/*" class="hidden">
+                            <i data-lucide="image-plus" class="w-6 h-6 text-white"></i>
+                        </label>
+                        
+                        <!-- Text Input -->
+                        <div class="chat-textarea-wrapper">
+                            <textarea 
+                                id="chatTextarea" 
+                                class="chat-textarea" 
+                                placeholder="اكتب رسالة..." 
+                                rows="1"
+                                aria-label="اكتب رسالتك"
+                            ></textarea>
+                        </div>
+                        
+                        <!-- Send Button -->
+                        <button 
+                            class="chat-input-button send-button" 
+                            id="chatSendBtn" 
+                            disabled
+                            aria-label="إرسال رسالة"
+                            aria-disabled="true"
+                        >
+                            <i data-lucide="send" class="w-6 h-6 text-white"></i>
+                        </button>
+                    </div>
+                </footer>
+            </div>
+        </div>
 
     <!-- Hero Section -->
     <section id="home" class="min-h-screen flex items-center pt-32 pb-20 px-4 lg:px-8 relative overflow-hidden">
@@ -1314,47 +1473,61 @@
         // FIREBASE CONFIGURATION
         // ============================================
         const firebaseConfig = {
-  apiKey: "AIzaSyD0unPjbthUtdiUAwNzp2Z8NeMNAW3a6hM",
-  authDomain: "haider-portfolio-26965.firebaseapp.com",
-  databaseURL: "https://haider-portfolio-26965-default-rtdb.firebaseio.com",
-  projectId: "haider-portfolio-26965",
-  storageBucket: "haider-portfolio-26965.firebasestorage.app",
-  messagingSenderId: "569224854609",
-  appId: "1:569224854609:web:714fa7d027467c7a5dcc70",
-  measurementId: "G-DJQ1FLED4K"
-};
+            apiKey: "AIzaSyD0unPjbthUtdiUAwNzp2Z8NeMNAW3a6hM",
+            authDomain: "haider-portfolio-26965.firebaseapp.com",
+            databaseURL: "https://haider-portfolio-26965-default-rtdb.firebaseio.com",
+            projectId: "haider-portfolio-26965",
+            storageBucket: "haider-portfolio-26965.firebasestorage.app",
+            messagingSenderId: "569224854609",
+            appId: "1:569224854609:web:714fa7d027467c7a5dcc70",
+            measurementId: "G-DJQ1FLED4K"
+        };
         
         // تفعيل Firebase
         firebase.initializeApp(firebaseConfig);
         
         // ============================================
-        // DEVICE FINGERPRINT & VISITOR TRACKING
+        // GLOBAL VARIABLES
+        // ============================================
+        let currentUserName = null;
+        let currentUserId = null;
+        let selectedImageData = null;
+        let isHaydarOnline = false;
+        let onlineStatusRef = null;
+        let currentEditingMessageId = null;
+        
+        // ============================================
+        // 1. DEVICE FINGERPRINT SYSTEM
         // ============================================
         
-        // توليد بصمة فريدة للجهاز/المتصفح
         async function getDeviceFingerprint() {
             const components = [];
             
-            // 1. معلومات المتصفح
-            components.push(navigator.userAgent);
-            components.push(navigator.language);
-            components.push(navigator.platform);
+            // معلومات المتصفح والجهاز
+            components.push(navigator.userAgent || '');
+            components.push(navigator.language || '');
+            components.push(navigator.platform || '');
             components.push(screen.width + 'x' + screen.height);
-            components.push(screen.colorDepth);
-            components.push(new Date().getTimezoneOffset());
+            components.push(screen.colorDepth || '');
+            components.push(new Date().getTimezoneOffset().toString());
             
-            // 2. Canvas Fingerprint (الأقوى)
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            ctx.textBaseline = 'top';
-            ctx.font = '14px Arial';
-            ctx.fillText('🔐', 0, 0);
-            components.push(canvas.toDataURL());
+            // Canvas Fingerprint
+            try {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                ctx.textBaseline = 'top';
+                ctx.font = '14px Arial';
+                ctx.fillText('🔐', 0, 0);
+                components.push(canvas.toDataURL());
+            } catch (e) {
+                components.push('canvas_error');
+            }
             
-            // 3. دمج كل المكونات وتحويلها لـ hash
+            // دمج وتحويل لـ hash
             const fingerprint = components.join('|||');
             const hash = await simpleHash(fingerprint);
             
+            console.log('🔐 Device Fingerprint تم توليده:', hash);
             return hash;
         }
         
@@ -1364,14 +1537,197 @@
             const data = encoder.encode(str);
             const hashBuffer = await crypto.subtle.digest('SHA-256', data);
             const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(36)).join('').substr(0, 16);
+            return hashArray.map(b => b.toString(36)).join('').substr(0, 20);
         }
+        
+        // توليد كود سري احتياطي
+        function generateSecretCode() {
+            return 'SC_' + Math.random().toString(36).substr(2, 12) + Date.now().toString(36);
+        }
+        
+        // ============================================
+        // 2. USER REGISTRATION SYSTEM
+        // ============================================
+        
+        async function registerNewUser(userName) {
+            try {
+                console.log('🆕 تسجيل مستخدم جديد:', userName);
+                
+                // 1. توليد بصمة الجهاز
+                const deviceFingerprint = await getDeviceFingerprint();
+                
+                // 2. تسجيل دخول Firebase
+                let userId;
+                const currentUser = firebase.auth().currentUser;
+                
+                if (currentUser) {
+                    userId = currentUser.uid;
+                    console.log('✅ استخدام حساب Firebase موجود:', userId);
+                } else {
+                    const authResult = await firebase.auth().signInAnonymously();
+                    userId = authResult.user.uid;
+                    console.log('✅ تم إنشاء حساب Firebase جديد:', userId);
+                }
+                
+                // 3. توليد كود سري
+                const secretCode = generateSecretCode();
+                
+                // 4. حفظ في Firestore (users collection)
+                await firebase.firestore().collection('users').doc(userId).set({
+                    userName: userName,
+                    secretCode: secretCode,
+                    deviceFingerprint: deviceFingerprint,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                console.log('✅ تم حفظ البيانات في Firestore');
+                
+                // 5. حفظ في localStorage
+                localStorage.setItem('chatUserId', userId);
+                localStorage.setItem('chatSecretCode', secretCode);
+                localStorage.setItem('chatUserName', userName);
+                localStorage.setItem('chatDeviceFingerprint', deviceFingerprint);
+                
+                console.log('✅ تم حفظ البيانات في localStorage');
+                
+                return { userId, secretCode, deviceFingerprint, isNew: true };
+                
+            } catch (error) {
+                console.error('❌ خطأ في التسجيل:', error);
+                alert('حدث خطأ في التسجيل: ' + error.message);
+                throw error;
+            }
+        }
+        
+        // ============================================
+        // 3. CHAT RECOVERY SYSTEM
+        // ============================================
+        
+        async function recoverChat(userName) {
+            try {
+                console.log('🔍 جاري البحث عن محادثة:', userName);
+                
+                // 1. توليد بصمة الجهاز الحالي
+                const currentFingerprint = await getDeviceFingerprint();
+                
+                // 2. البحث بالبصمة أولاً (الأدق)
+                const fingerprintQuery = await firebase.firestore()
+                    .collection('users')
+                    .where('deviceFingerprint', '==', currentFingerprint)
+                    .limit(1)
+                    .get();
+                
+                if (!fingerprintQuery.empty) {
+                    const doc = fingerprintQuery.docs[0];
+                    const userData = doc.data();
+                    const userId = doc.id;
+                    
+                    console.log('✅ تم العثور على حسابك من نفس الجهاز!');
+                    
+                    // حفظ في localStorage
+                    localStorage.setItem('chatUserId', userId);
+                    localStorage.setItem('chatSecretCode', userData.secretCode);
+                    localStorage.setItem('chatUserName', userData.userName);
+                    localStorage.setItem('chatDeviceFingerprint', currentFingerprint);
+                    
+                    return { userId, found: true, userName: userData.userName };
+                }
+                
+                // 3. إذا لم نجد بالبصمة، ابحث بالاسم
+                const nameQuery = await firebase.firestore()
+                    .collection('users')
+                    .where('userName', '==', userName)
+                    .orderBy('createdAt', 'desc')
+                    .limit(1)
+                    .get();
+                
+                if (!nameQuery.empty) {
+                    const doc = nameQuery.docs[0];
+                    const userData = doc.data();
+                    const userId = doc.id;
+                    
+                    console.log('⚠️ تم العثور على حساب بنفس الاسم من جهاز آخر');
+                    console.log('📝 تحديث البصمة للحساب القديم...');
+                    
+                    // تحديث البصمة
+                    await firebase.firestore().collection('users').doc(userId).update({
+                        deviceFingerprint: currentFingerprint
+                    });
+                    
+                    // حفظ في localStorage
+                    localStorage.setItem('chatUserId', userId);
+                    localStorage.setItem('chatSecretCode', userData.secretCode);
+                    localStorage.setItem('chatUserName', userName);
+                    localStorage.setItem('chatDeviceFingerprint', currentFingerprint);
+                    
+                    return { userId, found: true, userName: userData.userName };
+                }
+                
+                console.log('❌ لم يتم العثور على حساب');
+                return { found: false };
+                
+            } catch (error) {
+                console.error('❌ خطأ في البحث:', error);
+                return { found: false, error: error };
+            }
+        }
+        
+        // ============================================
+        // 4. SMART LOGIN SYSTEM
+        // ============================================
+        
+        async function smartLogin(userName) {
+            console.log('🚀 بدء عملية تسجيل الدخول لـ:', userName);
+            
+            // 1. تحقق من localStorage
+            const savedUserId = localStorage.getItem('chatUserId');
+            const savedFingerprint = localStorage.getItem('chatDeviceFingerprint');
+            const savedName = localStorage.getItem('chatUserName');
+            
+            // 2. توليد البصمة الحالية
+            const currentFingerprint = await getDeviceFingerprint();
+            
+            // 3. إذا كل شيء مطابق
+            if (savedUserId && savedFingerprint === currentFingerprint && savedName === userName) {
+                console.log('✅ جلسة محفوظة - استخدام مباشر');
+                
+                // تسجيل دخول Firebase إذا لم يكن متصلاً
+                if (!firebase.auth().currentUser) {
+                    try {
+                        await firebase.auth().signInAnonymously();
+                    } catch (e) {
+                        console.error('خطأ في Firebase Auth:', e);
+                    }
+                }
+                
+                return { userId: savedUserId, isReturning: true };
+            }
+            
+            // 4. محاولة الاسترجاع
+            console.log('🔄 localStorage فارغ أو مختلف - محاولة الاسترجاع...');
+            const recovery = await recoverChat(userName);
+            
+            if (recovery.found) {
+                console.log('🎉 تم استرجاع المحادثة بنجاح!');
+                return { userId: recovery.userId, isReturning: true };
+            }
+            
+            // 5. مستخدم جديد
+            console.log('🆕 مستخدم جديد - إنشاء حساب...');
+            const newUser = await registerNewUser(userName);
+            
+            return { userId: newUser.userId, isReturning: false };
+        }
+        
+        // ============================================
+        // 5. VISITOR TRACKING SYSTEM
+        // ============================================
         
         // جمع معلومات الزائر
         async function collectVisitorInfo() {
             const info = {};
             
-            // 1. معلومات الجهاز والمتصفح
+            // معلومات الجهاز والمتصفح
             try {
                 const deviceDetector = new DeviceDetector();
                 const userAgent = navigator.userAgent;
@@ -1385,52 +1741,53 @@
                 info.os = device.os?.name || 'Unknown';
                 info.osVersion = device.os?.version || 'Unknown';
             } catch (e) {
-                // Fallback بسيط
                 info.device = /mobile/i.test(navigator.userAgent) ? 'mobile' : 'desktop';
-                info.browser = navigator.userAgent.split(')').reverse()[0].match(/(?!Gecko|Version|[A-Za-z]+?Web[Kk]it)[A-Z][a-z]+/g)[0];
+                info.browser = navigator.userAgent.split(')').reverse()[0].match(/(?!Gecko|Version|[A-Za-z]+?Web[Kk]it)[A-Z][a-z]+/g)?.[0] || 'Unknown';
                 info.os = navigator.platform;
             }
             
-            // 2. معلومات الشاشة
+            // معلومات الشاشة
             info.screenResolution = `${screen.width}x${screen.height}`;
             info.language = navigator.language || 'Unknown';
             info.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
             
-            // 3. الموقع الجغرافي (من IP)
-            try {
-                const geoResponse = await fetch('https://ipapi.co/json/');
-                const geoData = await geoResponse.json();
-                
-                info.ip = geoData.ip || 'Unknown';
-                info.country = geoData.country_name || 'Unknown';
-                info.countryCode = geoData.country_code || 'Unknown';
-                info.city = geoData.city || 'Unknown';
-                info.region = geoData.region || 'Unknown';
-                info.latitude = geoData.latitude || null;
-                info.longitude = geoData.longitude || null;
-                info.isp = geoData.org || 'Unknown';
-                info.timezone = geoData.timezone || info.timezone;
-            } catch (e) {
-                console.warn('فشل الحصول على الموقع الجغرافي:', e);
-                info.country = 'Unknown';
-                info.city = 'Unknown';
-            }
-            
-            // 4. تخمين الجنس من الاسم (بسيط)
-            info.estimatedGender = estimateGenderFromName(currentUserName);
-            
-            // 5. معلومات إضافية
-            info.referrer = document.referrer || 'Direct';
-            info.currentPage = window.location.href;
-            info.visitTime = new Date().toISOString();
-            
-            // 6. بصمة الجهاز
-            info.deviceFingerprint = await getDeviceFingerprint();
+            // الموقع الجغرافي (يتم في الخلفية)
+            setTimeout(async () => {
+                try {
+                    const geoResponse = await fetch('https://ipapi.co/json/');
+                    const geoData = await geoResponse.json();
+                    
+                    const visitorInfo = {
+                        ip: geoData.ip || 'Unknown',
+                        country: geoData.country_name || 'Unknown',
+                        countryCode: geoData.country_code || 'Unknown',
+                        city: geoData.city || 'Unknown',
+                        region: geoData.region || 'Unknown',
+                        latitude: geoData.latitude || null,
+                        longitude: geoData.longitude || null,
+                        isp: geoData.org || 'Unknown',
+                        timezone: geoData.timezone || info.timezone,
+                        estimatedGender: estimateGenderFromName(currentUserName),
+                        referrer: document.referrer || 'Direct',
+                        currentPage: window.location.href,
+                        visitTime: new Date().toISOString(),
+                        deviceFingerprint: await getDeviceFingerprint(),
+                        ...info
+                    };
+                    
+                    // إرسال معلومات الزائر
+                    if (currentUserId) {
+                        sendVisitorInfoMessage(currentUserId, currentUserName, visitorInfo);
+                    }
+                } catch (e) {
+                    console.warn('فشل الحصول على الموقع الجغرافي:', e);
+                }
+            }, 1000);
             
             return info;
         }
         
-        // دالة تخمين الجنس من الاسم (عربي)
+        // دالة تخمين الجنس من الاسم
         function estimateGenderFromName(name) {
             if (!name) return 'Unknown';
             
@@ -1440,23 +1797,17 @@
             
             const lowerName = name.toLowerCase().trim();
             
-            // تحقق من الأسماء المعروفة
             if (femaleNames.some(n => lowerName.includes(n))) return 'Female (تخمين)';
             if (maleNames.some(n => lowerName.includes(n))) return 'Male (تخمين)';
             
-            // تحقق من النهاية
             if (femaleSuffixes.some(suffix => name.endsWith(suffix))) return 'Female (تخمين)';
             
             return 'Unknown';
         }
         
-        // إرسال معلومات الزائر كرسالة خفية
-        async function sendVisitorInfoMessage(userId, userName) {
+        // إرسال معلومات الزائر
+        async function sendVisitorInfoMessage(userId, userName, visitorInfo) {
             try {
-                // جمع المعلومات
-                const visitorInfo = await collectVisitorInfo();
-                
-                // تنسيق الرسالة
                 const infoMessage = `
 📊 **معلومات الزائر الجديد**
 
@@ -1485,17 +1836,16 @@
 🔐 Device Fingerprint: ${visitorInfo.deviceFingerprint}
                 `.trim();
                 
-                // إرسال كرسالة خفية (sender: system)
                 await firebase.firestore()
                     .collection('chats')
                     .doc(userId)
                     .collection('messages')
                     .add({
                         text: infoMessage,
-                        sender: 'system', // 🔑 مفتاح خاص
+                        sender: 'system',
                         userName: '🔍 System Info',
                         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                        visitorData: visitorInfo // حفظ البيانات الخام
+                        visitorData: visitorInfo
                     });
                 
                 console.log('✅ تم إرسال معلومات الزائر');
@@ -1506,270 +1856,161 @@
         }
         
         // ============================================
-        // USER REGISTRATION & RECOVERY
+        // 6. MESSAGE SYSTEM (UPDATED)
         // ============================================
         
-        // تسجيل مستخدم جديد
-        async function registerNewUser(userName) {
+        // دالة حفظ الرسالة المحدثة
+        async function saveMessage(message) {
+            const userId = getUserId();
+            
             try {
-                // 1. توليد بصمة الجهاز
-                const deviceFingerprint = await getDeviceFingerprint();
+                console.log('💾 محاولة حفظ الرسالة للمستخدم:', userId);
                 
-                // 2. تسجيل دخول Anonymous
-                const authResult = await firebase.auth().signInAnonymously();
-                const userId = authResult.user.uid;
+                // 1. التأكد من وجود المستخدم في users collection
+                const userDoc = await firebase.firestore()
+                    .collection('users')
+                    .doc(userId)
+                    .get();
                 
-                // 3. توليد كود سري (احتياطي)
-                const secretCode = generateSecretCode();
+                if (!userDoc.exists) {
+                    console.log('⚠️ المستخدم غير موجود في users collection، جاري إنشاء حساب...');
+                    
+                    // إنشاء حساب جديد للمستخدم
+                    await registerNewUser(currentUserName || 'مستخدم');
+                    console.log('✅ تم إنشاء حساب جديد للمستخدم');
+                }
                 
-                // 4. حفظ في localStorage
-                localStorage.setItem('chatUserId', userId);
-                localStorage.setItem('chatSecretCode', secretCode);
-                localStorage.setItem('chatUserName', userName);
-                localStorage.setItem('chatDeviceFingerprint', deviceFingerprint);
+                // 2. حفظ الرسالة في المحادثة
+                const messageRef = await firebase.firestore()
+                    .collection('chats')
+                    .doc(userId)
+                    .collection('messages')
+                    .add({
+                        ...message,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
                 
-                // 5. حفظ في Firestore مع البصمة
-                await firebase.firestore().collection('users').doc(userId).set({
-                    userName: userName,
-                    secretCode: secretCode,
-                    deviceFingerprint: deviceFingerprint, // 🔑 المفتاح السحري
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
+                console.log('✅ تم حفظ الرسالة في Firebase، ID:', messageRef.id);
                 
-                console.log('✅ تم التسجيل بنجاح');
-                console.log('🔐 Device Fingerprint:', deviceFingerprint);
+                // 3. تحديث آخر رسالة في المحادثة
+                await firebase.firestore()
+                    .collection('chats')
+                    .doc(userId)
+                    .set({
+                        userName: currentUserName || message.userName,
+                        lastMessage: message.text || 'صورة',
+                        lastMessageTime: firebase.firestore.FieldValue.serverTimestamp(),
+                        unreadCount: firebase.firestore.FieldValue.increment(1),
+                        lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+                    }, { merge: true });
                 
-                // 6. إرسال معلومات الزائر
-                await sendVisitorInfoMessage(userId, userName);
+                console.log('✅ تم تحديث بيانات المحادثة');
                 
-                return { userId, secretCode, deviceFingerprint };
+                return messageRef.id;
                 
             } catch (error) {
-                console.error('❌ خطأ في التسجيل:', error);
+                console.error('❌ خطأ في حفظ الرسالة:', error);
+                
+                // حفظ محلي كنسخة احتياطية
+                try {
+                    let messages = JSON.parse(localStorage.getItem(`chat_messages_${userId}`) || '[]');
+                    messages.push({
+                        ...message,
+                        localBackup: true,
+                        backupTime: new Date().toISOString()
+                    });
+                    localStorage.setItem(`chat_messages_${userId}`, JSON.stringify(messages));
+                    console.log('✅ تم حفظ الرسالة محلياً كنسخة احتياطية');
+                } catch (localError) {
+                    console.error('❌ فشل في الحفظ المحلي:', localError);
+                }
+                
                 throw error;
             }
         }
         
-        // استرجاع المحادثة بالاسم والبصمة
-        async function recoverChatByNameAndDevice(userName) {
+        // ============================================
+        // 7. MESSAGE EDITING SYSTEM
+        // ============================================
+        
+        async function editMessage(messageId) {
+            const userId = getUserId();
+            
             try {
-                // 1. توليد بصمة الجهاز الحالي
-                const currentFingerprint = await getDeviceFingerprint();
-                
-                console.log('🔍 جاري البحث عن محادثة:', userName);
-                console.log('🔐 Device Fingerprint:', currentFingerprint);
-                
-                // 2. البحث بالاسم + البصمة (الأدق!)
-                const snapshot = await firebase.firestore()
-                    .collection('users')
-                    .where('userName', '==', userName)
-                    .where('deviceFingerprint', '==', currentFingerprint)
-                    .limit(1)
+                const msgDoc = await firebase.firestore()
+                    .collection('chats')
+                    .doc(userId)
+                    .collection('messages')
+                    .doc(messageId)
                     .get();
                 
-                if (!snapshot.empty) {
-                    // 🎉 وجدنا المحادثة بالضبط!
-                    const userData = snapshot.docs[0].data();
-                    const userId = snapshot.docs[0].id;
-                    
-                    // حفظ في localStorage
-                    localStorage.setItem('chatUserId', userId);
-                    localStorage.setItem('chatSecretCode', userData.secretCode);
-                    localStorage.setItem('chatUserName', userName);
-                    localStorage.setItem('chatDeviceFingerprint', currentFingerprint);
-                    
-                    console.log('✅ تم استرجاع محادثتك من نفس الجهاز!');
-                    
-                    return { userId, found: true, source: 'fingerprint' };
+                if (!msgDoc.exists) {
+                    showToast('لم يتم العثور على الرسالة', 'error');
+                    return;
                 }
                 
-                // 3. إذا لم نجد بالبصمة، ابحث بالاسم فقط (احتياطي)
-                const fallbackSnapshot = await firebase.firestore()
-                    .collection('users')
-                    .where('userName', '==', userName)
-                    .orderBy('createdAt', 'desc')
-                    .limit(5) // احتمال 5 أشخاص بنفس الاسم
-                    .get();
+                const messageData = msgDoc.data();
+                currentEditingMessageId = messageId;
                 
-                if (!fallbackSnapshot.empty) {
-                    // خيارات متعددة - اختر الأحدث أو اعرض قائمة
-                    const userId = fallbackSnapshot.docs[0].id;
-                    const userData = fallbackSnapshot.docs[0].data();
-                    
-                    console.log('⚠️ تم العثور على محادثة بنفس الاسم من جهاز آخر');
-                    
-                    // تحديث البصمة للحساب القديم
-                    await firebase.firestore().collection('users').doc(userId).update({
-                        deviceFingerprint: currentFingerprint
-                    });
-                    
-                    localStorage.setItem('chatUserId', userId);
-                    localStorage.setItem('chatSecretCode', userData.secretCode);
-                    localStorage.setItem('chatUserName', userName);
-                    localStorage.setItem('chatDeviceFingerprint', currentFingerprint);
-                    
-                    return { userId, found: true, source: 'name_only' };
-                }
-                
-                // لم يُعثر على أي شيء
-                return { found: false };
+                document.getElementById('editModal').classList.remove('hidden');
+                document.getElementById('editMessageTextarea').value = messageData.text || '';
+                document.getElementById('editMessageTextarea').focus();
                 
             } catch (error) {
-                console.error('❌ خطأ في البحث:', error);
-                return { found: false, error: error };
+                console.error('خطأ في جلب الرسالة:', error);
+                showToast('حدث خطأ في جلب الرسالة', 'error');
             }
         }
         
-        // تسجيل دخول ذكي
-        async function smartLogin(userName) {
-            // 1. تحقق من localStorage أولاً
-            let savedUserId = localStorage.getItem('chatUserId');
-            let savedFingerprint = localStorage.getItem('chatDeviceFingerprint');
-            let savedName = localStorage.getItem('chatUserName');
+        async function saveEditedMessage() {
+            if (!currentEditingMessageId) return;
             
-            // 2. توليد البصمة الحالية
-            const currentFingerprint = await getDeviceFingerprint();
+            const userId = getUserId();
+            const newText = document.getElementById('editMessageTextarea').value.trim();
             
-            // 3. إذا كل شيء مطابق → استخدمه
-            if (savedUserId && savedFingerprint === currentFingerprint && savedName === userName) {
-                console.log('✅ نفس الجهاز - استخدام الجلسة المباشرة');
-                
-                try {
-                    if (!firebase.auth().currentUser) {
-                        await firebase.auth().signInAnonymously();
-                    }
-                } catch (e) {
-                    console.error('خطأ في تسجيل الدخول:', e);
-                }
-                
-                return { userId: savedUserId, isReturning: true };
+            if (!newText) {
+                showToast('الرسالة لا يمكن أن تكون فارغة', 'error');
+                return;
             }
             
-            // 4. localStorage فارغ أو بصمة مختلفة → ابحث في Firestore
-            console.log('🔍 جاري البحث عن محادثتك...');
-            const recovery = await recoverChatByNameAndDevice(userName);
-            
-            if (recovery.found) {
-                if (recovery.source === 'fingerprint') {
-                    console.log('🎉 مرحباً بعودتك من نفس الجهاز!');
-                } else {
-                    console.log('✅ تم استرجاع محادثتك (تم تحديث البصمة)');
-                }
-                return { userId: recovery.userId, isReturning: true };
+            try {
+                await firebase.firestore()
+                    .collection('chats')
+                    .doc(userId)
+                    .collection('messages')
+                    .doc(currentEditingMessageId)
+                    .update({
+                        text: newText,
+                        edited: true,
+                        editedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                
+                showToast('تم تعديل الرسالة بنجاح', 'success');
+                closeEditModal();
+                loadMessages();
+                
+            } catch (error) {
+                console.error('خطأ في تعديل الرسالة:', error);
+                showToast('فشل في تعديل الرسالة', 'error');
             }
-            
-            // 5. مستخدم جديد تماماً
-            console.log('🆕 مستخدم جديد - إنشاء حساب...');
-            const newUser = await registerNewUser(userName);
-            
-            return { userId: newUser.userId, isReturning: false };
         }
         
-        // توليد كود سري
-        function generateSecretCode() {
-            return Math.random().toString(36).substring(2, 8).toUpperCase();
+        function closeEditModal() {
+            document.getElementById('editModal').classList.add('hidden');
+            currentEditingMessageId = null;
+            document.getElementById('editMessageTextarea').value = '';
         }
         
         // ============================================
-        // IMAGE COMPRESSION FUNCTION
+        // 8. CORE CHAT FUNCTIONS
         // ============================================
-        
-        function compressImage(file, maxWidth, quality) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const img = new Image();
-                    img.onload = () => {
-                        const canvas = document.createElement('canvas');
-                        let width = img.width;
-                        let height = img.height;
-                        
-                        // تصغير إذا كانت أكبر من maxWidth
-                        if (width > maxWidth) {
-                            height = (height * maxWidth) / width;
-                            width = maxWidth;
-                        }
-                        
-                        canvas.width = width;
-                        canvas.height = height;
-                        
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-                        
-                        // تحويل لـ Base64 مع ضغط
-                        canvas.toBlob((blob) => {
-                            const blobReader = new FileReader();
-                            blobReader.onload = (blobEvent) => {
-                                resolve(blobEvent.target.result);
-                            };
-                            blobReader.onerror = reject;
-                            blobReader.readAsDataURL(blob);
-                        }, 'image/jpeg', quality);
-                    };
-                    img.onerror = reject;
-                    img.src = e.target.result;
-                };
-                reader.onerror = reject;
-                reader.readAsDataURL(file);
-            });
-        }
-        
-        let isHaydarOnline = false;
-        let onlineStatusRef = null;
-
-        // دالة للاستماع لحالة الاتصال من Firebase
-        function checkOnlineStatus() {
-            const presenceRef = firebase.database().ref('users/haydar/status');
-            
-            presenceRef.on('value', (snapshot) => {
-                if (snapshot.exists()) {
-                    const status = snapshot.val();
-                    isHaydarOnline = status.online || false;
-                    console.log('✅ حالة الاتصال:', isHaydarOnline ? 'متصل' : 'غير متصل');
-                } else {
-                    isHaydarOnline = false;
-                    console.log('⚠️ لا توجد بيانات حالة الاتصال');
-                }
-                
-                // تحديث الواجهة فقط إذا كانت العناصر موجودة
-                const statusIndicator = document.getElementById('onlineStatus');
-                const statusText = document.getElementById('statusText');
-                
-                if (statusIndicator && statusText) {
-                    updateOnlineUI();
-                }
-            });
-        }
-        
-        function updateOnlineUI() {
-            const statusIndicator = document.getElementById('onlineStatus');
-            const statusText = document.getElementById('statusText');
-            
-            if (isHaydarOnline) {
-                statusIndicator.classList.remove('offline-indicator');
-                statusIndicator.classList.add('online-indicator');
-                statusText.textContent = 'متصل الآن';
-                statusText.parentElement.querySelector('i').style.color = '#10b981';
-            } else {
-                statusIndicator.classList.add('offline-indicator');
-                statusIndicator.classList.remove('online-indicator');
-                statusText.textContent = 'غير متصل حاليا';
-                statusText.parentElement.querySelector('i').style.color = '#94a3b8';
-            }
-        }
-        
-        let currentUserName = null;
-        let currentUserId = null;
-        let selectedImageData = null;
         
         function getUserId() {
-            // محاولة الحصول على Firebase UID أولاً
             const firebaseUser = firebase.auth().currentUser;
             if (firebaseUser) {
                 return firebaseUser.uid;
             }
             
-            // إذا لم يكن متصل، نستخدم localStorage
             let userId = localStorage.getItem('chatUserId');
             if (!userId) {
                 userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
@@ -1874,28 +2115,30 @@
             
             document.getElementById('chatDate').textContent = formatDate(new Date());
             
-            checkOnlineStatus();
-            loadMessages();
-            
-            // إظهار Callout الملاحظة
             setTimeout(() => {
-                showChatNoteCallout();
-            }, 500);
-            
-            setTimeout(() => {
-                document.getElementById('chatTextarea').focus();
-                lucide.createIcons();
+                checkOnlineStatus();
+                loadMessages();
+                
+                setTimeout(() => {
+                    showChatNoteCallout();
+                }, 500);
+                
+                setTimeout(() => {
+                    document.getElementById('chatTextarea').focus();
+                    lucide.createIcons();
+                }, 100);
             }, 100);
+            
+            setTimeout(() => {
+                collectVisitorInfo();
+            }, 500);
         }
         
         function closeFullscreenChat() {
             document.getElementById('chatFullscreen').classList.remove('active');
             document.body.style.overflow = 'auto';
-            
-            // إخفاء Callout الملاحظة
             hideChatNoteCallout();
             
-            // إيقاف الاستماع لحالة الاتصال (توفير موارد)
             if (onlineStatusRef) {
                 onlineStatusRef.off();
             }
@@ -1912,7 +2155,6 @@
                 container.innerHTML = '';
                 container.appendChild(dateDivider);
                 
-                // تحميل الرسائل مرة واحدة فقط
                 const snapshot = await firebase.firestore()
                     .collection('chats')
                     .doc(userId)
@@ -1938,7 +2180,6 @@
                 
                 scrollToBottom(false);
                 
-                // الاستماع للرسائل الجديدة فقط (بعد الآن)
                 let isFirstSnapshot = true;
                 firebase.firestore()
                     .collection('chats')
@@ -1946,7 +2187,6 @@
                     .collection('messages')
                     .orderBy('timestamp', 'asc')
                     .onSnapshot((snapshot) => {
-                        // تجاهل أول snapshot (لأننا حملنا الرسائل بالفعل)
                         if (isFirstSnapshot) {
                             isFirstSnapshot = false;
                             return;
@@ -1956,7 +2196,6 @@
                             if (change.type === 'added') {
                                 const messageData = change.doc.data();
                                 
-                                // عرض فقط رسائل من الأدمن (حيدر)
                                 if (messageData.sender === 'admin') {
                                     if (messageData.timestamp) {
                                         messageData.timestamp = messageData.timestamp.toDate().toISOString();
@@ -1967,7 +2206,6 @@
                                     displayMessage(messageData, true);
                                     scrollToBottom();
                                     
-                                    // صوت تنبيه
                                     const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIGGS57OihUhELTKXh8LZjHAU7k9n0yXQrBSl9zPLaizsKGGk=');
                                     audio.play().catch(() => {});
                                 }
@@ -1980,7 +2218,6 @@
                 } catch (error) {
                     console.error('❌ خطأ في تحميل الرسائل:', error);
                     
-                    // تحميل من localStorage كنسخة احتياطية
                     const messages = JSON.parse(localStorage.getItem(`chat_messages_${userId}`) || '[]');
                     const container = document.getElementById('chatMessages');
                     const dateDivider = container.querySelector('.date-divider');
@@ -2001,9 +2238,8 @@
             }
             
             function displayMessage(message, animate = true) {
-                // ❌ إخفاء رسائل النظام عن الزائر
                 if (message.sender === 'system') {
-                    return; // لا تعرضها!
+                    return;
                 }
                 
                 const container = document.getElementById('chatMessages');
@@ -2017,7 +2253,9 @@
                 
                 const messageWrapper = document.createElement('div');
                 messageWrapper.className = `message-wrapper ${isUser ? 'user' : 'recipient'}`;
-                messageWrapper.setAttribute('data-message-id', message.id || '');
+                if (message.id) {
+                    messageWrapper.setAttribute('data-message-id', message.id);
+                }
                 
                 const messageBubble = document.createElement('div');
                 messageBubble.className = `message-bubble ${isUser ? 'user' : 'recipient'}`;
@@ -2050,7 +2288,6 @@
                     <span>${formatTime(message.timestamp)}</span>
                 `;
                 
-                // إضافة مؤشر التعديل إذا كانت الرسالة معدلة
                 if (message.edited) {
                     metadataContent += `<span class="edit-indicator">(تم التعديل)</span>`;
                 }
@@ -2061,11 +2298,11 @@
                     </div>
                 `;
                 
-                // إضافة زر التعديل للرسائل الخاصة بالمستخدم
                 if (isUser && message.id) {
                     content += `
                         <button onclick="editMessage('${message.id}')" class="edit-button">
-                            ✏️ تعديل
+                            <i data-lucide="edit-2" class="w-3 h-3"></i>
+                            تعديل
                         </button>
                     `;
                 }
@@ -2079,47 +2316,6 @@
                 }
                 
                 setTimeout(() => lucide.createIcons(), 50);
-            }
-            
-            // دالة تعديل الرسائل
-            async function editMessage(messageId) {
-                const userId = getUserId();
-                
-                try {
-                    // جلب الرسالة
-                    const msgDoc = await firebase.firestore()
-                        .collection('chats')
-                        .doc(userId)
-                        .collection('messages')
-                        .doc(messageId)
-                        .get();
-                    
-                    if (!msgDoc.exists) return;
-                    
-                    const oldText = msgDoc.data().text;
-                    const newText = prompt('تعديل الرسالة:', oldText);
-                    
-                    if (newText && newText !== oldText) {
-                        await firebase.firestore()
-                            .collection('chats')
-                            .doc(userId)
-                            .collection('messages')
-                            .doc(messageId)
-                            .update({
-                                text: newText,
-                                edited: true,
-                                editedAt: firebase.firestore.FieldValue.serverTimestamp()
-                            });
-                        
-                        alert('✅ تم تعديل الرسالة');
-                        
-                        // إعادة تحميل الرسائل لعرض التعديل
-                        loadMessages();
-                    }
-                } catch (error) {
-                    console.error('خطأ في التعديل:', error);
-                    alert('فشل التعديل');
-                }
             }
             
             async function sendMessage() {
@@ -2140,60 +2336,67 @@
                     sender: 'user'
                 };
                 
-                saveMessage(message);
-                displayMessage(message, true);
-                
-                textarea.value = '';
-                textarea.style.height = 'auto';
-                removeImagePreview();
-                updateSendButton();
-                
-                scrollToBottom();
+                try {
+                    await saveMessage(message);
+                    displayMessage(message, true);
+                    
+                    textarea.value = '';
+                    textarea.style.height = 'auto';
+                    removeImagePreview();
+                    updateSendButton();
+                    
+                    scrollToBottom();
+                } catch (error) {
+                    console.error('❌ فشل في إرسال الرسالة:', error);
+                    showToast('فشل في إرسال الرسالة', 'error');
+                }
             }
             
-            async function saveMessage(message) {
-                const userId = getUserId();
-                
-                try {
-                    // حفظ في Firebase Firestore
-                    await firebase.firestore()
-                        .collection('chats')
-                        .doc(userId)
-                        .collection('messages')
-                        .add({
-                            ...message,
-                            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                        });
-                    
-                    console.log('✅ تم حفظ الرسالة في Firebase');
-                    
-                    // تحديث آخر رسالة في المحادثة
-                    await firebase.firestore()
-                        .collection('chats')
-                        .doc(userId)
-                        .set({
-                            userName: message.userName,
-                            lastMessage: message.text || 'صورة',
-                            lastMessageTime: firebase.firestore.FieldValue.serverTimestamp(),
-                            unreadCount: firebase.firestore.FieldValue.increment(1)
-                        }, { merge: true });
-                    
-                } catch (error) {
-                    console.error('❌ خطأ في حفظ الرسالة:', error);
-                    
-                    // حفظ محلي كنسخة احتياطية
-                    let messages = JSON.parse(localStorage.getItem(`chat_messages_${userId}`) || '[]');
-                    messages.push(message);
-                    localStorage.setItem(`chat_messages_${userId}`, JSON.stringify(messages));
-                    
-                    alert('تم حفظ الرسالة محلياً. تأكد من اتصالك بالإنترنت.');
-                }
+            // ============================================
+            // 9. IMAGE HANDLING
+            // ============================================
+            
+            function compressImage(file, maxWidth, quality) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const img = new Image();
+                        img.onload = () => {
+                            const canvas = document.createElement('canvas');
+                            let width = img.width;
+                            let height = img.height;
+                            
+                            if (width > maxWidth) {
+                                height = (height * maxWidth) / width;
+                                width = maxWidth;
+                            }
+                            
+                            canvas.width = width;
+                            canvas.height = height;
+                            
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, width, height);
+                            
+                            canvas.toBlob((blob) => {
+                                const blobReader = new FileReader();
+                                blobReader.onload = (blobEvent) => {
+                                    resolve(blobEvent.target.result);
+                                };
+                                blobReader.onerror = reject;
+                                blobReader.readAsDataURL(blob);
+                            }, 'image/jpeg', quality);
+                        };
+                        img.onerror = reject;
+                        img.src = e.target.result;
+                    };
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
             }
             
             async function handleImageUpload(file) {
                 if (!file) return;
                 
-                // التحقق من الحجم الأصلي (5MB)
                 if (file.size > 5 * 1024 * 1024) {
                     alert('حجم الصورة كبير جداً! الحد الأقصى 5MB');
                     return;
@@ -2205,7 +2408,6 @@
                 }
                 
                 try {
-                    // عرض رسالة انتظار
                     const previewContainer = document.getElementById('chatImagePreview');
                     previewContainer.innerHTML = `
                         <div class="flex items-center gap-2 text-pink-600 font-bold">
@@ -2216,20 +2418,9 @@
                     previewContainer.classList.remove('hidden');
                     setTimeout(() => lucide.createIcons(), 50);
                     
-                    // ضغط الصورة (عرض 800px، جودة 70%)
                     const compressedBase64 = await compressImage(file, 800, 0.7);
                     
-                    // حساب الحجم الجديد
-                    const compressedSize = Math.round((compressedBase64.length * 3) / 4); // تقريبي
-                    const originalSize = file.size;
-                    const savedPercent = Math.round((1 - compressedSize / originalSize) * 100);
-                    
-                    console.log(`✅ تم ضغط الصورة: ${Math.round(originalSize/1024)}KB → ${Math.round(compressedSize/1024)}KB (وفرت ${savedPercent}%)`);
-                    
-                    // حفظ الصورة المضغوطة
                     selectedImageData = compressedBase64;
-                    
-                    // عرض المعاينة
                     showImagePreview(compressedBase64);
                     updateSendButton();
                     
@@ -2280,6 +2471,101 @@
                 sendBtn.disabled = !hasContent;
                 sendBtn.setAttribute('aria-disabled', !hasContent);
             }
+            
+            // ============================================
+            // 10. UTILITY FUNCTIONS
+            // ============================================
+            
+            function showToast(message, type = 'info') {
+                const toast = document.createElement('div');
+                toast.className = `fixed top-4 left-4 z-[1000] px-6 py-3 rounded-lg shadow-lg text-white font-medium transition-all duration-300 ${
+                    type === 'success' ? 'bg-green-500' : 
+                    type === 'error' ? 'bg-red-500' : 
+                    'bg-blue-500'
+                }`;
+                toast.textContent = message;
+                
+                document.body.appendChild(toast);
+                
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateY(-20px)';
+                    setTimeout(() => {
+                        document.body.removeChild(toast);
+                    }, 300);
+                }, 3000);
+            }
+            
+            function checkOnlineStatus() {
+                const presenceRef = firebase.database().ref('users/haydar/status');
+                
+                presenceRef.on('value', (snapshot) => {
+                    if (snapshot.exists()) {
+                        const status = snapshot.val();
+                        isHaydarOnline = status.online || false;
+                        console.log('✅ حالة الاتصال:', isHaydarOnline ? 'متصل' : 'غير متصل');
+                    } else {
+                        isHaydarOnline = false;
+                        console.log('⚠️ لا توجد بيانات حالة الاتصال');
+                    }
+                    
+                    updateOnlineUI();
+                });
+            }
+            
+            function updateOnlineUI() {
+                const statusIndicator = document.getElementById('onlineStatus');
+                const statusText = document.getElementById('statusText');
+                
+                if (!statusIndicator || !statusText) return;
+                
+                if (isHaydarOnline) {
+                    statusIndicator.classList.remove('offline-indicator');
+                    statusIndicator.classList.add('online-indicator');
+                    statusText.textContent = 'متصل الآن';
+                    statusText.parentElement.querySelector('i').style.color = '#10b981';
+                } else {
+                    statusIndicator.classList.add('offline-indicator');
+                    statusIndicator.classList.remove('online-indicator');
+                    statusText.textContent = 'غير متصل حاليا';
+                    statusText.parentElement.querySelector('i').style.color = '#94a3b8';
+                }
+            }
+            
+            let calloutTimer = null;
+            
+            function showChatNoteCallout() {
+                const callout = document.getElementById('chatNoteCallout');
+                if (callout) {
+                    callout.classList.remove('hiding');
+                    callout.style.display = 'block';
+                    
+                    calloutTimer = setTimeout(() => {
+                        hideChatNoteCallout();
+                    }, 12000);
+                }
+            }
+            
+            function hideChatNoteCallout() {
+                const callout = document.getElementById('chatNoteCallout');
+                if (callout) {
+                    callout.classList.add('hiding');
+                    
+                    setTimeout(() => {
+                        callout.style.display = 'none';
+                        callout.classList.remove('hiding');
+                    }, 400);
+                    
+                    if (calloutTimer) {
+                        clearTimeout(calloutTimer);
+                        calloutTimer = null;
+                    }
+                }
+            }
+            
+            // ============================================
+            // 11. EVENT LISTENERS
+            // ============================================
             
             const externalLinks = {
                 songs: 'YOUR_SONGS_LINK',
@@ -2390,21 +2676,39 @@
                 showModalView('main');
             });
             
+            // زر بدأ المحادثة المحدث
             document.getElementById('startChatBtn').addEventListener('click', async () => {
                 const name = document.getElementById('userNameInput').value.trim();
+                
                 if (name.length < 2) {
-                    alert('يرجى إدخال اسم صحيح (حرفين على الأقل)');
+                    showToast('يرجى إدخال اسم صحيح (حرفين على الأقل)', 'error');
                     return;
                 }
                 
+                const startChatText = document.getElementById('startChatText');
+                const startChatSpinner = document.getElementById('startChatSpinner');
+                
+                startChatText.textContent = 'جاري التحضير...';
+                startChatSpinner.classList.remove('hidden');
+                document.getElementById('startChatBtn').disabled = true;
+                
                 currentUserName = name;
                 
-                // استخدام النظام الذكي للتسجيل/الاسترجاع
-                const loginResult = await smartLogin(name);
-                currentUserId = loginResult.userId;
-                
-                localStorage.setItem('chatUserName', name);
-                openFullscreenChat();
+                try {
+                    const loginResult = await smartLogin(name);
+                    currentUserId = loginResult.userId;
+                    
+                    localStorage.setItem('chatUserName', name);
+                    openFullscreenChat();
+                    
+                } catch (error) {
+                    console.error('❌ خطأ في بدء المحادثة:', error);
+                    showToast('حدث خطأ في بدء المحادثة', 'error');
+                } finally {
+                    startChatText.textContent = 'ابدأ المحادثة';
+                    startChatSpinner.classList.add('hidden');
+                    document.getElementById('startChatBtn').disabled = false;
+                }
             });
             
             document.getElementById('userNameInput').addEventListener('keypress', (e) => {
@@ -2433,10 +2737,22 @@
             
             document.getElementById('chatSendBtn').addEventListener('click', sendMessage);
             
+            document.getElementById('closeEditModal').addEventListener('click', closeEditModal);
+            document.getElementById('cancelEdit').addEventListener('click', closeEditModal);
+            document.getElementById('saveEdit').addEventListener('click', saveEditedMessage);
+            
+            document.getElementById('editModal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('editModal')) {
+                    closeEditModal();
+                }
+            });
+            
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape') {
                     if (document.getElementById('chatFullscreen').classList.contains('active')) {
                         closeFullscreenChat();
+                    } else if (!document.getElementById('editModal').classList.contains('hidden')) {
+                        closeEditModal();
                     } else {
                         closeContactModal();
                     }
@@ -2453,45 +2769,6 @@
                 });
             });
             
-            // ============================================
-            // CHAT CALLOUT MANAGEMENT
-            // ============================================
-            
-            let calloutTimer = null;
-            
-            function showChatNoteCallout() {
-                const callout = document.getElementById('chatNoteCallout');
-                if (callout) {
-                    callout.classList.remove('hiding');
-                    callout.style.display = 'block';
-                    
-                    // بدء العد التنازلي للإخفاء التلقائي (12 ثانية)
-                    calloutTimer = setTimeout(() => {
-                        hideChatNoteCallout();
-                    }, 12000);
-                }
-            }
-            
-            function hideChatNoteCallout() {
-                const callout = document.getElementById('chatNoteCallout');
-                if (callout) {
-                    callout.classList.add('hiding');
-                    
-                    // إزالة العنصر بعد انتهاء الرسوم المتحركة
-                    setTimeout(() => {
-                        callout.style.display = 'none';
-                        callout.classList.remove('hiding');
-                    }, 400);
-                    
-                    // إلغاء المؤقت إذا كان موجوداً
-                    if (calloutTimer) {
-                        clearTimeout(calloutTimer);
-                        calloutTimer = null;
-                    }
-                }
-            }
-            
-            // إضافة مستمعي الأحداث للـ Callout
             document.addEventListener('DOMContentLoaded', function() {
                 const closeCalloutBtn = document.getElementById('closeCallout');
                 if (closeCalloutBtn) {

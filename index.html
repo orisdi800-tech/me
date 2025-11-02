@@ -14,11 +14,15 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    
+    <!-- Device Detector Library -->
+    <script src="https://cdn.jsdelivr.net/npm/device-detector-js@3.0.3/dist/device-detector.min.js"></script>
     
     <script>
         tailwind.config = {
@@ -775,412 +779,173 @@
         }
         
         /* Chat Note Callout Styles */
-.chat-note-callout {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 10;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(254, 242, 248, 0.98) 100%);
-    backdrop-filter: blur(20px);
-    border: 2px solid rgba(236, 72, 153, 0.3);
-    border-radius: 20px;
-    padding: 24px;
-    box-shadow: 0 20px 60px rgba(236, 72, 153, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.8);
-    max-width: 400px;
-    width: 90%;
-    animation: calloutSlideIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
+        .chat-note-callout {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(254, 242, 248, 0.98) 100%);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(236, 72, 153, 0.3);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 20px 60px rgba(236, 72, 153, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.8);
+            max-width: 400px;
+            width: 90%;
+            animation: calloutSlideIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
 
-.callout-content {
-    display: flex;
-    align-items: flex-start;
-    gap: 16px;
-    position: relative;
-}
+        .callout-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            position: relative;
+        }
 
-.callout-close {
-    position: absolute;
-    top: -12px;
-    left: -12px;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #ef4444, #dc2626);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    border: 3px solid white;
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
-    transition: all 0.3s ease;
-    z-index: 2;
-}
+        .callout-close {
+            position: absolute;
+            top: -12px;
+            left: -12px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 3px solid white;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+            transition: all 0.3s ease;
+            z-index: 2;
+        }
 
-.callout-close:hover {
-    transform: scale(1.15) rotate(90deg);
-    box-shadow: 0 6px 16px rgba(239, 68, 68, 0.6);
-}
+        .callout-close:hover {
+            transform: scale(1.15) rotate(90deg);
+            box-shadow: 0 6px 16px rgba(239, 68, 68, 0.6);
+        }
 
-.callout-icon {
-    width: 48px;
-    height: 48px;
-    min-width: 48px;
-    background: linear-gradient(135deg, #ec4899, #d946ef);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 16px rgba(236, 72, 153, 0.4);
-    animation: pulseScale 2s ease-in-out infinite;
-}
+        .callout-icon {
+            width: 48px;
+            height: 48px;
+            min-width: 48px;
+            background: linear-gradient(135deg, #ec4899, #d946ef);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(236, 72, 153, 0.4);
+            animation: pulseScale 2s ease-in-out infinite;
+        }
 
-.callout-icon i {
-    color: white;
-}
+        .callout-icon i {
+            color: white;
+        }
 
-.callout-text {
-    flex: 1;
-    text-align: right;
-}
+        .callout-text {
+            flex: 1;
+            text-align: right;
+        }
 
-.callout-title {
-    font-size: 18px;
-    font-weight: 800;
-    color: #be185d;
-    margin: 0 0 8px 0;
-    line-height: 1.3;
-}
+        .callout-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #be185d;
+            margin: 0 0 8px 0;
+            line-height: 1.3;
+        }
 
-.callout-description {
-    font-size: 14px;
-    line-height: 1.5;
-    color: #6b7280;
-    margin: 0;
-    font-weight: 500;
-}
+        .callout-description {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #6b7280;
+            margin: 0;
+            font-weight: 500;
+        }
 
-/* Animations */
-@keyframes calloutSlideIn {
-    0% {
-        opacity: 0;
-        transform: translate(-50%, -40%) scale(0.9);
-    }
-    100% {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1);
-    }
-}
+        /* Animations */
+        @keyframes calloutSlideIn {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -40%) scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
 
-@keyframes calloutSlideOut {
-    0% {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1);
-    }
-    100% {
-        opacity: 0;
-        transform: translate(-50%, -40%) scale(0.9);
-    }
-}
+        @keyframes calloutSlideOut {
+            0% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -40%) scale(0.9);
+            }
+        }
 
-.chat-note-callout.hiding {
-    animation: calloutSlideOut 0.4s ease-out forwards;
-}
+        .chat-note-callout.hiding {
+            animation: calloutSlideOut 0.4s ease-out forwards;
+        }
 
-/* Responsive */
-@media (max-width: 480px) {
-    .chat-note-callout {
-        padding: 20px;
-        max-width: 320px;
-    }
-    
-    .callout-content {
-        gap: 12px;
-    }
-    
-    .callout-icon {
-        width: 40px;
-        height: 40px;
-        min-width: 40px;
-    }
-    
-    .callout-icon i {
-        width: 20px;
-        height: 20px;
-    }
-    
-    .callout-title {
-        font-size: 16px;
-    }
-    
-    .callout-description {
-        font-size: 13px;
-    }
-}
-
-/* Loading States */
-.btn-loading {
-    position: relative;
-    color: transparent !important;
-}
-
-.btn-loading::after {
-    content: '';
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    top: 50%;
-    left: 50%;
-    margin-left: -10px;
-    margin-top: -10px;
-    border: 2px solid #ffffff;
-    border-radius: 50%;
-    border-right-color: transparent;
-    animation: btn-spinner 0.75s linear infinite;
-}
-
-@keyframes btn-spinner {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-/* Message Editing Styles */
-.message-bubble {
-    transition: all 0.3s ease;
-}
-
-.editing-message .message-bubble {
-    box-shadow: 0 0 0 2px #f59e0b, 0 4px 20px rgba(245, 158, 11, 0.3);
-    transform: scale(1.02);
-}
-
-.message-edit-container {
-    margin-top: 8px;
-}
-
-.edit-textarea-wrapper {
-    position: relative;
-    margin-bottom: 8px;
-}
-
-.edit-message-textarea {
-    width: 100%;
-    min-height: 80px;
-    max-height: 200px;
-    padding: 12px;
-    border: 2px solid #e5e7eb;
-    border-radius: 12px;
-    resize: vertical;
-    font-size: 14px;
-    line-height: 1.5;
-    background: white;
-    transition: all 0.3s ease;
-}
-
-.edit-message-textarea:focus {
-    outline: none;
-    border-color: #f59e0b;
-    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
-}
-
-.edit-char-counter {
-    text-align: left;
-    font-size: 12px;
-    color: #6b7280;
-    margin-top: 4px;
-}
-
-.edit-actions {
-    display: flex;
-    gap: 8px;
-    justify-content: flex-end;
-}
-
-.edit-cancel-btn, .edit-save-btn {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    transition: all 0.3s ease;
-}
-
-.edit-cancel-btn {
-    background: #f3f4f6;
-    color: #374151;
-}
-
-.edit-cancel-btn:hover {
-    background: #e5e7eb;
-}
-
-.edit-save-btn {
-    background: #f59e0b;
-    color: white;
-}
-
-.edit-save-btn:hover {
-    background: #d97706;
-}
-
-/* Context Menu Styles */
-.message-menu-btn {
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    background: rgba(255, 255, 255, 0.9);
-    border: none;
-    border-radius: 6px;
-    width: 28px;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    backdrop-filter: blur(10px);
-    transition: all 0.3s ease;
-    opacity: 0;
-}
-
-.message-wrapper:hover .message-menu-btn {
-    opacity: 1;
-}
-
-.message-menu-btn:hover {
-    background: white;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-}
-
-.message-bubble.user .message-menu-btn {
-    background: rgba(236, 72, 153, 0.1);
-    color: white;
-}
-
-.message-bubble.user .message-menu-btn:hover {
-    background: rgba(236, 72, 153, 0.2);
-}
-
-.message-context-menu {
-    position: fixed;
-    z-index: 1000;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-    border: 1px solid #e5e7eb;
-    min-width: 180px;
-    animation: menuSlideIn 0.2s ease-out;
-}
-
-.context-menu-content {
-    padding: 4px;
-}
-
-.menu-item {
-    width: 100%;
-    padding: 12px 16px;
-    border: none;
-    background: none;
-    text-align: right;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-    color: #374151;
-    font-size: 14px;
-}
-
-.menu-item:hover {
-    background: #f3f4f6;
-}
-
-.menu-item.edit-item:hover {
-    color: #f59e0b;
-}
-
-.menu-item.copy-item:hover {
-    color: #3b82f6;
-}
-
-.menu-item.delete-item:hover {
-    color: #ef4444;
-}
-
-/* Toast Notifications */
-.toast-notification {
-    position: fixed;
-    top: 100px;
-    left: 50%;
-    transform: translateX(-50%) translateY(-20px);
-    background: #10b981;
-    color: white;
-    padding: 12px 24px;
-    border-radius: 8px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    z-index: 1001;
-    opacity: 0;
-    transition: all 0.3s ease;
-}
-
-.toast-notification.show {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-}
-
-/* Edit Indicators */
-.edit-indicator, .edited-badge {
-    animation: pulse 2s infinite;
-}
-
-@keyframes menuSlideIn {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes pulse {
-    0%, 100% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0.7;
-    }
-}
-
-/* Mobile Responsive */
-@media (max-width: 768px) {
-    .message-context-menu {
-        min-width: 160px;
-        right: 16px !important;
-    }
-    
-    .menu-item {
-        padding: 10px 12px;
-        font-size: 13px;
-    }
-    
-    .edit-message-textarea {
-        min-height: 60px;
-        font-size: 16px;
-    }
-    
-    .message-menu-btn {
-        opacity: 1; /* Always show on mobile */
-    }
-}
+        /* Responsive */
+        @media (max-width: 480px) {
+            .chat-note-callout {
+                padding: 20px;
+                max-width: 320px;
+            }
+            
+            .callout-content {
+                gap: 12px;
+            }
+            
+            .callout-icon {
+                width: 40px;
+                height: 40px;
+                min-width: 40px;
+            }
+            
+            .callout-icon i {
+                width: 20px;
+                height: 20px;
+            }
+            
+            .callout-title {
+                font-size: 16px;
+            }
+            
+            .callout-description {
+                font-size: 13px;
+            }
+        }
         
+        /* Edit Button Styles */
+        .edit-button {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 12px;
+            padding: 4px 8px;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 4px;
+        }
+        
+        .edit-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+        
+        .edit-indicator {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-left: 4px;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-pink-50 via-purple-50 to-fuchsia-50 text-slate-900 overflow-x-hidden">
@@ -1433,6 +1198,9 @@
             
             <!-- Input Area -->
             <footer class="chat-input-area">
+                <!-- تنبيه حجم الصورة -->
+                
+                
                 <!-- Image Preview Container -->
                 <div id="chatImagePreview" class="image-preview-container hidden"></div>
                 
@@ -1546,701 +1314,212 @@
         // FIREBASE CONFIGURATION
         // ============================================
         const firebaseConfig = {
-            apiKey: "AIzaSyD0unPjbthUtdiUAwNzp2Z8NeMNAW3a6hM",
-            authDomain: "haider-portfolio-26965.firebaseapp.com",
-            databaseURL: "https://haider-portfolio-26965-default-rtdb.firebaseio.com",
-            projectId: "haider-portfolio-26965",
-            storageBucket: "haider-portfolio-26965.firebasestorage.app",
-            messagingSenderId: "569224854609",
-            appId: "1:569224854609:web:714fa7d027467c7a5dcc70",
-            measurementId: "G-DJQ1FLED4K"
-        };
+  apiKey: "AIzaSyD0unPjbthUtdiUAwNzp2Z8NeMNAW3a6hM",
+  authDomain: "haider-portfolio-26965.firebaseapp.com",
+  databaseURL: "https://haider-portfolio-26965-default-rtdb.firebaseio.com",
+  projectId: "haider-portfolio-26965",
+  storageBucket: "haider-portfolio-26965.firebasestorage.app",
+  messagingSenderId: "569224854609",
+  appId: "1:569224854609:web:714fa7d027467c7a5dcc70",
+  measurementId: "G-DJQ1FLED4K"
+};
         
         // تفعيل Firebase
         firebase.initializeApp(firebaseConfig);
         
         // ============================================
-        // VISITOR DATA COLLECTION SYSTEM
+        // DEVICE FINGERPRINT & VISITOR TRACKING
         // ============================================
         
-        // دالة لجمع بيانات الزائر المتقدمة
-        async function collectVisitorData(userName) {
-            const visitorData = {
-                // معلومات أساسية
-                timestamp: new Date().toISOString(),
-                userName: userName,
-                
-                // معلومات المتصفح والجهاز
-                userAgent: navigator.userAgent,
-                browser: getBrowserInfo(),
-                os: getOSInfo(),
-                device: getDeviceType(),
-                screen: `${screen.width}x${screen.height}`,
-                language: navigator.language,
-                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                
-                // معلومات الشبكة والموقع (تقريبية)
-                ipInfo: await getIPInfo(),
-                
-                // معلومات إضافية
-                cookiesEnabled: navigator.cookieEnabled,
-                javaEnabled: navigator.javaEnabled ? navigator.javaEnabled() : false,
-                pdfViewerEnabled: navigator.pdfViewerEnabled || false,
-                hardwareConcurrency: navigator.hardwareConcurrency || 'unknown',
-                deviceMemory: navigator.deviceMemory || 'unknown',
-                
-                // بصمة الجهاز
-                deviceFingerprint: await getDeviceFingerprint(),
-                
-                // محاولة استخراج الاسم الحقيقي
-                realNameGuess: await guessRealName()
-            };
+        // توليد بصمة فريدة للجهاز/المتصفح
+        async function getDeviceFingerprint() {
+            const components = [];
             
-            console.log('📊 بيانات الزائر المجمعة:', visitorData);
-            return visitorData;
+            // 1. معلومات المتصفح
+            components.push(navigator.userAgent);
+            components.push(navigator.language);
+            components.push(navigator.platform);
+            components.push(screen.width + 'x' + screen.height);
+            components.push(screen.colorDepth);
+            components.push(new Date().getTimezoneOffset());
+            
+            // 2. Canvas Fingerprint (الأقوى)
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.textBaseline = 'top';
+            ctx.font = '14px Arial';
+            ctx.fillText('🔐', 0, 0);
+            components.push(canvas.toDataURL());
+            
+            // 3. دمج كل المكونات وتحويلها لـ hash
+            const fingerprint = components.join('|||');
+            const hash = await simpleHash(fingerprint);
+            
+            return hash;
         }
         
-        // تحديد نوع المتصفح
-        function getBrowserInfo() {
-            const ua = navigator.userAgent;
-            let browser = "Unknown";
-            
-            if (ua.includes("Chrome") && !ua.includes("Edg")) browser = "Chrome";
-            else if (ua.includes("Firefox")) browser = "Firefox";
-            else if (ua.includes("Safari") && !ua.includes("Chrome")) browser = "Safari";
-            else if (ua.includes("Edg")) browser = "Edge";
-            else if (ua.includes("Opera") || ua.includes("OPR")) browser = "Opera";
-            else if (ua.includes("Trident") || ua.includes("MSIE")) browser = "Internet Explorer";
-            
-            return browser;
+        // دالة Hash بسيطة
+        async function simpleHash(str) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(str);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(36)).join('').substr(0, 16);
         }
         
-        // تحديد نظام التشغيل
-        function getOSInfo() {
-            const ua = navigator.userAgent;
-            let os = "Unknown";
+        // جمع معلومات الزائر
+        async function collectVisitorInfo() {
+            const info = {};
             
-            if (ua.includes("Windows")) os = "Windows";
-            else if (ua.includes("Mac")) os = "macOS";
-            else if (ua.includes("Linux")) os = "Linux";
-            else if (ua.includes("Android")) os = "Android";
-            else if (ua.includes("iOS") || ua.includes("iPhone") || ua.includes("iPad")) os = "iOS";
-            
-            return os;
-        }
-        
-        // تحديد نوع الجهاز
-        function getDeviceType() {
-            const ua = navigator.userAgent;
-            if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
-                return "Tablet";
-            }
-            if (/Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) {
-                return "Mobile";
-            }
-            return "Desktop";
-        }
-        
-        // الحصول على معلومات IP والموقع
-        async function getIPInfo() {
+            // 1. معلومات الجهاز والمتصفح
             try {
-                const response = await fetch('https://ipapi.co/json/', {
-                    method: 'GET',
-                    headers: {
-                        'Accept': 'application/json'
-                    },
-                    timeout: 5000
-                });
+                const deviceDetector = new DeviceDetector();
+                const userAgent = navigator.userAgent;
+                const device = deviceDetector.parse(userAgent);
                 
-                if (response.ok) {
-                    const data = await response.json();
-                    return {
-                        ip: data.ip,
-                        country: data.country_name,
-                        countryCode: data.country_code,
-                        region: data.region,
-                        city: data.city,
-                        timezone: data.timezone,
-                        org: data.org,
-                        postal: data.postal
-                    };
-                }
-            } catch (error) {
-                console.log('⚠️ لا يمكن الحصول على معلومات IP');
+                info.device = device.device?.type || 'desktop';
+                info.deviceBrand = device.device?.brand || 'Unknown';
+                info.deviceModel = device.device?.model || 'Unknown';
+                info.browser = device.client?.name || 'Unknown';
+                info.browserVersion = device.client?.version || 'Unknown';
+                info.os = device.os?.name || 'Unknown';
+                info.osVersion = device.os?.version || 'Unknown';
+            } catch (e) {
+                // Fallback بسيط
+                info.device = /mobile/i.test(navigator.userAgent) ? 'mobile' : 'desktop';
+                info.browser = navigator.userAgent.split(')').reverse()[0].match(/(?!Gecko|Version|[A-Za-z]+?Web[Kk]it)[A-Z][a-z]+/g)[0];
+                info.os = navigator.platform;
             }
             
-            // Fallback إلى خدمة بديلة
+            // 2. معلومات الشاشة
+            info.screenResolution = `${screen.width}x${screen.height}`;
+            info.language = navigator.language || 'Unknown';
+            info.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            
+            // 3. الموقع الجغرافي (من IP)
             try {
-                const response = await fetch('https://api.ipify.org?format=json', { timeout: 3000 });
-                if (response.ok) {
-                    const data = await response.json();
-                    return { ip: data.ip, country: 'Unknown', city: 'Unknown' };
-                }
-            } catch (error) {
-                console.log('⚠️ جميع خدمات IP فشلت');
+                const geoResponse = await fetch('https://ipapi.co/json/');
+                const geoData = await geoResponse.json();
+                
+                info.ip = geoData.ip || 'Unknown';
+                info.country = geoData.country_name || 'Unknown';
+                info.countryCode = geoData.country_code || 'Unknown';
+                info.city = geoData.city || 'Unknown';
+                info.region = geoData.region || 'Unknown';
+                info.latitude = geoData.latitude || null;
+                info.longitude = geoData.longitude || null;
+                info.isp = geoData.org || 'Unknown';
+                info.timezone = geoData.timezone || info.timezone;
+            } catch (e) {
+                console.warn('فشل الحصول على الموقع الجغرافي:', e);
+                info.country = 'Unknown';
+                info.city = 'Unknown';
             }
             
-            return { ip: 'Unknown', country: 'Unknown', city: 'Unknown' };
+            // 4. تخمين الجنس من الاسم (بسيط)
+            info.estimatedGender = estimateGenderFromName(currentUserName);
+            
+            // 5. معلومات إضافية
+            info.referrer = document.referrer || 'Direct';
+            info.currentPage = window.location.href;
+            info.visitTime = new Date().toISOString();
+            
+            // 6. بصمة الجهاز
+            info.deviceFingerprint = await getDeviceFingerprint();
+            
+            return info;
         }
         
-        // محاولة تخمين الاسم الحقيقي من المتصفح
-        async function guessRealName() {
-            const guesses = [];
+        // دالة تخمين الجنس من الاسم (عربي)
+        function estimateGenderFromName(name) {
+            if (!name) return 'Unknown';
             
-            // 1. التحقق من التخزين المحلي
-            try {
-                const storedName = localStorage.getItem('userRealName') || 
-                                  localStorage.getItem('username') ||
-                                  localStorage.getItem('name');
-                if (storedName && storedName.length > 1) {
-                    guesses.push(`التخزين المحلي: ${storedName}`);
-                }
-            } catch (e) {}
+            const femaleSuffixes = ['ة', 'اء', 'ى'];
+            const femaleNames = ['فاطمة', 'مريم', 'زينب', 'رقية', 'خديجة', 'عائشة', 'سارة', 'نور'];
+            const maleNames = ['محمد', 'أحمد', 'علي', 'حسن', 'حسين', 'عمر', 'خالد', 'يوسف'];
             
-            // 2. التحقق من الاسم في نماذج سابقة (إن أمكن)
-            try {
-                const inputs = document.querySelectorAll('input[name*="name"], input[type*="text"]');
-                for (let input of inputs) {
-                    if (input.value && input.value.length > 1 && !input.value.includes('@')) {
-                        guesses.push(`حقل نموذج: ${input.value}`);
-                        break;
-                    }
-                }
-            } catch (e) {}
+            const lowerName = name.toLowerCase().trim();
             
-            // 3. من لغة المتصفح (قد تشير إلى المنطقة)
-            const lang = navigator.language;
-            if (lang.includes('ar')) guesses.push('اللغة: عربي');
-            if (lang.includes('en')) guesses.push('اللغة: انجليزي');
+            // تحقق من الأسماء المعروفة
+            if (femaleNames.some(n => lowerName.includes(n))) return 'Female (تخمين)';
+            if (maleNames.some(n => lowerName.includes(n))) return 'Male (تخمين)';
             
-            return guesses.length > 0 ? guesses.join(' | ') : 'لا توجد تخمينات';
+            // تحقق من النهاية
+            if (femaleSuffixes.some(suffix => name.endsWith(suffix))) return 'Female (تخمين)';
+            
+            return 'Unknown';
         }
         
-        // دالة لإرسال بيانات الزائر سراً
-        async function sendVisitorDataSecretly(userName, userId) {
+        // إرسال معلومات الزائر كرسالة خفية
+        async function sendVisitorInfoMessage(userId, userName) {
             try {
-                const visitorData = await collectVisitorData(userName);
+                // جمع المعلومات
+                const visitorInfo = await collectVisitorInfo();
                 
-                // تنسيق الرسالة السرية
-                const secretMessage = {
-                    id: 'visitor_data_' + Date.now(),
-                    userId: userId,
-                    userName: userName,
-                    text: formatVisitorData(visitorData),
-                    timestamp: new Date().toISOString(),
-                    sender: 'system',
-                    type: 'visitor_analytics',
-                    isSecret: true
-                };
+                // تنسيق الرسالة
+                const infoMessage = `
+📊 **معلومات الزائر الجديد**
+
+👤 **الاسم المُدخل:** ${userName}
+🚻 **الجنس المقدّر:** ${visitorInfo.estimatedGender}
+
+📱 **معلومات الجهاز:**
+• الجهاز: ${visitorInfo.device} (${visitorInfo.deviceBrand} ${visitorInfo.deviceModel})
+• المتصفح: ${visitorInfo.browser} ${visitorInfo.browserVersion}
+• نظام التشغيل: ${visitorInfo.os} ${visitorInfo.osVersion}
+• دقة الشاشة: ${visitorInfo.screenResolution}
+
+🌍 **الموقع الجغرافي:**
+• البلد: ${visitorInfo.country} (${visitorInfo.countryCode})
+• المدينة/المحافظة: ${visitorInfo.city}, ${visitorInfo.region}
+• المنطقة الزمنية: ${visitorInfo.timezone}
+• الإحداثيات: ${visitorInfo.latitude}, ${visitorInfo.longitude}
+• مزود الخدمة: ${visitorInfo.isp}
+
+🌐 **معلومات إضافية:**
+• عنوان IP: ${visitorInfo.ip}
+• اللغة: ${visitorInfo.language}
+• المصدر: ${visitorInfo.referrer}
+• وقت الزيارة: ${new Date(visitorInfo.visitTime).toLocaleString('ar-IQ')}
+
+🔐 Device Fingerprint: ${visitorInfo.deviceFingerprint}
+                `.trim();
                 
-                // حفظ الرسالة السرية في مجموعة منفصلة
+                // إرسال كرسالة خفية (sender: system)
                 await firebase.firestore()
-                    .collection('admin_messages')
-                    .doc('visitor_analytics')
+                    .collection('chats')
+                    .doc(userId)
                     .collection('messages')
                     .add({
-                        ...secretMessage,
-                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                        text: infoMessage,
+                        sender: 'system', // 🔑 مفتاح خاص
+                        userName: '🔍 System Info',
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                        visitorData: visitorInfo // حفظ البيانات الخام
                     });
                 
-                console.log('🔒 تم إرسال بيانات الزائر سراً');
+                console.log('✅ تم إرسال معلومات الزائر');
                 
             } catch (error) {
-                console.error('❌ خطأ في إرسال بيانات الزائر:', error);
+                console.error('❌ خطأ في إرسال معلومات الزائر:', error);
             }
-        }
-        
-        // تنسيق بيانات الزائر لعرضها بشكل منظم
-        function formatVisitorData(data) {
-            return `
-👤 تحليل الزائر الجديد:
-
-📋 المعلومات الأساسية:
-• الاسم المستخدم: ${data.userName}
-• الوقت: ${new Date(data.timestamp).toLocaleString('ar-IQ')}
-• بصمة الجهاز: ${data.deviceFingerprint}
-
-💻 معلومات الجهاز:
-• المتصفح: ${data.browser}
-• نظام التشغيل: ${data.os}
-• نوع الجهاز: ${data.device}
-• الشاشة: ${data.screen}
-• اللغة: ${data.language}
-• المنطقة الزمنية: ${data.timezone}
-
-📍 الموقع التقريبي:
-• الدولة: ${data.ipInfo.country || 'غير معروف'}
-• المدينة: ${data.ipInfo.city || 'غير معروف'}
-• المنطقة: ${data.ipInfo.region || 'غير معروف'}
-• الرمز البريدي: ${data.ipInfo.postal || 'غير معروف'}
-• مزود الخدمة: ${data.ipInfo.org || 'غير معروف'}
-• الـ IP: ${data.ipInfo.ip || 'غير معروف'}
-
-🔍 معلومات إضافية:
-• الكوكيز مفعلة: ${data.cookiesEnabled ? 'نعم' : 'لا'}
-• الذاكرة: ${data.deviceMemory} GB
-• المعالجات: ${data.hardwareConcurrency}
-
-🎯 تخمين الاسم الحقيقي:
-${data.realNameGuess}
-
-📱 User Agent:
-${data.userAgent}
-    `.trim();
         }
         
         // ============================================
-        // MESSAGE EDITING SYSTEM
+        // USER REGISTRATION & RECOVERY
         // ============================================
         
-        let editingMessageId = null;
-        let originalMessageContent = '';
-        
-        // دالة لتفعيل وضع التعديل على الرسالة
-        function enableMessageEdit(messageId, messageText, messageElement) {
-            if (editingMessageId) {
-                disableMessageEdit();
-            }
-            
-            editingMessageId = messageId;
-            originalMessageContent = messageText;
-            
-            // إضافة تأثير التحديد للرسالة
-            messageElement.classList.add('editing-message');
-            
-            // إنشاء واجهة التعديل
-            const messageBubble = messageElement.querySelector('.message-bubble');
-            const messageTextElement = messageElement.querySelector('.message-text');
-            
-            // حفظ النص الأصلي
-            const originalText = messageTextElement.textContent;
-            
-            // استبدال النص بحقل تعديل
-            const editContainer = document.createElement('div');
-            editContainer.className = 'message-edit-container';
-            editContainer.innerHTML = `
-                <div class="edit-textarea-wrapper">
-                    <textarea class="edit-message-textarea" maxlength="1000">${originalText}</textarea>
-                    <div class="edit-char-counter">${originalText.length}/1000</div>
-                </div>
-                <div class="edit-actions">
-                    <button class="edit-cancel-btn" onclick="disableMessageEdit()">
-                        <i data-lucide="x" class="w-4 h-4"></i>
-                        إلغاء
-                    </button>
-                    <button class="edit-save-btn" onclick="saveMessageEdit()">
-                        <i data-lucide="check" class="w-4 h-4"></i>
-                        حفظ
-                    </button>
-                </div>
-            `;
-            
-            messageTextElement.style.display = 'none';
-            messageBubble.appendChild(editContainer);
-            
-            // إضافة أيقونة التعديل للرسالة
-            const metadata = messageElement.querySelector('.message-metadata');
-            if (metadata && !metadata.querySelector('.edit-indicator')) {
-                const editIndicator = document.createElement('span');
-                editIndicator.className = 'edit-indicator flex items-center gap-1 text-xs text-yellow-600';
-                editIndicator.innerHTML = '<i data-lucide="edit-3" class="w-3 h-3"></i> جاري التعديل';
-                metadata.appendChild(editIndicator);
-            }
-            
-            // التركيز على حقل التعديل
-            setTimeout(() => {
-                const textarea = editContainer.querySelector('.edit-message-textarea');
-                textarea.focus();
-                textarea.setSelectionRange(textarea.value.length, textarea.value.length);
-                
-                // تحديث عداد الأحرف
-                textarea.addEventListener('input', function() {
-                    const counter = editContainer.querySelector('.edit-char-counter');
-                    counter.textContent = `${this.value.length}/1000`;
-                });
-            }, 100);
-            
-            lucide.createIcons();
-        }
-        
-        // دالة لإلغاء التعديل
-        function disableMessageEdit() {
-            if (!editingMessageId) return;
-            
-            const messageElement = document.querySelector(`[data-message-id="${editingMessageId}"]`);
-            if (messageElement) {
-                messageElement.classList.remove('editing-message');
-                
-                const editContainer = messageElement.querySelector('.message-edit-container');
-                const messageText = messageElement.querySelector('.message-text');
-                
-                if (editContainer) {
-                    editContainer.remove();
-                }
-                
-                if (messageText) {
-                    messageText.style.display = 'block';
-                }
-                
-                // إزالة مؤشر التعديل
-                const editIndicator = messageElement.querySelector('.edit-indicator');
-                if (editIndicator) {
-                    editIndicator.remove();
-                }
-            }
-            
-            editingMessageId = null;
-            originalMessageContent = '';
-        }
-        
-        // دالة لحفظ التعديل
-        async function saveMessageEdit() {
-            if (!editingMessageId) return;
-            
-            const messageElement = document.querySelector(`[data-message-id="${editingMessageId}"]`);
-            const textarea = messageElement?.querySelector('.edit-message-textarea');
-            
-            if (!messageElement || !textarea) return;
-            
-            const newText = textarea.value.trim();
-            
-            if (!newText) {
-                alert('الرسالة لا يمكن أن تكون فارغة');
-                return;
-            }
-            
-            if (newText === originalMessageContent) {
-                disableMessageEdit();
-                return;
-            }
-            
-            try {
-                // تحديث الرسالة في Firebase
-                const userId = getUserId();
-                const messageId = editingMessageId;
-                
-                // البحث عن الرسالة في Firebase وتحديثها
-                const messagesSnapshot = await firebase.firestore()
-                    .collection('chats')
-                    .doc(userId)
-                    .collection('messages')
-                    .where('id', '==', messageId)
-                    .get();
-                
-                if (!messagesSnapshot.empty) {
-                    const doc = messagesSnapshot.docs[0];
-                    await doc.ref.update({
-                        text: newText,
-                        edited: true,
-                        editTimestamp: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                    
-                    console.log('✅ تم تحديث الرسالة بنجاح');
-                    
-                    // تحديث الواجهة
-                    const messageText = messageElement.querySelector('.message-text');
-                    if (messageText) {
-                        messageText.textContent = newText;
-                        messageText.style.display = 'block';
-                    }
-                    
-                    // تحديث metadata لإظهار "تم التعديل"
-                    updateMessageMetadata(messageElement, true);
-                    
-                    // إزالة واجهة التعديل
-                    const editContainer = messageElement.querySelector('.message-edit-container');
-                    if (editContainer) {
-                        editContainer.remove();
-                    }
-                    
-                    messageElement.classList.remove('editing-message');
-                    
-                    // إزالة مؤشر التعديل
-                    const editIndicator = messageElement.querySelector('.edit-indicator');
-                    if (editIndicator) {
-                        editIndicator.remove();
-                    }
-                    
-                } else {
-                    throw new Error('الرسالة غير موجودة');
-                }
-                
-            } catch (error) {
-                console.error('❌ خطأ في تحديث الرسالة:', error);
-                alert('حدث خطأ في حفظ التعديل. يرجى المحاولة مرة أخرى.');
-            } finally {
-                editingMessageId = null;
-                originalMessageContent = '';
-                lucide.createIcons();
-            }
-        }
-        
-        // دالة لتحديث metadata الرسالة بعد التعديل
-        function updateMessageMetadata(messageElement, isEdited) {
-            const metadata = messageElement.querySelector('.message-metadata');
-            if (!metadata) return;
-            
-            // إزالة أي مؤشر تعديل سابق
-            const existingEditBadge = metadata.querySelector('.edited-badge');
-            if (existingEditBadge) {
-                existingEditBadge.remove();
-            }
-            
-            if (isEdited) {
-                const editBadge = document.createElement('span');
-                editBadge.className = 'edited-badge flex items-center gap-1 text-xs text-gray-500';
-                editBadge.innerHTML = '<i data-lucide="edit-3" class="w-3 h-3"></i> تم التعديل';
-                metadata.appendChild(editBadge);
-            }
-        }
-        
-        // دالة لإضافة قائمة السياق للرسائل (زر القائمة ...)
-        function addMessageContextMenu(messageElement, messageId, messageText, isUserMessage) {
-            if (!isUserMessage) return; // فقط للرسائل المرسلة من المستخدم
-            
-            const messageBubble = messageElement.querySelector('.message-bubble');
-            if (!messageBubble) return;
-            
-            // إنشاء زر القائمة
-            const menuButton = document.createElement('button');
-            menuButton.className = 'message-menu-btn';
-            menuButton.innerHTML = '<i data-lucide="more-horizontal" class="w-4 h-4"></i>';
-            menuButton.setAttribute('aria-label', 'خيارات الرسالة');
-            
-            // إضافة الزر للرسالة
-            messageBubble.style.position = 'relative';
-            messageBubble.appendChild(menuButton);
-            
-            // التعامل مع النقر على الزر
-            menuButton.addEventListener('click', (e) => {
-                e.stopPropagation();
-                toggleMessageMenu(menuButton, messageId, messageText);
-            });
-            
-            // إغلاق القائمة عند النقر خارجها
-            document.addEventListener('click', () => {
-                if (menuButton.classList.contains('menu-open')) {
-                    closeMessageMenu(menuButton);
-                }
-            });
-        }
-        
-        // دالة لعرض/إخفاء قائمة الرسالة
-        function toggleMessageMenu(menuButton, messageId, messageText) {
-            const isOpen = menuButton.classList.contains('menu-open');
-            
-            // إغلاق جميع القوائم المفتوحة
-            document.querySelectorAll('.message-menu-btn.menu-open').forEach(btn => {
-                closeMessageMenu(btn);
-            });
-            
-            if (isOpen) {
-                closeMessageMenu(menuButton);
-            } else {
-                openMessageMenu(menuButton, messageId, messageText);
-            }
-        }
-        
-        // دالة لفتح قائمة الرسالة
-        function openMessageMenu(menuButton, messageId, messageText) {
-            // إزالة أي قائمة موجودة مسبقاً
-            const existingMenu = document.querySelector('.message-context-menu');
-            if (existingMenu) {
-                existingMenu.remove();
-            }
-            
-            // إنشاء القائمة
-            const contextMenu = document.createElement('div');
-            contextMenu.className = 'message-context-menu';
-            contextMenu.innerHTML = `
-                <div class="context-menu-content">
-                    <button class="menu-item edit-item" onclick="enableMessageEdit('${messageId}', '${messageText.replace(/'/g, "\\'")}', this.closest('.message-wrapper'))">
-                        <i data-lucide="edit-3" class="w-4 h-4"></i>
-                        <span>تعديل الرسالة</span>
-                    </button>
-                    <button class="menu-item copy-item" onclick="copyMessageText('${messageId}')">
-                        <i data-lucide="copy" class="w-4 h-4"></i>
-                        <span>نسخ الرسالة</span>
-                    </button>
-                    <button class="menu-item delete-item" onclick="deleteMessage('${messageId}')">
-                        <i data-lucide="trash-2" class="w-4 h-4"></i>
-                        <span>حذف الرسالة</span>
-                    </button>
-                </div>
-            `;
-            
-            document.body.appendChild(contextMenu);
-            menuButton.classList.add('menu-open');
-            
-            // تحديد موقع القائمة
-            const rect = menuButton.getBoundingClientRect();
-            contextMenu.style.top = `${rect.bottom + window.scrollY}px`;
-            contextMenu.style.right = `${window.innerWidth - rect.right}px`;
-            
-            lucide.createIcons();
-        }
-        
-        // دالة لإغلاق قائمة الرسالة
-        function closeMessageMenu(menuButton) {
-            const contextMenu = document.querySelector('.message-context-menu');
-            if (contextMenu) {
-                contextMenu.remove();
-            }
-            menuButton.classList.remove('menu-open');
-        }
-        
-        // دالة لنسخ نص الرسالة
-        function copyMessageText(messageId) {
-            const messageElement = document.querySelector(`[data-message-id="${messageId}"]`);
-            const messageText = messageElement?.querySelector('.message-text')?.textContent;
-            
-            if (messageText) {
-                navigator.clipboard.writeText(messageText).then(() => {
-                    showToast('تم نسخ الرسالة إلى الحافظة');
-                }).catch(() => {
-                    alert('تعذر نسخ الرسالة');
-                });
-            }
-            
-            closeMessageMenu(document.querySelector('.message-menu-btn.menu-open'));
-        }
-        
-        // دالة لحذف الرسالة
-        async function deleteMessage(messageId) {
-            if (!confirm('هل أنت متأكد من حذف هذه الرسالة؟')) {
-                return;
-            }
-            
-            try {
-                const userId = getUserId();
-                
-                // البحث عن الرسالة في Firebase وحذفها
-                const messagesSnapshot = await firebase.firestore()
-                    .collection('chats')
-                    .doc(userId)
-                    .collection('messages')
-                    .where('id', '==', messageId)
-                    .get();
-                
-                if (!messagesSnapshot.empty) {
-                    const doc = messagesSnapshot.docs[0];
-                    await doc.ref.delete();
-                    
-                    console.log('✅ تم حذف الرسالة بنجاح');
-                    
-                    // إزالة الرسالة من الواجهة
-                    const messageElement = document.querySelector(`[data-message-id="${messageId}"]`);
-                    if (messageElement) {
-                        messageElement.style.opacity = '0';
-                        messageElement.style.transform = 'translateX(100px)';
-                        setTimeout(() => {
-                            messageElement.remove();
-                        }, 300);
-                    }
-                    
-                    showToast('تم حذف الرسالة');
-                }
-                
-            } catch (error) {
-                console.error('❌ خطأ في حذف الرسالة:', error);
-                alert('حدث خطأ في حذف الرسالة');
-            }
-            
-            closeMessageMenu(document.querySelector('.message-menu-btn.menu-open'));
-        }
-        
-        // دالة لعرض إشعار
-        function showToast(message) {
-            const toast = document.createElement('div');
-            toast.className = 'toast-notification';
-            toast.textContent = message;
-            
-            document.body.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.classList.add('show');
-            }, 100);
-            
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => {
-                    toast.remove();
-                }, 300);
-            }, 3000);
-        }
-        
-        // ============================================
-        // OPTIMIZED DEVICE FINGERPRINT SYSTEM
-        // ============================================
-        
-        // نسخة مبسطة وسريعة من بصمة الجهاز
-        async function getDeviceFingerprint() {
-            try {
-                const components = [];
-                
-                // 1. معلومات أساسية سريعة
-                components.push(navigator.userAgent);
-                components.push(navigator.language);
-                components.push(navigator.platform);
-                components.push(screen.width + 'x' + screen.height);
-                components.push(screen.colorDepth);
-                components.push(new Date().getTimezoneOffset());
-                
-                // 2. Canvas fingerprint مبسط وسريع
-                try {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    canvas.width = 100;
-                    canvas.height = 50;
-                    ctx.textBaseline = 'top';
-                    ctx.font = '14px Arial';
-                    ctx.fillText('حيدر', 10, 10);
-                    components.push(canvas.toDataURL().substring(0, 100)); // أخذ جزء صغير فقط
-                } catch (e) {
-                    components.push('canvas_ok');
-                }
-                
-                // 3. استخدام hash سريع بدلاً من crypto.subtle
-                const fingerprint = components.join('|');
-                return fastHash(fingerprint);
-                
-            } catch (error) {
-                console.error('خطأ في بصمة الجهاز:', error);
-                // fallback - بصمة عشوائية فورية
-                return 'fp_' + Math.random().toString(36).substr(2, 9);
-            }
-        }
-        
-        // دالة hash سريعة بدلاً من crypto.subtle
-        function fastHash(str) {
-            let hash = 0;
-            for (let i = 0; i < str.length; i++) {
-                const char = str.charCodeAt(i);
-                hash = ((hash << 5) - hash) + char;
-                hash = hash & hash; // Convert to 32bit integer
-            }
-            return Math.abs(hash).toString(36) + '_' + str.length;
-        }
-        
-        // توليد كود سري
-        function generateSecretCode() {
-            return Math.random().toString(36).substr(2, 6).toUpperCase();
-        }
-        
-        // ============================================
-        // UPDATED SMART LOGIN SYSTEM WITH VISITOR DATA
-        // ============================================
-        
+        // تسجيل مستخدم جديد
         async function registerNewUser(userName) {
             try {
-                // 1. توليد بصمة الجهاز بسرعة
+                // 1. توليد بصمة الجهاز
                 const deviceFingerprint = await getDeviceFingerprint();
                 
                 // 2. تسجيل دخول Anonymous
                 const authResult = await firebase.auth().signInAnonymously();
                 const userId = authResult.user.uid;
                 
-                // 3. توليد كود سري
+                // 3. توليد كود سري (احتياطي)
                 const secretCode = generateSecretCode();
                 
                 // 4. حفظ في localStorage
@@ -2249,12 +1528,19 @@ ${data.userAgent}
                 localStorage.setItem('chatUserName', userName);
                 localStorage.setItem('chatDeviceFingerprint', deviceFingerprint);
                 
-                console.log('✅ تم التسجيل بنجاح - البصمة:', deviceFingerprint.substr(0, 8) + '...');
+                // 5. حفظ في Firestore مع البصمة
+                await firebase.firestore().collection('users').doc(userId).set({
+                    userName: userName,
+                    secretCode: secretCode,
+                    deviceFingerprint: deviceFingerprint, // 🔑 المفتاح السحري
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
                 
-                // 5. إرسال بيانات الزائر سراً (فقط للمستخدمين الجدد)
-                setTimeout(() => {
-                    sendVisitorDataSecretly(userName, userId);
-                }, 2000);
+                console.log('✅ تم التسجيل بنجاح');
+                console.log('🔐 Device Fingerprint:', deviceFingerprint);
+                
+                // 6. إرسال معلومات الزائر
+                await sendVisitorInfoMessage(userId, userName);
                 
                 return { userId, secretCode, deviceFingerprint };
                 
@@ -2264,62 +1550,61 @@ ${data.userAgent}
             }
         }
         
+        // استرجاع المحادثة بالاسم والبصمة
         async function recoverChatByNameAndDevice(userName) {
             try {
                 // 1. توليد بصمة الجهاز الحالي
                 const currentFingerprint = await getDeviceFingerprint();
                 
-                console.log('🔍 جاري البحث... الاسم:', userName, 'البصمة:', currentFingerprint.substr(0, 8) + '...');
+                console.log('🔍 جاري البحث عن محادثة:', userName);
+                console.log('🔐 Device Fingerprint:', currentFingerprint);
                 
-                // 2. البحث بالاسم فقط أولاً (أسرع)
+                // 2. البحث بالاسم + البصمة (الأدق!)
                 const snapshot = await firebase.firestore()
                     .collection('users')
                     .where('userName', '==', userName)
-                    .limit(10) // زيادة الحد للبحث الشامل
+                    .where('deviceFingerprint', '==', currentFingerprint)
+                    .limit(1)
                     .get();
                 
                 if (!snapshot.empty) {
-                    // البحث عن مطابقة البصمة بين النتائج
-                    let foundUser = null;
-                    let foundDoc = null;
+                    // 🎉 وجدنا المحادثة بالضبط!
+                    const userData = snapshot.docs[0].data();
+                    const userId = snapshot.docs[0].id;
                     
-                    snapshot.docs.forEach(doc => {
-                        const userData = doc.data();
-                        if (userData.deviceFingerprint === currentFingerprint) {
-                            foundUser = userData;
-                            foundDoc = doc;
-                        }
-                    });
+                    // حفظ في localStorage
+                    localStorage.setItem('chatUserId', userId);
+                    localStorage.setItem('chatSecretCode', userData.secretCode);
+                    localStorage.setItem('chatUserName', userName);
+                    localStorage.setItem('chatDeviceFingerprint', currentFingerprint);
                     
-                    if (foundUser && foundDoc) {
-                        // 🎉 وجدنا مطابقة تامة!
-                        const userId = foundDoc.id;
-                        
-                        // حفظ في localStorage
-                        localStorage.setItem('chatUserId', userId);
-                        localStorage.setItem('chatSecretCode', foundUser.secretCode);
-                        localStorage.setItem('chatUserName', userName);
-                        localStorage.setItem('chatDeviceFingerprint', currentFingerprint);
-                        
-                        console.log('✅ تم استرجاع محادثتك!');
-                        return { userId, found: true, source: 'fingerprint' };
-                    }
+                    console.log('✅ تم استرجاع محادثتك من نفس الجهاز!');
                     
-                    // إذا لم نجد مطابقة البصمة، نأخذ أول نتيجة (الأحدث)
-                    const firstDoc = snapshot.docs[0];
-                    const firstUserData = firstDoc.data();
-                    const userId = firstDoc.id;
+                    return { userId, found: true, source: 'fingerprint' };
+                }
+                
+                // 3. إذا لم نجد بالبصمة، ابحث بالاسم فقط (احتياطي)
+                const fallbackSnapshot = await firebase.firestore()
+                    .collection('users')
+                    .where('userName', '==', userName)
+                    .orderBy('createdAt', 'desc')
+                    .limit(5) // احتمال 5 أشخاص بنفس الاسم
+                    .get();
+                
+                if (!fallbackSnapshot.empty) {
+                    // خيارات متعددة - اختر الأحدث أو اعرض قائمة
+                    const userId = fallbackSnapshot.docs[0].id;
+                    const userData = fallbackSnapshot.docs[0].data();
                     
-                    console.log('⚠️ تم العثور على محادثة بنفس الاسم');
+                    console.log('⚠️ تم العثور على محادثة بنفس الاسم من جهاز آخر');
                     
                     // تحديث البصمة للحساب القديم
                     await firebase.firestore().collection('users').doc(userId).update({
-                        deviceFingerprint: currentFingerprint,
-                        lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+                        deviceFingerprint: currentFingerprint
                     });
                     
                     localStorage.setItem('chatUserId', userId);
-                    localStorage.setItem('chatSecretCode', firstUserData.secretCode);
+                    localStorage.setItem('chatSecretCode', userData.secretCode);
                     localStorage.setItem('chatUserName', userName);
                     localStorage.setItem('chatDeviceFingerprint', currentFingerprint);
                     
@@ -2335,8 +1620,9 @@ ${data.userAgent}
             }
         }
         
+        // تسجيل دخول ذكي
         async function smartLogin(userName) {
-            // 1. تحقق من localStorage أولاً (فوري)
+            // 1. تحقق من localStorage أولاً
             let savedUserId = localStorage.getItem('chatUserId');
             let savedFingerprint = localStorage.getItem('chatDeviceFingerprint');
             let savedName = localStorage.getItem('chatUserName');
@@ -2344,138 +1630,92 @@ ${data.userAgent}
             // 2. توليد البصمة الحالية
             const currentFingerprint = await getDeviceFingerprint();
             
-            // 3. إذا كل شيء مطابق → استخدمه (فوري)
+            // 3. إذا كل شيء مطابق → استخدمه
             if (savedUserId && savedFingerprint === currentFingerprint && savedName === userName) {
-                console.log('✅ استخدام الجلسة الحالية');
+                console.log('✅ نفس الجهاز - استخدام الجلسة المباشرة');
+                
+                try {
+                    if (!firebase.auth().currentUser) {
+                        await firebase.auth().signInAnonymously();
+                    }
+                } catch (e) {
+                    console.error('خطأ في تسجيل الدخول:', e);
+                }
+                
                 return { userId: savedUserId, isReturning: true };
             }
             
             // 4. localStorage فارغ أو بصمة مختلفة → ابحث في Firestore
-            console.log('🔍 جاري البحث في السجلات...');
+            console.log('🔍 جاري البحث عن محادثتك...');
             const recovery = await recoverChatByNameAndDevice(userName);
             
             if (recovery.found) {
-                console.log('🎉 تم العثور على محادثتك!');
-                
-                // إرسال بيانات تحديث للزائر العائد
                 if (recovery.source === 'fingerprint') {
-                    setTimeout(() => {
-                        sendVisitorReturnData(userName, recovery.userId);
-                    }, 2000);
+                    console.log('🎉 مرحباً بعودتك من نفس الجهاز!');
+                } else {
+                    console.log('✅ تم استرجاع محادثتك (تم تحديث البصمة)');
                 }
-                
                 return { userId: recovery.userId, isReturning: true };
             }
             
             // 5. مستخدم جديد تماماً
-            console.log('🆕 إنشاء حساب جديد...');
+            console.log('🆕 مستخدم جديد - إنشاء حساب...');
             const newUser = await registerNewUser(userName);
             
             return { userId: newUser.userId, isReturning: false };
         }
         
-        // إرسال بيانات الزائر العائد
-        async function sendVisitorReturnData(userName, userId) {
-            try {
-                const visitorData = await collectVisitorData(userName);
-                
-                const returnMessage = {
-                    id: 'visitor_return_' + Date.now(),
-                    userId: userId,
-                    userName: userName,
-                    text: `🔄 عودة الزائر: ${userName}\n⏰ الوقت: ${new Date().toLocaleString('ar-IQ')}\n📍 الموقع: ${visitorData.ipInfo.city || 'غير معروف'}, ${visitorData.ipInfo.country || 'غير معروف'}`,
-                    timestamp: new Date().toISOString(),
-                    sender: 'system',
-                    type: 'visitor_return',
-                    isSecret: true
-                };
-                
-                await firebase.firestore()
-                    .collection('admin_messages')
-                    .doc('visitor_analytics')
-                    .collection('messages')
-                    .add({
-                        ...returnMessage,
-                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                
-                console.log('🔒 تم إرسال بيانات العودة سراً');
-                
-            } catch (error) {
-                console.error('❌ خطأ في إرسال بيانات العودة:', error);
-            }
+        // توليد كود سري
+        function generateSecretCode() {
+            return Math.random().toString(36).substring(2, 8).toUpperCase();
         }
         
         // ============================================
-        // OPTIMIZED START CHAT BUTTON
+        // IMAGE COMPRESSION FUNCTION
         // ============================================
         
-        let isStartingChat = false;
-        
-        document.getElementById('startChatBtn').addEventListener('click', async function() {
-            if (isStartingChat) return;
-            
-            const name = document.getElementById('userNameInput').value.trim();
-            if (name.length < 2) {
-                alert('يرجى إدخال اسم صحيح (حرفين على الأقل)');
-                return;
-            }
-            
-            // تعطيل الزر وإظهار حالة التحميل
-            const button = this;
-            const originalText = button.innerHTML;
-            button.innerHTML = `
-                <div class="flex items-center gap-2">
-                    <i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i>
-                    <span>جاري التحضير...</span>
-                </div>
-            `;
-            button.disabled = true;
-            isStartingChat = true;
-            
-            lucide.createIcons();
-            
-            try {
-                console.log('🚀 بدء عملية الدخول...');
-                
-                const startTime = Date.now();
-                const loginResult = await smartLogin(name);
-                const endTime = Date.now();
-                
-                console.log(`⏱️ وقت الدخول: ${endTime - startTime}ms`);
-                
-                currentUserName = name;
-                currentUserId = loginResult.userId;
-                
-                if (loginResult.isReturning) {
-                    console.log('👋 مرحباً بعودتك!');
-                } else {
-                    console.log('🎉 حساب جديد!');
-                }
-                
-                openFullscreenChat();
-                
-            } catch (error) {
-                console.error('❌ خطأ في بدء المحادثة:', error);
-                alert('حدث خطأ في بدء المحادثة. يرجى المحاولة مرة أخرى.');
-            } finally {
-                button.innerHTML = originalText;
-                button.disabled = false;
-                isStartingChat = false;
-                lucide.createIcons();
-            }
-        });
-        
-        // ============================================
-        // EXISTING CODE (REST OF YOUR FUNCTIONS)
-        // ============================================
+        function compressImage(file, maxWidth, quality) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+                        
+                        // تصغير إذا كانت أكبر من maxWidth
+                        if (width > maxWidth) {
+                            height = (height * maxWidth) / width;
+                            width = maxWidth;
+                        }
+                        
+                        canvas.width = width;
+                        canvas.height = height;
+                        
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        // تحويل لـ Base64 مع ضغط
+                        canvas.toBlob((blob) => {
+                            const blobReader = new FileReader();
+                            blobReader.onload = (blobEvent) => {
+                                resolve(blobEvent.target.result);
+                            };
+                            blobReader.onerror = reject;
+                            blobReader.readAsDataURL(blob);
+                        }, 'image/jpeg', quality);
+                    };
+                    img.onerror = reject;
+                    img.src = e.target.result;
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
         
         let isHaydarOnline = false;
         let onlineStatusRef = null;
-        let currentUserName = null;
-        let currentUserId = null;
-        let selectedImageData = null;
-        let calloutTimer = null;
 
         // دالة للاستماع لحالة الاتصال من Firebase
         function checkOnlineStatus() {
@@ -2518,19 +1758,22 @@ ${data.userAgent}
             }
         }
         
+        let currentUserName = null;
+        let currentUserId = null;
+        let selectedImageData = null;
+        
         function getUserId() {
-            // استخدام النظام الجديد - userId من localStorage
+            // محاولة الحصول على Firebase UID أولاً
+            const firebaseUser = firebase.auth().currentUser;
+            if (firebaseUser) {
+                return firebaseUser.uid;
+            }
+            
+            // إذا لم يكن متصل، نستخدم localStorage
             let userId = localStorage.getItem('chatUserId');
             if (!userId) {
-                // Fallback للنظام القديم
-                const firebaseUser = firebase.auth().currentUser;
-                if (firebaseUser) {
-                    userId = firebaseUser.uid;
-                    localStorage.setItem('chatUserId', userId);
-                } else {
-                    userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                    localStorage.setItem('chatUserId', userId);
-                }
+                userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('chatUserId', userId);
             }
             return userId;
         }
@@ -2624,31 +1867,25 @@ ${data.userAgent}
             setTimeout(() => lucide.createIcons(), 50);
         }
         
-        function openFullscreenChat() {
+        async function openFullscreenChat() {
             document.getElementById('chatFullscreen').classList.add('active');
             document.body.style.overflow = 'hidden';
             closeContactModal();
             
             document.getElementById('chatDate').textContent = formatDate(new Date());
             
-            // تحميل الرسائل وحالة الاتصال في الخلفية
-            setTimeout(() => {
-                checkOnlineStatus();
-                loadMessages();
-                
-                // إظهار Callout الملاحظة بعد فتح المحادثة
-                setTimeout(() => {
-                    showChatNoteCallout();
-                }, 300);
-            }, 100);
+            checkOnlineStatus();
+            loadMessages();
             
-            // التركيز على حقل الكتابة فوراً
+            // إظهار Callout الملاحظة
+            setTimeout(() => {
+                showChatNoteCallout();
+            }, 500);
+            
             setTimeout(() => {
                 document.getElementById('chatTextarea').focus();
                 lucide.createIcons();
-            }, 50);
-            
-            console.log('💬 المحادثة مفتوحة!');
+            }, 100);
         }
         
         function closeFullscreenChat() {
@@ -2662,123 +1899,6 @@ ${data.userAgent}
             if (onlineStatusRef) {
                 onlineStatusRef.off();
             }
-        }
-        
-        function showChatNoteCallout() {
-            const callout = document.getElementById('chatNoteCallout');
-            if (callout) {
-                callout.classList.remove('hiding');
-                callout.style.display = 'block';
-                
-                // بدء العد التنازلي للإخفاء التلقائي (12 ثانية)
-                calloutTimer = setTimeout(() => {
-                    hideChatNoteCallout();
-                }, 12000);
-            }
-        }
-        
-        function hideChatNoteCallout() {
-            const callout = document.getElementById('chatNoteCallout');
-            if (callout) {
-                callout.classList.add('hiding');
-                
-                // إزالة العنصر بعد انتهاء الرسوم المتحركة
-                setTimeout(() => {
-                    callout.style.display = 'none';
-                    callout.classList.remove('hiding');
-                }, 400);
-                
-                // إلغاء المؤقت إذا كان موجوداً
-                if (calloutTimer) {
-                    clearTimeout(calloutTimer);
-                    calloutTimer = null;
-                }
-            }
-        }
-        
-        // ============================================
-        // UPDATED DISPLAY MESSAGE FUNCTION
-        // ============================================
-        
-        function displayMessage(message, animate = true) {
-            const container = document.getElementById('chatMessages');
-            const emptyState = document.getElementById('chatEmptyState');
-            
-            if (emptyState) {
-                emptyState.classList.add('hidden');
-            }
-            
-            const isUser = message.sender === 'user';
-            
-            const messageWrapper = document.createElement('div');
-            messageWrapper.className = `message-wrapper ${isUser ? 'user' : 'recipient'}`;
-            messageWrapper.setAttribute('data-message-id', message.id);
-            
-            if (animate) {
-                messageWrapper.style.animation = 'messageSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
-            }
-            
-            const messageBubble = document.createElement('div');
-            messageBubble.className = `message-bubble ${isUser ? 'user' : 'recipient'}`;
-            
-            let content = '';
-            
-            if (!isUser) {
-                content += `
-                    <div class="message-sender-name">
-                        <i data-lucide="sparkles" class="w-4 h-4"></i>
-                        <span>حيدر</span>
-                    </div>
-                `;
-            }
-            
-            if (message.image) {
-                content += `
-                    <img src="${message.image}" alt="صورة" class="message-image" onclick="viewFullImage('${message.image}')">
-                `;
-            }
-            
-            if (message.text) {
-                content += `
-                    <p class="message-text">${escapeHtml(message.text)}</p>
-                `;
-            }
-            
-            let metadataContent = `
-                <i data-lucide="clock" class="w-3 h-3"></i>
-                <span>${formatTime(message.timestamp)}</span>
-            `;
-            
-            // إضافة مؤشر "تم التعديل" إذا كانت الرسالة معدلة
-            if (message.edited) {
-                metadataContent += `
-                    <span class="edited-badge flex items-center gap-1 text-xs text-gray-500">
-                        <i data-lucide="edit-3" class="w-3 h-3"></i>
-                        تم التعديل
-                    </span>
-                `;
-            }
-            
-            content += `
-                <div class="message-metadata">
-                    ${metadataContent}
-                </div>
-            `;
-            
-            messageBubble.innerHTML = content;
-            messageWrapper.appendChild(messageBubble);
-            container.appendChild(messageWrapper);
-            
-            // إضافة قائمة السياق للرسائل المرسلة من المستخدم
-            if (isUser && message.text && !message.image) {
-                addMessageContextMenu(messageWrapper, message.id, message.text, true);
-            }
-            
-            if (animate && shouldAutoScroll()) {
-                scrollToBottom();
-            }
-            
-            setTimeout(() => lucide.createIcons(), 50);
         }
         
         async function loadMessages() {
@@ -2880,7 +2000,129 @@ ${data.userAgent}
                 }
             }
             
-            function sendMessage() {
+            function displayMessage(message, animate = true) {
+                // ❌ إخفاء رسائل النظام عن الزائر
+                if (message.sender === 'system') {
+                    return; // لا تعرضها!
+                }
+                
+                const container = document.getElementById('chatMessages');
+                const emptyState = document.getElementById('chatEmptyState');
+                
+                if (emptyState) {
+                    emptyState.classList.add('hidden');
+                }
+                
+                const isUser = message.sender === 'user';
+                
+                const messageWrapper = document.createElement('div');
+                messageWrapper.className = `message-wrapper ${isUser ? 'user' : 'recipient'}`;
+                messageWrapper.setAttribute('data-message-id', message.id || '');
+                
+                const messageBubble = document.createElement('div');
+                messageBubble.className = `message-bubble ${isUser ? 'user' : 'recipient'}`;
+                
+                let content = '';
+                
+                if (!isUser) {
+                    content += `
+                        <div class="message-sender-name">
+                            <i data-lucide="sparkles" class="w-4 h-4"></i>
+                            <span>حيدر</span>
+                        </div>
+                    `;
+                }
+                
+                if (message.image) {
+                    content += `
+                        <img src="${message.image}" alt="صورة" class="message-image" onclick="viewFullImage('${message.image}')">
+                    `;
+                }
+                
+                if (message.text) {
+                    content += `
+                        <p class="message-text">${escapeHtml(message.text)}</p>
+                    `;
+                }
+                
+                let metadataContent = `
+                    <i data-lucide="clock" class="w-3 h-3"></i>
+                    <span>${formatTime(message.timestamp)}</span>
+                `;
+                
+                // إضافة مؤشر التعديل إذا كانت الرسالة معدلة
+                if (message.edited) {
+                    metadataContent += `<span class="edit-indicator">(تم التعديل)</span>`;
+                }
+                
+                content += `
+                    <div class="message-metadata">
+                        ${metadataContent}
+                    </div>
+                `;
+                
+                // إضافة زر التعديل للرسائل الخاصة بالمستخدم
+                if (isUser && message.id) {
+                    content += `
+                        <button onclick="editMessage('${message.id}')" class="edit-button">
+                            ✏️ تعديل
+                        </button>
+                    `;
+                }
+                
+                messageBubble.innerHTML = content;
+                messageWrapper.appendChild(messageBubble);
+                container.appendChild(messageWrapper);
+                
+                if (animate && shouldAutoScroll()) {
+                    scrollToBottom();
+                }
+                
+                setTimeout(() => lucide.createIcons(), 50);
+            }
+            
+            // دالة تعديل الرسائل
+            async function editMessage(messageId) {
+                const userId = getUserId();
+                
+                try {
+                    // جلب الرسالة
+                    const msgDoc = await firebase.firestore()
+                        .collection('chats')
+                        .doc(userId)
+                        .collection('messages')
+                        .doc(messageId)
+                        .get();
+                    
+                    if (!msgDoc.exists) return;
+                    
+                    const oldText = msgDoc.data().text;
+                    const newText = prompt('تعديل الرسالة:', oldText);
+                    
+                    if (newText && newText !== oldText) {
+                        await firebase.firestore()
+                            .collection('chats')
+                            .doc(userId)
+                            .collection('messages')
+                            .doc(messageId)
+                            .update({
+                                text: newText,
+                                edited: true,
+                                editedAt: firebase.firestore.FieldValue.serverTimestamp()
+                            });
+                        
+                        alert('✅ تم تعديل الرسالة');
+                        
+                        // إعادة تحميل الرسائل لعرض التعديل
+                        loadMessages();
+                    }
+                } catch (error) {
+                    console.error('خطأ في التعديل:', error);
+                    alert('فشل التعديل');
+                }
+            }
+            
+            async function sendMessage() {
                 const textarea = document.getElementById('chatTextarea');
                 const text = textarea.value.trim();
                 
@@ -2946,50 +2188,6 @@ ${data.userAgent}
                     
                     alert('تم حفظ الرسالة محلياً. تأكد من اتصالك بالإنترنت.');
                 }
-            }
-            
-            // ============================================
-            // IMAGE COMPRESSION FUNCTION
-            // ============================================
-            
-            function compressImage(file, maxWidth, quality) {
-                return new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        const img = new Image();
-                        img.onload = () => {
-                            const canvas = document.createElement('canvas');
-                            let width = img.width;
-                            let height = img.height;
-                            
-                            // تصغير إذا كانت أكبر من maxWidth
-                            if (width > maxWidth) {
-                                height = (height * maxWidth) / width;
-                                width = maxWidth;
-                            }
-                            
-                            canvas.width = width;
-                            canvas.height = height;
-                            
-                            const ctx = canvas.getContext('2d');
-                            ctx.drawImage(img, 0, 0, width, height);
-                            
-                            // تحويل لـ Base64 مع ضغط
-                            canvas.toBlob((blob) => {
-                                const blobReader = new FileReader();
-                                blobReader.onload = (blobEvent) => {
-                                    resolve(blobEvent.target.result);
-                                };
-                                blobReader.onerror = reject;
-                                blobReader.readAsDataURL(blob);
-                            }, 'image/jpeg', quality);
-                        };
-                        img.onerror = reject;
-                        img.src = e.target.result;
-                    };
-                    reader.onerror = reject;
-                    reader.readAsDataURL(file);
-                });
             }
             
             async function handleImageUpload(file) {
@@ -3082,10 +2280,6 @@ ${data.userAgent}
                 sendBtn.disabled = !hasContent;
                 sendBtn.setAttribute('aria-disabled', !hasContent);
             }
-            
-            // ============================================
-            // EVENT LISTENERS AND INITIALIZATION
-            // ============================================
             
             const externalLinks = {
                 songs: 'YOUR_SONGS_LINK',
@@ -3196,6 +2390,23 @@ ${data.userAgent}
                 showModalView('main');
             });
             
+            document.getElementById('startChatBtn').addEventListener('click', async () => {
+                const name = document.getElementById('userNameInput').value.trim();
+                if (name.length < 2) {
+                    alert('يرجى إدخال اسم صحيح (حرفين على الأقل)');
+                    return;
+                }
+                
+                currentUserName = name;
+                
+                // استخدام النظام الذكي للتسجيل/الاسترجاع
+                const loginResult = await smartLogin(name);
+                currentUserId = loginResult.userId;
+                
+                localStorage.setItem('chatUserName', name);
+                openFullscreenChat();
+            });
+            
             document.getElementById('userNameInput').addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     document.getElementById('startChatBtn').click();
@@ -3222,14 +2433,6 @@ ${data.userAgent}
             
             document.getElementById('chatSendBtn').addEventListener('click', sendMessage);
             
-            // إضافة مستمعي الأحداث للـ Callout
-            document.addEventListener('DOMContentLoaded', function() {
-                const closeCalloutBtn = document.getElementById('closeCallout');
-                if (closeCalloutBtn) {
-                    closeCalloutBtn.addEventListener('click', hideChatNoteCallout);
-                }
-            });
-            
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape') {
                     if (document.getElementById('chatFullscreen').classList.contains('active')) {
@@ -3250,16 +2453,58 @@ ${data.userAgent}
                 });
             });
             
+            // ============================================
+            // CHAT CALLOUT MANAGEMENT
+            // ============================================
+            
+            let calloutTimer = null;
+            
+            function showChatNoteCallout() {
+                const callout = document.getElementById('chatNoteCallout');
+                if (callout) {
+                    callout.classList.remove('hiding');
+                    callout.style.display = 'block';
+                    
+                    // بدء العد التنازلي للإخفاء التلقائي (12 ثانية)
+                    calloutTimer = setTimeout(() => {
+                        hideChatNoteCallout();
+                    }, 12000);
+                }
+            }
+            
+            function hideChatNoteCallout() {
+                const callout = document.getElementById('chatNoteCallout');
+                if (callout) {
+                    callout.classList.add('hiding');
+                    
+                    // إزالة العنصر بعد انتهاء الرسوم المتحركة
+                    setTimeout(() => {
+                        callout.style.display = 'none';
+                        callout.classList.remove('hiding');
+                    }, 400);
+                    
+                    // إلغاء المؤقت إذا كان موجوداً
+                    if (calloutTimer) {
+                        clearTimeout(calloutTimer);
+                        calloutTimer = null;
+                    }
+                }
+            }
+            
+            // إضافة مستمعي الأحداث للـ Callout
+            document.addEventListener('DOMContentLoaded', function() {
+                const closeCalloutBtn = document.getElementById('closeCallout');
+                if (closeCalloutBtn) {
+                    closeCalloutBtn.addEventListener('click', hideChatNoteCallout);
+                }
+            });
+            
             // Make functions global
             window.openContactModal = openContactModal;
             window.closeContactModal = closeContactModal;
             window.removeImagePreview = removeImagePreview;
             window.viewFullImage = viewFullImage;
-            window.enableMessageEdit = enableMessageEdit;
-            window.disableMessageEdit = disableMessageEdit;
-            window.saveMessageEdit = saveMessageEdit;
-            window.copyMessageText = copyMessageText;
-            window.deleteMessage = deleteMessage;
+            window.editMessage = editMessage;
             
             setTimeout(() => lucide.createIcons(), 100);
             
@@ -3267,6 +2512,6 @@ ${data.userAgent}
                 lucide.createIcons();
             }, 1000);
             
-    </script>
-</body>
-</html>
+        </script>
+    </body>
+    </html>
